@@ -1,0 +1,9 @@
+{
+  "platform_name": "EduVerse",
+  "max_requests_per_min": 100,
+  "jwt_expiry": "1h",
+  "ai_model_groq": "llama3-8b-8192",
+  "ai_model_gemini": "gemini-pro",
+  "maintenance_mode": false,
+  "registration_open": true
+}
