@@ -9,6 +9,7 @@ const DIFF_COLORS = { beginner: 'text-blue-400', intermediate: 'text-orange-400'
 export default function Courses() {
     const [courses, setCourses] = useState([]);
     const [enrolledCourses, setEnrolledCourses] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [search, setSearch] = useState('');
     const [difficulty, setDifficulty] = useState('');
     const [category, setCategory] = useState('');
@@ -35,6 +36,16 @@ export default function Courses() {
         fetchCourses();
         fetchEnrolledCourses();
     }, [search, difficulty, category, priceFilter, sortBy]);
+
+    useEffect(() => {
+        // Load distinct categories from published courses
+        api.get('/courses', { params: { limit: 100 } })
+            .then(res => {
+                const cats = [...new Set((res.data.courses || []).map(c => c.category).filter(Boolean))].sort();
+                setCategories(cats);
+            })
+            .catch(() => {});
+    }, []);
 
     const fetchCourses = async () => {
         setLoading(true);
@@ -147,11 +158,9 @@ export default function Courses() {
                         className="bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-purple-500 text-sm"
                     >
                         <option value="">All Categories</option>
-                        <option value="programming">Programming</option>
-                        <option value="design">Design</option>
-                        <option value="business">Business</option>
-                        <option value="marketing">Marketing</option>
-                        <option value="data-science">Data Science</option>
+                        {categories.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
                     </select>
                     <select
                         value={priceFilter}

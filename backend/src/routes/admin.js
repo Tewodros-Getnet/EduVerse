@@ -50,8 +50,8 @@ router.patch('/users/:id/status', async (req, res, next) => {
         const { is_active } = req.body;
         await query('UPDATE users SET is_active=$1, updated_at=NOW() WHERE id=$2', [is_active, req.params.id]);
         await query(
-            'INSERT INTO audit_logs (user_id, action, resource, details) VALUES ($1,$2,$3,$4)',
-            [req.user.id, is_active ? 'USER_ACTIVATED' : 'USER_DEACTIVATED', 'users', JSON.stringify({ target_id: req.params.id })]
+            'INSERT INTO audit_logs (user_id, action, resource, ip_address, details) VALUES ($1,$2,$3,$4,$5)',
+            [req.user.id, is_active ? 'USER_ACTIVATED' : 'USER_DEACTIVATED', 'users', req.ip, JSON.stringify({ target_id: req.params.id })]
         );
         res.json({ message: 'User status updated' });
     } catch (err) { next(err); }
@@ -62,8 +62,8 @@ router.delete('/users/:id', async (req, res, next) => {
     try {
         await query('DELETE FROM users WHERE id=$1', [req.params.id]);
         await query(
-            'INSERT INTO audit_logs (user_id, action, resource, details) VALUES ($1,$2,$3,$4)',
-            [req.user.id, 'USER_DELETED', 'users', JSON.stringify({ target_id: req.params.id })]
+            'INSERT INTO audit_logs (user_id, action, resource, ip_address, details) VALUES ($1,$2,$3,$4,$5)',
+            [req.user.id, 'USER_DELETED', 'users', req.ip, JSON.stringify({ target_id: req.params.id })]
         );
         res.json({ message: 'User deleted' });
     } catch (err) { next(err); }
@@ -105,11 +105,40 @@ router.get('/metrics/ai-cost', async (req, res, next) => {
 // GET /api/admin/audit-logs
 router.get('/audit-logs', async (req, res, next) => {
     try {
+        const { page = 1, limit = 50, action, search } = req.query;
+        const offset = (parseInt(page) - 1) * parseInt(limit);
+        const params = [];
+        let where = [];
+        let idx = 1;
+
+        if (action) { where.push(`al.action = $${idx++}`); params.push(action); }
+        if (search) {
+            where.push(`(u.name ILIKE $${idx} OR u.email ILIKE $${idx} OR al.action ILIKE $${idx})`);
+            params.push(`%${search}%`); idx++;
+        }
+
+        const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
+        params.push(parseInt(limit), offset);
+
         const result = await query(
-            `SELECT al.*, u.name as user_name FROM audit_logs al
-       LEFT JOIN users u ON al.user_id = u.id ORDER BY al.created_at DESC LIMIT 100`
+            `SELECT al.*, u.name as user_name, u.email as user_email
+             FROM audit_logs al
+             LEFT JOIN users u ON al.user_id = u.id
+             ${whereClause}
+             ORDER BY al.created_at DESC
+             LIMIT $${idx++} OFFSET $${idx++}`,
+            params
         );
-        res.json({ logs: result.rows });
+        const countResult = await query(
+            `SELECT COUNT(*) FROM audit_logs al LEFT JOIN users u ON al.user_id = u.id ${whereClause}`,
+            params.slice(0, -2)
+        );
+        res.json({
+            logs: result.rows,
+            total: parseInt(countResult.rows[0].count),
+            page: parseInt(page),
+            limit: parseInt(limit)
+        });
     } catch (err) { next(err); }
 });
 

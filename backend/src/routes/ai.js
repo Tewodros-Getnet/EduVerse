@@ -19,7 +19,7 @@ async function askGroq(question, context) {
     const response = await apiClient.post(
         'https://api.groq.com/openai/v1/chat/completions',
         {
-            model: 'llama3-8b-8192',
+            model: 'llama-3.1-8b-instant',
             messages: [
                 { role: 'system', content: `You are an AI tutor for EduVerse. Context: ${context}` },
                 { role: 'user', content: question },
@@ -39,7 +39,7 @@ async function askGemini(question, context) {
         throw new Error('GEMINI_API_KEY not configured');
     }
     const response = await apiClient.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`,
         {
             contents: [{ parts: [{ text: `You are an AI tutor for EduVerse. Context: ${context}\n\nQuestion: ${question}` }] }]
         },
@@ -48,16 +48,37 @@ async function askGemini(question, context) {
     return response.data.candidates[0].content.parts[0].text;
 }
 
+// Strip markdown code fences and parse JSON safely
+function parseAIJson(text) {
+    // Remove ```json ... ``` or ``` ... ``` wrappers that LLMs often add
+    const stripped = text
+        .replace(/^```(?:json)?\s*/i, '')
+        .replace(/\s*```\s*$/, '')
+        .trim();
+    return JSON.parse(stripped);
+}
+
 // POST /api/ai/chat — open to all authenticated users
 router.post('/chat', authenticate, async (req, res, next) => {
     try {
-        const { question, course_id, use_deep = false } = req.body;
+        const { question, course_id, use_deep = false, conversation_history = [] } = req.body;
         if (!question) return res.status(400).json({ error: 'Question required' });
 
+        // Build course context
         let context = 'General learning platform';
         if (course_id) {
             const course = await query('SELECT title, description FROM courses WHERE id = $1', [course_id]);
             if (course.rows.length) context = `Course: ${course.rows[0].title}. ${course.rows[0].description}`;
+        }
+
+        // Build conversation context from history
+        let conversationContext = '';
+        if (conversation_history.length > 0) {
+            const historyText = conversation_history
+                .slice(-10) // max 10 turns
+                .map(m => `${m.role}: ${m.content}`)
+                .join('\n');
+            conversationContext = `\n\nConversation history:\n${historyText}`;
         }
 
         const start = Date.now();
@@ -73,12 +94,12 @@ router.post('/chat', authenticate, async (req, res, next) => {
             ai_source = 'demo';
         } else if (use_deep) {
             try {
-                answer = await askGemini(question, context);
+                answer = await askGemini(question, context + conversationContext);
                 ai_source = 'gemini';
             } catch (err) {
                 if (hasGroq) {
                     try {
-                        answer = await askGroq(question, context);
+                        answer = await askGroq(question, context + conversationContext);
                         ai_source = 'groq';
                     } catch {
                         answer = `I encountered an error processing your question: ${err.message}. API keys may not be valid.`;
@@ -91,12 +112,12 @@ router.post('/chat', authenticate, async (req, res, next) => {
             }
         } else {
             try {
-                answer = await askGroq(question, context);
+                answer = await askGroq(question, context + conversationContext);
                 ai_source = 'groq';
             } catch (err) {
                 if (hasGemini) {
                     try {
-                        answer = await askGemini(question, context);
+                        answer = await askGemini(question, context + conversationContext);
                         ai_source = 'gemini';
                     } catch {
                         answer = `I encountered an error processing your question: ${err.message}. API keys may not be valid.`;
@@ -215,7 +236,7 @@ router.post('/admin/stats-summary', authenticate, authorize('admin'), async (req
                     COUNT(*) as total_ai_requests,
                     COUNT(CASE WHEN created_at >= NOW() - INTERVAL '${time_period}' THEN 1 END) as recent_ai_requests,
                     AVG(response_time_ms) as avg_response_time
-                 FROM ai_chat_history`
+                 FROM chat_history`
             )
         ]);
 
@@ -557,7 +578,7 @@ router.post('/instructor/quiz-generator', authenticate, async (req, res, next) =
         try {
             const response = await askGroq(prompt, context);
             // Parse JSON response
-            questions = JSON.parse(response);
+            questions = parseAIJson(response);
         } catch (err) {
             // Fallback to demo questions
             questions = [
@@ -630,7 +651,7 @@ router.post('/instructor/content-suggestions', authenticate, async (req, res, ne
         let suggestions;
         try {
             const response = await askGroq(prompt, context);
-            suggestions = JSON.parse(response);
+            suggestions = parseAIJson(response);
         } catch (err) {
             // Fallback suggestions
             suggestions = {
@@ -687,7 +708,7 @@ router.post('/instructor/feedback-generator', authenticate, async (req, res, nex
         let feedback;
         try {
             const response = await askGroq(prompt, context);
-            feedback = JSON.parse(response);
+            feedback = parseAIJson(response);
         } catch (err) {
             // Fallback feedback
             feedback = {
@@ -752,7 +773,7 @@ router.post('/instructor/course-optimizer', authenticate, async (req, res, next)
         let optimization;
         try {
             const response = await askGroq(prompt, context);
-            optimization = JSON.parse(response);
+            optimization = parseAIJson(response);
         } catch (err) {
             // Fallback optimization
             optimization = {
@@ -828,7 +849,7 @@ router.post('/instructor/student-insights', authenticate, async (req, res, next)
         let insights;
         try {
             const response = await askGroq(prompt, context);
-            insights = JSON.parse(response);
+            insights = parseAIJson(response);
         } catch (err) {
             // Fallback insights
             insights = {
@@ -901,7 +922,7 @@ router.post('/instructor/learning-path-generator', authenticate, async (req, res
         let learningPath;
         try {
             const response = await askGroq(prompt, context);
-            learningPath = JSON.parse(response);
+            learningPath = parseAIJson(response);
         } catch (err) {
             // Fallback learning path
             learningPath = {
@@ -934,51 +955,70 @@ router.get('/student/recommendations', authenticate, authorize('student'), async
     try {
         const userId = req.user.id;
 
-        // Get user's enrolled courses and progress
-        const coursesQuery = `
-            SELECT c.id, c.title, c.category, e.progress_percent
-            FROM enrollments e
-            JOIN courses c ON e.course_id = c.id
-            WHERE e.student_id = $1 AND e.progress_percent < 100
-            ORDER BY e.progress_percent DESC
-            LIMIT 5
-        `;
+        // Get enrolled courses with progress and recent quiz scores
+        const [coursesResult, quizResult] = await Promise.all([
+            query(
+                `SELECT c.id, c.title, c.category, c.difficulty_level, e.progress_percent
+                 FROM enrollments e
+                 JOIN courses c ON e.course_id = c.id
+                 WHERE e.student_id = $1
+                 ORDER BY e.progress_percent DESC
+                 LIMIT 5`,
+                [userId]
+            ),
+            query(
+                `SELECT q.title as quiz_title, qa.score, c.title as course_title
+                 FROM quiz_attempts qa
+                 JOIN quizzes q ON qa.quiz_id = q.id
+                 JOIN courses c ON q.course_id = c.id
+                 WHERE qa.student_id = $1
+                 ORDER BY qa.completed_at DESC
+                 LIMIT 5`,
+                [userId]
+            ),
+        ]);
 
-        const courses = await query(coursesQuery, [userId]);
+        const courses = coursesResult.rows;
+        const recentQuizzes = quizResult.rows;
 
-        // Generate mock recommendations based on enrolled courses
-        const recommendations = courses.rows.map(course => ({
-            id: `rec_${course.id}`,
-            title: `Continue learning ${course.title}`,
-            description: `Based on your ${Math.round(course.progress_percent)}% progress in ${course.title}`,
-            type: 'course_continuation',
-            priority: 'high',
-            course_id: course.id,
-            estimated_time: '2-3 hours',
-            difficulty: course.progress_percent > 50 ? 'intermediate' : 'beginner'
-        }));
+        if (courses.length === 0) {
+            return res.json({ recommendations: [] });
+        }
 
-        // Add some general recommendations
-        recommendations.push(
-            {
-                id: 'rec_general_1',
-                title: 'Practice with quizzes',
-                description: 'Test your knowledge with interactive quizzes',
-                type: 'practice',
-                priority: 'medium',
-                estimated_time: '30 minutes',
-                difficulty: 'mixed'
-            },
-            {
-                id: 'rec_general_2',
-                title: 'Join study groups',
-                description: 'Collaborate with other learners',
-                type: 'social',
-                priority: 'low',
-                estimated_time: '1 hour',
-                difficulty: 'all'
+        const prompt = `A student is enrolled in these courses with the following progress:
+${courses.map(c => `- ${c.title} (${c.category}, ${c.difficulty_level}): ${Math.round(c.progress_percent)}% complete`).join('\n')}
+
+Recent quiz scores:
+${recentQuizzes.length > 0 ? recentQuizzes.map(q => `- ${q.quiz_title} in ${q.course_title}: ${q.score}%`).join('\n') : 'No quizzes taken yet'}
+
+Generate 4 personalized learning recommendations. Return ONLY a JSON array:
+[
+  {
+    "title": "short recommendation title",
+    "description": "one sentence explaining why this is recommended for this student",
+    "icon": "single emoji"
+  }
+]`;
+
+        let recommendations;
+        try {
+            const response = await askGroq(prompt, '');
+            recommendations = parseAIJson(response);
+        } catch {
+            // Fallback: build basic recommendations from course data
+            recommendations = courses.slice(0, 3).map(course => ({
+                title: `Continue ${course.title}`,
+                description: `You're ${Math.round(course.progress_percent)}% through this course — keep the momentum going.`,
+                icon: '📚',
+            }));
+            if (recommendations.length < 4) {
+                recommendations.push({
+                    title: 'Practice with quizzes',
+                    description: 'Test your knowledge to reinforce what you have learned.',
+                    icon: '📝',
+                });
             }
-        );
+        }
 
         res.json({ recommendations });
     } catch (err) {
@@ -1090,3 +1130,4 @@ Format as JSON array.`;
 });
 
 module.exports = router;
+

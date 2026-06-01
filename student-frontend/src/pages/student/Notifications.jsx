@@ -56,7 +56,7 @@ export default function Notifications() {
 
     const markAllAsRead = async () => {
         try {
-            await api.post('/notifications/mark-all-read');
+            await api.post('/notifications/student/read-all');
             setNotifications(prev =>
                 prev.map(n => ({ ...n, read: true }))
             );
@@ -78,7 +78,7 @@ export default function Notifications() {
 
     const updateNotificationSettings = async (settings) => {
         try {
-            await api.put('/notifications/student/settings', settings);
+            await api.post('/notifications/student/settings', settings);
             setNotificationSettings(settings);
             setShowSettings(false);
             toast.success('Notification settings updated');

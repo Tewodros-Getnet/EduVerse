@@ -227,7 +227,7 @@ export default function AdminNotificationButton() {
                                 {filteredNotifications.map(notification => (
                                     <div
                                         key={notification.id}
-                                        className={`p-4 hover:bg-[#12122a] transition-colors cursor-pointer ${
+                                        className={`p-4 hover:bg-[#12122a] transition-colors cursor-pointer group ${
                                             !notification.is_read ? 'bg-purple-600/10' : ''
                                         }`}
                                         onClick={() => !notification.is_read && markAsRead(notification.id)}
@@ -279,19 +279,9 @@ export default function AdminNotificationButton() {
 
                     {/* Footer */}
                     <div className="p-3 border-t border-purple-900/40">
-                        <button
-                            onClick={() => {
-                                setIsOpen(false);
-                                // Generate test notifications
-                                api.post('/notifications/admin/generate-test').then(() => {
-                                    fetchNotifications();
-                                    toast.success('Test notifications generated');
-                                });
-                            }}
-                            className="w-full py-2 text-sm text-purple-400 hover:text-white hover:bg-purple-600/20 rounded-lg transition-all"
-                        >
-                            Generate Test Notifications
-                        </button>
+                        <p className="text-xs text-gray-500 text-center">
+                            Notifications update every 30 seconds
+                        </p>
                     </div>
                 </div>
             )}

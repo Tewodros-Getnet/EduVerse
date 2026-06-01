@@ -19,7 +19,7 @@ router.get('/instructor/all', authenticate, authorize('instructor'), async (req,
              JOIN courses c ON e.course_id = c.id
              LEFT JOIN lesson_progress lp ON u.id = lp.student_id AND lp.completed = true
              LEFT JOIN quiz_attempts qa ON u.id = qa.student_id
-             LEFT JOIN assignment_submissions sub ON u.id = sub.student_id
+             LEFT JOIN assignment_submissions sub ON u.id = sub.user_id
              WHERE c.instructor_id = $1 AND u.role = 'student'
              GROUP BY u.id, u.name, u.email, u.created_at
              ORDER BY u.name`,
@@ -50,7 +50,7 @@ router.get('/instructor/course/:courseId', authenticate, authorize('instructor')
              JOIN enrollments e ON u.id = e.student_id
              LEFT JOIN lesson_progress lp ON u.id = lp.student_id AND lp.completed = true
              LEFT JOIN quiz_attempts qa ON u.id = qa.student_id
-             LEFT JOIN assignment_submissions sub ON u.id = sub.student_id
+             LEFT JOIN assignment_submissions sub ON u.id = sub.user_id
              WHERE e.course_id = $1 AND u.role = 'student'
              GROUP BY u.id, u.name, u.email, u.created_at, e.enrolled_at, e.progress_percent
              ORDER BY u.name`,
@@ -102,7 +102,7 @@ router.get('/instructor/:studentId', authenticate, authorize('instructor'), asyn
                  FROM users u
                  LEFT JOIN lesson_progress lp ON u.id = lp.student_id AND lp.completed = true
                  LEFT JOIN quiz_attempts qa ON u.id = qa.student_id
-                 LEFT JOIN assignment_submissions sub ON u.id = sub.student_id
+                 LEFT JOIN assignment_submissions sub ON u.id = sub.user_id
                  WHERE u.id = $1`,
                 [studentId]
             ),
@@ -168,7 +168,7 @@ router.get('/instructor/export', authenticate, authorize('instructor'), async (r
              JOIN courses c ON e.course_id = c.id
              LEFT JOIN lesson_progress lp ON u.id = lp.student_id AND lp.completed = true
              LEFT JOIN quiz_attempts qa ON u.id = qa.student_id
-             LEFT JOIN assignment_submissions sub ON u.id = sub.student_id
+             LEFT JOIN assignment_submissions sub ON u.id = sub.user_id
              WHERE c.instructor_id = $1 AND u.role = 'student'
              GROUP BY u.id, u.name, u.email, u.created_at, u.last_login_at
              ORDER BY u.name`,
@@ -200,7 +200,7 @@ router.get('/instructor/course/:courseId/export', authenticate, authorize('instr
              JOIN enrollments e ON u.id = e.student_id
              LEFT JOIN lesson_progress lp ON u.id = lp.student_id AND lp.completed = true
              LEFT JOIN quiz_attempts qa ON u.id = qa.student_id
-             LEFT JOIN assignment_submissions sub ON u.id = sub.student_id
+             LEFT JOIN assignment_submissions sub ON u.id = sub.user_id
              WHERE e.course_id = $1 AND u.role = 'student'
              GROUP BY u.id, u.name, u.email, u.created_at, u.last_login_at, e.enrolled_at, e.progress_percent
              ORDER BY u.name`,
@@ -317,3 +317,6 @@ router.get('/instructor/analytics', authenticate, authorize('instructor'), async
 });
 
 module.exports = router;
+
+
+

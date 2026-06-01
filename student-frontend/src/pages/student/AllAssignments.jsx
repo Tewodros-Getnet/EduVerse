@@ -84,7 +84,7 @@ export default function AllAssignments() {
 
                             <div className="flex items-center gap-4 text-xs text-gray-400 mb-4">
                                 <span>📅 Due: {new Date(assignment.due_date).toLocaleDateString()}</span>
-                                <span>⭐ {assignment.total_points} points</span>
+                                <span>⭐ {assignment.max_points} points</span>
                             </div>
 
                             <Link 

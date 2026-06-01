@@ -14,6 +14,9 @@ export default function AIManager() {
     const [summaryForm, setSummaryForm] = useState({ time_period: '30 days' });
     const [inactiveForm, setInactiveForm] = useState({ days_threshold: 30 });
     const [predictionForm, setPredictionForm] = useState({ user_id: '', time_period: '30 days' });
+    const [userSearch, setUserSearch] = useState('');
+    const [userSearchResults, setUserSearchResults] = useState([]);
+    const [searchingUsers, setSearchingUsers] = useState(false);
 
     useEffect(() => {
         if (activeTab === 'inactive-users') {
@@ -56,7 +59,7 @@ export default function AIManager() {
     const handleGenerateEngagementPrediction = async (e) => {
         e.preventDefault();
         if (!predictionForm.user_id) {
-            toast.error('User ID is required');
+            toast.error('Please select a user');
             return;
         }
 
@@ -69,6 +72,19 @@ export default function AIManager() {
             toast.error(error.response?.data?.error || 'Failed to generate prediction');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const searchUsers = async (term) => {
+        if (!term.trim()) { setUserSearchResults([]); return; }
+        setSearchingUsers(true);
+        try {
+            const res = await api.get(`/users/admin/all?search=${encodeURIComponent(term)}&limit=8`);
+            setUserSearchResults(res.data.users || []);
+        } catch {
+            setUserSearchResults([]);
+        } finally {
+            setSearchingUsers(false);
         }
     };
 
@@ -316,17 +332,45 @@ export default function AIManager() {
                         <div>
                             <div className="mb-6">
                                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Predict User Engagement</h3>
-                                <form onSubmit={handleGenerateEngagementPrediction} className="flex gap-4 items-end">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">User ID</label>
+                                <form onSubmit={handleGenerateEngagementPrediction} className="flex gap-4 items-end flex-wrap">
+                                    <div className="flex-1 min-w-[200px] relative">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Search User</label>
                                         <input
-                                            type="number"
-                                            required
-                                            value={predictionForm.user_id}
-                                            onChange={(e) => setPredictionForm({...predictionForm, user_id: e.target.value})}
-                                            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 w-32"
-                                            placeholder="Enter user ID"
+                                            type="text"
+                                            value={userSearch}
+                                            onChange={e => {
+                                                setUserSearch(e.target.value);
+                                                searchUsers(e.target.value);
+                                                if (!e.target.value) setPredictionForm(f => ({ ...f, user_id: '' }));
+                                            }}
+                                            placeholder="Type name or email..."
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                                         />
+                                        {userSearchResults.length > 0 && (
+                                            <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-48 overflow-y-auto">
+                                                {userSearchResults.map(u => (
+                                                    <button
+                                                        key={u.id}
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setPredictionForm(f => ({ ...f, user_id: u.id }));
+                                                            setUserSearch(`${u.name} (${u.email})`);
+                                                            setUserSearchResults([]);
+                                                        }}
+                                                        className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm"
+                                                    >
+                                                        <span className="font-medium">{u.name}</span>
+                                                        <span className="text-gray-500 ml-2">{u.email}</span>
+                                                        <span className={`ml-2 text-xs px-1.5 py-0.5 rounded-full ${u.role === 'instructor' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+                                                            {u.role}
+                                                        </span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {predictionForm.user_id && (
+                                            <p className="text-xs text-green-600 mt-1">✓ User selected</p>
+                                        )}
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Time Period</label>
@@ -342,7 +386,7 @@ export default function AIManager() {
                                     </div>
                                     <button
                                         type="submit"
-                                        disabled={loading}
+                                        disabled={loading || !predictionForm.user_id}
                                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                                     >
                                         {loading ? 'Predicting...' : 'Generate Prediction'}

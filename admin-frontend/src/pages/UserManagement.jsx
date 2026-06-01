@@ -7,7 +7,10 @@ export default function UserManagement() {
     const [loading, setLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showResetModal, setShowResetModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [newPassword, setNewPassword] = useState('');
     const [search, setSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
@@ -28,7 +31,6 @@ export default function UserManagement() {
         role: '',
         is_active: true
     });
-
     useEffect(() => {
         fetchUsers();
         fetchStats();
@@ -92,12 +94,13 @@ export default function UserManagement() {
         }
     };
 
-    const handleDeleteUser = async (user) => {
-        if (!window.confirm(`Are you sure you want to delete ${user.name}?`)) return;
-        
+    const handleDeleteUser = async () => {
+        if (!selectedUser) return;
         try {
-            await api.delete(`/users/admin/${user.id}`);
+            await api.delete(`/users/admin/${selectedUser.id}`);
             toast.success('User deleted successfully');
+            setShowDeleteModal(false);
+            setSelectedUser(null);
             fetchUsers();
             fetchStats();
         } catch (error) {
@@ -116,13 +119,17 @@ export default function UserManagement() {
         }
     };
 
-    const handleResetPassword = async (user) => {
-        const newPassword = prompt('Enter new password:');
-        if (!newPassword) return;
-
+    const handleResetPassword = async () => {
+        if (!selectedUser || !newPassword.trim()) {
+            toast.error('Please enter a new password');
+            return;
+        }
         try {
-            await api.post(`/users/admin/${user.id}/reset-password`, { newPassword });
+            await api.post(`/users/admin/${selectedUser.id}/reset-password`, { newPassword });
             toast.success('Password reset successfully');
+            setShowResetModal(false);
+            setSelectedUser(null);
+            setNewPassword('');
         } catch (error) {
             toast.error(error.response?.data?.error || 'Failed to reset password');
         }
@@ -284,13 +291,13 @@ export default function UserManagement() {
                                                 {user.is_active ? 'Deactivate' : 'Activate'}
                                             </button>
                                             <button
-                                                onClick={() => handleResetPassword(user)}
+                                                onClick={() => { setSelectedUser(user); setShowResetModal(true); }}
                                                 className="text-green-600 hover:text-green-900"
                                             >
                                                 Reset
                                             </button>
                                             <button
-                                                onClick={() => handleDeleteUser(user)}
+                                                onClick={() => { setSelectedUser(user); setShowDeleteModal(true); }}
                                                 className="text-red-600 hover:text-red-900"
                                             >
                                                 Delete
@@ -462,6 +469,65 @@ export default function UserManagement() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && selectedUser && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-sm">
+                        <h3 className="text-lg font-semibold mb-2">Delete User</h3>
+                        <p className="text-sm text-gray-600 mb-6">
+                            Are you sure you want to delete <strong>{selectedUser.name}</strong>? This action cannot be undone.
+                        </p>
+                        <div className="flex space-x-3">
+                            <button
+                                onClick={handleDeleteUser}
+                                className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+                            >
+                                Delete
+                            </button>
+                            <button
+                                onClick={() => { setShowDeleteModal(false); setSelectedUser(null); }}
+                                className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Reset Password Modal */}
+            {showResetModal && selectedUser && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-sm">
+                        <h3 className="text-lg font-semibold mb-2">Reset Password</h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Set a new password for <strong>{selectedUser.name}</strong>.
+                        </p>
+                        <input
+                            type="password"
+                            placeholder="New password"
+                            value={newPassword}
+                            onChange={e => setNewPassword(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-4"
+                        />
+                        <div className="flex space-x-3">
+                            <button
+                                onClick={handleResetPassword}
+                                className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+                            >
+                                Reset Password
+                            </button>
+                            <button
+                                onClick={() => { setShowResetModal(false); setSelectedUser(null); setNewPassword(''); }}
+                                className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition"
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

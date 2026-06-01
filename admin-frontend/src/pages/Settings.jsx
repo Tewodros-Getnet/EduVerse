@@ -7,12 +7,13 @@ export default function Settings() {
         platform_name: 'EduVerse',
         max_requests_per_min: 100,
         jwt_expiry: '1h',
-        ai_model_groq: 'llama3-8b-8192',
-        ai_model_gemini: 'gemini-pro',
+        ai_model_groq: 'llama-3.1-8b-instant',
+        ai_model_gemini: 'gemini-2.0-flash-lite',
         maintenance_mode: false,
         registration_open: true,
     });
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -30,11 +31,17 @@ export default function Settings() {
     }, []);
 
     const handleSave = async () => {
+        setSaving(true);
         try {
-            await api.put('/settings', settings);
+            await api.put('/settings', {
+                ...settings,
+                max_requests_per_min: parseInt(settings.max_requests_per_min) || 100,
+            });
             toast.success('Settings saved successfully');
         } catch (error) {
             toast.error('Failed to save settings');
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -108,9 +115,9 @@ export default function Settings() {
             </div>
 
             <button onClick={handleSave}
-                disabled={loading}
+                disabled={loading || saving}
                 className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl text-white font-semibold hover:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-60">
-                {loading ? 'Loading…' : 'Save Settings'}
+                {saving ? 'Saving…' : 'Save Settings'}
             </button>
         </div>
     );

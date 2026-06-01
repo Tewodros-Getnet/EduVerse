@@ -6,7 +6,9 @@ import toast from 'react-hot-toast';
 export default function StudentLiveClasses() {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('upcoming'); // upcoming, live, recordings
+    const [activeTab, setActiveTab] = useState('upcoming');
+    const [recordings, setRecordings] = useState({});
+    const [expandedRecordings, setExpandedRecordings] = useState(null);
 
     useEffect(() => {
         fetchLiveSessions();
@@ -27,6 +29,20 @@ export default function StudentLiveClasses() {
         window.open(`/student/live/${sessionId}`, '_blank');
     };
 
+    const fetchRecordings = async (sessionId) => {
+        if (expandedRecordings === sessionId) {
+            setExpandedRecordings(null);
+            return;
+        }
+        try {
+            const res = await api.get(`/live/sessions/${sessionId}/recordings`);
+            setRecordings(prev => ({ ...prev, [sessionId]: res.data.recordings || [] }));
+            setExpandedRecordings(sessionId);
+        } catch {
+            toast.error('Failed to load recordings');
+        }
+    };
+
     const formatDateTime = (dateString) => {
         return new Date(dateString).toLocaleString();
     };
@@ -34,13 +50,9 @@ export default function StudentLiveClasses() {
     const filterSessions = () => {
         const now = new Date();
         return sessions.filter(session => {
-            if (activeTab === 'upcoming') {
-                return new Date(session.scheduled_at) > now && session.status === 'scheduled';
-            } else if (activeTab === 'live') {
-                return session.status === 'live';
-            } else {
-                return session.status === 'completed';
-            }
+            if (activeTab === 'upcoming') return new Date(session.scheduled_at) > now && session.status === 'scheduled';
+            if (activeTab === 'live') return session.status === 'live';
+            return session.status === 'completed' || session.status === 'ended';
         });
     };
 
@@ -130,14 +142,37 @@ export default function StudentLiveClasses() {
                                         Starts {formatDateTime(session.scheduled_at)}
                                     </button>
                                 )}
-                                {session.status === 'completed' && (
-                                    <button
-                                        className="flex-1 py-2 bg-gray-600/20 border border-gray-600/40 rounded-xl text-gray-400 text-sm hover:bg-gray-600/30 transition"
-                                        disabled
-                                    >
-                                        Recording Available
-                                    </button>
-                                )}
+                                {session.status === 'completed' || session.status === 'ended' ? (
+                                        <div className="w-full">
+                                            <button
+                                                onClick={() => fetchRecordings(session.id)}
+                                                className="w-full py-2 bg-purple-600/20 border border-purple-600/40 rounded-xl text-purple-400 text-sm hover:bg-purple-600/30 transition"
+                                            >
+                                                {expandedRecordings === session.id ? 'Hide Recordings' : '▶ View Recordings'}
+                                            </button>
+                                            {expandedRecordings === session.id && (
+                                                <div className="mt-3 space-y-2">
+                                                    {(recordings[session.id] || []).length === 0 ? (
+                                                        <p className="text-xs text-gray-500 text-center py-2">No recordings available yet</p>
+                                                    ) : (
+                                                        (recordings[session.id] || []).map(rec => (
+                                                            <a
+                                                                key={rec.id}
+                                                                href={rec.recording_url}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="flex items-center gap-2 px-3 py-2 bg-[#1a1a35] rounded-xl text-sm text-purple-300 hover:text-white transition"
+                                                            >
+                                                                <span>🎥</span>
+                                                                <span className="flex-1 truncate">{rec.title || 'Recording'}</span>
+                                                                {rec.duration_minutes && <span className="text-xs text-gray-500">{rec.duration_minutes}min</span>}
+                                                            </a>
+                                                        ))
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : null}
                             </div>
                         </div>
                     ))

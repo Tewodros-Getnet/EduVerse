@@ -12,19 +12,26 @@ export default function AITutor() {
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [useDeep, setUseDeep] = useState(false);
-    const [activeTab, setActiveTab] = useState('chat'); // chat, recommendations, explanations
+    const [activeTab, setActiveTab] = useState('chat');
     const [recommendations, setRecommendations] = useState([]);
-    const [explanations, setExplanations] = useState([]);
     const [learningPath, setLearningPath] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
     const [courseContext, setCourseContext] = useState(courseId || '');
+    const [enrolledCourses, setEnrolledCourses] = useState([]);
     const bottomRef = useRef(null);
     const topicInputRef = useRef(null);
 
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+        // Load enrolled courses for the context dropdown
+        api.get('/courses/enrolled')
+            .then(res => setEnrolledCourses(res.data.courses || []))
+            .catch(() => {});
         fetchRecommendations();
         fetchLearningPath();
+    }, []);
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
     const fetchRecommendations = async () => {
@@ -177,11 +184,9 @@ export default function AITutor() {
                                 className="px-4 py-2.5 bg-[#12122a] border border-purple-900/40 rounded-xl text-white text-sm hover:border-purple-500/50 transition focus:outline-none focus:border-purple-500"
                             >
                                 <option value="">General Context</option>
-                                <option value="mathematics">Mathematics</option>
-                                <option value="science">Science</option>
-                                <option value="programming">Programming</option>
-                                <option value="languages">Languages</option>
-                                <option value="business">Business</option>
+                                {enrolledCourses.map(course => (
+                                    <option key={course.id} value={course.id}>{course.title}</option>
+                                ))}
                             </select>
                             <button
                                 onClick={clearChat}

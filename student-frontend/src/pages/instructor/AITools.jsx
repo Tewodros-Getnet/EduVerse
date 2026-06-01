@@ -799,17 +799,47 @@ function OptimizationResults({ data }) {
 function StudentInsightsForm({ onSubmit, loading, courses }) {
     const [formData, setFormData] = useState({
         course_id: '',
-        student_data: '',
         time_period: '30_days'
     });
+    const [fetching, setFetching] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.course_id || !formData.student_data) {
-            toast.error('Please fill in all required fields');
+        if (!formData.course_id) {
+            toast.error('Please select a course');
             return;
         }
-        onSubmit(formData);
+
+        setFetching(true);
+        try {
+            // Fetch real student performance data for the selected course
+            const res = await api.get(`/analytics/instructor/students/${formData.course_id}`);
+            const students = res.data.students || [];
+
+            if (students.length === 0) {
+                toast.error('No students enrolled in this course yet');
+                return;
+            }
+
+            // Build a structured summary to send to the AI
+            const studentData = {
+                total_students: students.length,
+                avg_progress: Math.round(students.reduce((s, u) => s + (u.progress_percent || 0), 0) / students.length),
+                avg_quiz_score: Math.round(students.reduce((s, u) => s + (parseFloat(u.avg_quiz_score) || 0), 0) / students.length),
+                students: students.slice(0, 10).map(u => ({
+                    name: u.name,
+                    progress: Math.round(u.progress_percent || 0),
+                    completed_lessons: u.completed_lessons || 0,
+                    avg_quiz_score: Math.round(parseFloat(u.avg_quiz_score) || 0),
+                })),
+            };
+
+            onSubmit({ ...formData, student_data: studentData });
+        } catch {
+            toast.error('Failed to fetch student data');
+        } finally {
+            setFetching(false);
+        }
     };
 
     return (
@@ -842,23 +872,15 @@ function StudentInsightsForm({ onSubmit, loading, courses }) {
                     </select>
                 </div>
             </div>
-            <div>
-                <label className="block text-sm text-gray-400 mb-1">Student Data *</label>
-                <textarea
-                    value={formData.student_data}
-                    onChange={(e) => setFormData({ ...formData, student_data: e.target.value })}
-                    rows={4}
-                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm resize-none"
-                    placeholder="Describe student performance data, progress, grades, etc."
-                    required
-                />
-            </div>
+            <p className="text-xs text-gray-500">
+                Student performance data will be fetched automatically from the selected course.
+            </p>
             <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || fetching}
                 className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white font-medium hover:opacity-90 transition disabled:opacity-50"
             >
-                {loading ? 'Analyzing...' : 'Generate Insights'}
+                {fetching ? 'Fetching data...' : loading ? 'Analyzing...' : 'Generate Insights'}
             </button>
         </form>
     );

@@ -119,7 +119,7 @@ router.get('/:id', authenticate, async (req, res, next) => {
         const submissions = await query(
             `SELECT s.*, u.name as student_name 
              FROM assignment_submissions s 
-             JOIN users u ON s.student_id = u.id 
+             JOIN users u ON s.user_id = u.id 
              WHERE s.assignment_id = $1`,
             [req.params.id]
         );
@@ -182,7 +182,7 @@ router.post('/:id/submit', authenticate, authorize('student'), async (req, res, 
 
         // Check if already submitted
         const existing = await query(
-            'SELECT id FROM assignment_submissions WHERE assignment_id = $1 AND student_id = $2',
+            'SELECT id FROM assignment_submissions WHERE assignment_id = $1 AND user_id = $2',
             [req.params.id, req.user.id]
         );
 
@@ -191,14 +191,14 @@ router.post('/:id/submit', authenticate, authorize('student'), async (req, res, 
             const result = await query(
                 `UPDATE assignment_submissions 
                  SET content = $1, file_url = $2 
-                 WHERE assignment_id = $3 AND student_id = $4 RETURNING *`,
+                 WHERE assignment_id = $3 AND user_id = $4 RETURNING *`,
                 [submission_text, file_url, req.params.id, req.user.id]
             );
             return res.json({ submission: result.rows[0] });
         }
 
         const result = await query(
-            `INSERT INTO assignment_submissions (assignment_id, student_id, content, file_url) 
+            `INSERT INTO assignment_submissions (assignment_id, user_id, content, file_url) 
              VALUES ($1,$2,$3,$4) RETURNING *`,
             [req.params.id, req.user.id, submission_text, file_url]
         );
@@ -214,7 +214,7 @@ router.get('/student/submissions', authenticate, authorize('student'), async (re
              FROM assignment_submissions s 
              JOIN assignments a ON s.assignment_id = a.id 
              JOIN courses c ON a.course_id = c.id 
-             WHERE s.student_id = $1 
+             WHERE s.user_id = $1 
              ORDER BY s.submitted_at DESC`,
             [req.user.id]
         );
@@ -281,14 +281,33 @@ router.delete('/notes/:id', authenticate, authorize('instructor', 'admin'), asyn
 
 // ============= ASSESSMENTS (MID-TERM, FINAL) =============
 
-// GET /api/assessments/course/:courseId
+// GET /api/assessments/course/:courseId — unified route for both students and instructors
 router.get('/course/:courseId', authenticate, async (req, res, next) => {
     try {
+        const { courseId } = req.params;
+
+        // Instructors get submission counts; students get basic list
+        if (req.user.role === 'instructor' || req.user.role === 'admin') {
+            const course = await query('SELECT instructor_id FROM courses WHERE id = $1', [courseId]);
+            if (!course.rows.length || (course.rows[0].instructor_id !== req.user.id && req.user.role !== 'admin')) {
+                return res.status(403).json({ error: 'Unauthorized' });
+            }
+            const result = await query(
+                `SELECT a.*, COUNT(ar.id) as submission_count
+                 FROM assessments a
+                 LEFT JOIN assessment_results ar ON a.id = ar.assessment_id
+                 WHERE a.course_id = $1
+                 GROUP BY a.id
+                 ORDER BY a.scheduled_date DESC`,
+                [courseId]
+            );
+            return res.json(result.rows);
+        }
+
+        // Student — plain list
         const result = await query(
-            `SELECT * FROM assessments 
-             WHERE course_id = $1 
-             ORDER BY scheduled_date ASC`,
-            [req.params.courseId]
+            'SELECT * FROM assessments WHERE course_id = $1 ORDER BY scheduled_date ASC',
+            [courseId]
         );
         res.json(result.rows);
     } catch (err) { next(err); }
@@ -337,31 +356,6 @@ router.get('/:id/results', authenticate, async (req, res, next) => {
             [req.params.id]
         );
         res.json({ results: result.rows });
-    } catch (err) { next(err); }
-});
-
-// GET /api/assessments/course/:courseId
-router.get('/course/:courseId', authenticate, authorize('instructor'), async (req, res, next) => {
-    try {
-        const { courseId } = req.params;
-
-        // Verify instructor owns this course
-        const course = await query('SELECT instructor_id FROM courses WHERE id = $1', [courseId]);
-        if (!course.rows.length || course.rows[0].instructor_id !== req.user.id) {
-            return res.status(403).json({ error: 'Unauthorized' });
-        }
-
-        const result = await query(
-            `SELECT a.*, COUNT(ar.id) as submission_count
-             FROM assessments a
-             LEFT JOIN assessment_results ar ON a.id = ar.assessment_id
-             WHERE a.course_id = $1
-             GROUP BY a.id
-             ORDER BY a.scheduled_date DESC`,
-            [courseId]
-        );
-
-        res.json(result.rows);
     } catch (err) { next(err); }
 });
 

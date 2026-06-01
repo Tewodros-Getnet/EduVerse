@@ -75,13 +75,13 @@ router.post('/admin/sessions/terminate-user/:userId', authenticate, authorize('a
         const { userId } = req.params;
         
         const result = await query(
-            `DELETE FROM user_sessions WHERE user_id = $1 RETURNING COUNT(*) as count`,
+            `DELETE FROM user_sessions WHERE user_id = $1`,
             [userId]
         );
         
         res.json({ 
-            message: `${result.rows[0].count} sessions terminated successfully`,
-            terminated_count: parseInt(result.rows[0].count)
+            message: `${result.rowCount} sessions terminated successfully`,
+            terminated_count: result.rowCount
         });
     } catch (err) { next(err); }
 });
@@ -336,7 +336,7 @@ router.post('/admin/force-logout/:userId', authenticate, authorize('admin'), asy
         const { userId } = req.params;
         
         const result = await query(
-            `DELETE FROM user_sessions WHERE user_id = $1 RETURNING COUNT(*) as count`,
+            `DELETE FROM user_sessions WHERE user_id = $1`,
             [userId]
         );
 
@@ -345,13 +345,13 @@ router.post('/admin/force-logout/:userId', authenticate, authorize('admin'), asy
             `INSERT INTO activity_logs (user_id, action, details, level, created_at)
              VALUES ($1, $2, $3, $4, NOW())`,
             [req.user.id, 'force_logout', 
-             `Force logout user ID: ${userId}. Terminated ${result.rows[0].count} sessions.`,
+             `Force logout user ID: ${userId}. Terminated ${result.rowCount} sessions.`,
              'security']
         );
 
         res.json({ 
             message: `Force logout completed successfully`,
-            terminated_sessions: parseInt(result.rows[0].count)
+            terminated_sessions: result.rowCount
         });
     } catch (err) { next(err); }
 });

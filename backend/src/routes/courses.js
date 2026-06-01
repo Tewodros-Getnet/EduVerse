@@ -97,23 +97,6 @@ router.get('/enrolled', authenticate, authorize('student'), async (req, res, nex
     } catch (err) { next(err); }
 });
 
-// GET /api/courses/instructor - Get instructor's courses
-router.get('/instructor', authenticate, authorize('instructor'), async (req, res, next) => {
-    try {
-        const result = await query(
-            `SELECT c.*, 
-                    (SELECT COUNT(*) FROM enrollments WHERE course_id = c.id) as enrolled_count,
-                    (SELECT AVG(progress_percent) FROM enrollments WHERE course_id = c.id) as avg_progress
-             FROM courses c 
-             WHERE c.instructor_id = $1 
-             ORDER BY c.created_at DESC`,
-            [req.user.id]
-        );
-
-        res.json({ courses: result.rows });
-    } catch (err) { next(err); }
-});
-
 // GET /api/courses/:id
 router.get('/:id', authenticate, async (req, res, next) => {
     try {

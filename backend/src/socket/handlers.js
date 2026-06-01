@@ -1,14 +1,18 @@
 const jwt = require('jsonwebtoken');
+const { query } = require('../db');
 
 function setupSocketHandlers(io) {
-    io.use((socket, next) => {
+    io.use(async (socket, next) => {
         const token = socket.handshake.auth.token;
         if (!token) return next(new Error('Authentication error: No token provided'));
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             socket.userId = decoded.userId;
-            socket.userRole = decoded.role;
-            socket.userName = decoded.name;
+            // Fetch name and role from DB since JWT only contains userId
+            const result = await query('SELECT name, role FROM users WHERE id = $1', [decoded.userId]);
+            if (!result.rows.length) return next(new Error('User not found'));
+            socket.userName = result.rows[0].name;
+            socket.userRole = result.rows[0].role;
             next();
         } catch (err) {
             next(new Error(`Authentication error: ${err.message}`));

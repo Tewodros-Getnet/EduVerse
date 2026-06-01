@@ -96,13 +96,22 @@ router.post('/submit', authenticate, authorize('student'), async (req, res, next
 
         const percentScore = Math.round((score / totalPoints) * 100);
         const passed = percentScore >= quiz.rows[0].passing_score;
+        const correctCount = gradedAnswers.filter(a => a.correct).length;
+        const incorrectCount = gradedAnswers.length - correctCount;
 
         await query(
             'INSERT INTO quiz_attempts (student_id, quiz_id, score, answers) VALUES ($1,$2,$3,$4)',
             [req.user.id, quiz_id, percentScore, JSON.stringify(gradedAnswers)]
         );
 
-        res.json({ score: percentScore, passed, graded_answers: gradedAnswers, passing_score: quiz.rows[0].passing_score });
+        res.json({
+            score: percentScore,
+            passed,
+            graded_answers: gradedAnswers,
+            passing_score: quiz.rows[0].passing_score,
+            correct_answers: correctCount,
+            incorrect_answers: incorrectCount,
+        });
     } catch (err) { next(err); }
 });
 
@@ -130,26 +139,6 @@ router.get('/:id/results', authenticate, async (req, res, next) => {
             [req.params.id, req.user.id]
         );
         res.json({ attempts: result.rows });
-    } catch (err) { next(err); }
-});
-
-// GET /api/quiz/instructor - Get all quizzes for instructor
-router.get('/instructor', authenticate, authorize('instructor'), async (req, res, next) => {
-    try {
-        const result = await query(
-            `SELECT q.*, c.title as course_title,
-                    COUNT(qa.id) as attempt_count,
-                    AVG(qa.score) as avg_score,
-                    COUNT(CASE WHEN qa.score >= q.passing_score THEN 1 END) as passed_count
-             FROM quizzes q
-             JOIN courses c ON q.course_id = c.id
-             LEFT JOIN quiz_attempts qa ON q.id = qa.quiz_id
-             WHERE c.instructor_id = $1
-             GROUP BY q.id, c.title
-             ORDER BY q.created_at DESC`,
-            [req.user.id]
-        );
-        res.json({ quizzes: result.rows });
     } catch (err) { next(err); }
 });
 

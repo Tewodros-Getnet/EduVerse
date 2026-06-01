@@ -2,18 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '../../api/axios';
 
-const MOCK_CHART = [
-    { week: 'Week 1', score: 45 }, { week: 'Week 2', score: 58 },
-    { week: 'Week 3', score: 67 }, { week: 'Week 4', score: 74 },
-];
-
 const BADGE_ICONS = { streak: '', quiz_master: '', fast_learner: '', helper: '🤝' };
 
 export default function Progress() {
     const [data, setData] = useState(null);
+    const [chartData, setChartData] = useState([]);
 
     useEffect(() => {
         api.get('/users/progress').then(res => setData(res.data)).catch(() => { });
+        api.get('/quiz/student/results').then(res => {
+            const attempts = res.data.attempts || [];
+            // Group by week and compute average score per week
+            const weekMap = {};
+            attempts.forEach(a => {
+                const d = new Date(a.completed_at);
+                const week = `${d.getFullYear()}-W${Math.ceil((d.getDate()) / 7)}`;
+                if (!weekMap[week]) weekMap[week] = { scores: [], label: `Week ${Object.keys(weekMap).length + 1}` };
+                weekMap[week].scores.push(a.score);
+            });
+            const built = Object.values(weekMap).map(w => ({
+                week: w.label,
+                score: Math.round(w.scores.reduce((a, b) => a + b, 0) / w.scores.length),
+            }));
+            setChartData(built.length > 0 ? built : []);
+        }).catch(() => { });
     }, []);
 
     const enrolled = data?.enrollments || [];
@@ -44,8 +56,11 @@ export default function Progress() {
             {/* Score Chart */}
             <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-5">
                 <h2 className="font-semibold text-white mb-4">Quiz Score Trend</h2>
+                {chartData.length === 0 ? (
+                    <p className="text-gray-400 text-sm text-center py-8">Complete quizzes to see your score trend</p>
+                ) : (
                 <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={MOCK_CHART}>
+                    <LineChart data={chartData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#1a1a35" />
                         <XAxis dataKey="week" stroke="#6b7280" tick={{ fontSize: 12 }} />
                         <YAxis stroke="#6b7280" tick={{ fontSize: 12 }} domain={[0, 100]} />
@@ -53,6 +68,7 @@ export default function Progress() {
                         <Line type="monotone" dataKey="score" stroke="#ec4899" strokeWidth={2} dot={{ fill: '#ec4899' }} />
                     </LineChart>
                 </ResponsiveContainer>
+                )}
             </div>
 
             {/* Course Progress */}

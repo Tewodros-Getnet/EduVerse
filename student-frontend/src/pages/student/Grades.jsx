@@ -15,12 +15,12 @@ export default function Grades() {
     useEffect(() => {
         Promise.all([
             api.get('/quiz/student/results'),
-            api.get('/assessments/student/submissions'),
+            api.get('/assignments/student/submissions'),
             api.get('/assessments/my/results'),
         ]).then(([quizRes, assignRes, assessRes]) => {
             const quizzes = (quizRes.data.attempts || []).map(a => ({
                 type: 'quiz',
-                name: a.title,
+                name: a.quiz_title || a.title,
                 score: a.score,
                 date: a.completed_at,
             }));
@@ -31,15 +31,15 @@ export default function Grades() {
                     type: 'assignment',
                     name: s.title,
                     score: s.score,
-                    date: s.graded_at,
-                    maxPoints: s.total_points,
+                    date: s.submitted_at,
+                    maxPoints: s.total_points || s.max_points,
                 }));
 
             const assessments = (assessRes.data.results || []).map(r => ({
                 type: 'assessment',
                 name: r.assessment_title,
                 score: r.score,
-                date: r.updated_at,
+                date: r.updated_at || r.created_at,
                 assessmentType: r.assessment_type,
             }));
 

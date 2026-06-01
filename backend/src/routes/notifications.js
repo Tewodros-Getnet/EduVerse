@@ -128,7 +128,7 @@ router.get('/admin/sent', authenticate, authorize('admin'), async (req, res, nex
         const { page = 1, limit = 20, type } = req.query;
         const offset = (parseInt(page) - 1) * parseInt(limit);
 
-        let whereClause = 'WHERE n.type IN (\'announcement\', \'broadcast\', \'system_alert\')';
+        let whereClause = `WHERE n.type IN ('announcement', 'broadcast', 'system_alert')`;
         const params = [];
         let paramIndex = 1;
 
@@ -137,19 +137,25 @@ router.get('/admin/sent', authenticate, authorize('admin'), async (req, res, nex
             params.push(type);
         }
 
+        // Group by title+message+type to collapse per-user rows into one broadcast row
         const result = await query(
-            `SELECT n.*, COUNT(u.id) as recipient_count
+            `SELECT
+                MIN(n.id) as id,
+                n.title,
+                n.message,
+                n.type,
+                MIN(n.created_at) as created_at,
+                COUNT(*) as recipient_count
              FROM notifications n
-             JOIN users u ON n.user_id = u.id
              ${whereClause}
-             GROUP BY n.id
-             ORDER BY n.created_at DESC
+             GROUP BY n.title, n.message, n.type
+             ORDER BY MIN(n.created_at) DESC
              LIMIT $${paramIndex++} OFFSET $${paramIndex++}`,
             [...params, parseInt(limit), offset]
         );
 
         const countResult = await query(
-            `SELECT COUNT(DISTINCT n.id) as total
+            `SELECT COUNT(DISTINCT (n.title, n.message, n.type)) as total
              FROM notifications n
              ${whereClause}`,
             params
@@ -323,13 +329,13 @@ router.post('/admin/mark-all-read', authenticate, authorize('admin'), async (req
         }
 
         const result = await query(
-            `UPDATE notifications SET is_read = true, read_at = NOW() ${whereClause} RETURNING COUNT(*) as count`,
+            `UPDATE notifications SET is_read = true, read_at = NOW() ${whereClause}`,
             params
         );
 
         res.json({
-            message: `${result.rows[0].count} notifications marked as read`,
-            count: parseInt(result.rows[0].count)
+            message: `${result.rowCount} notifications marked as read`,
+            count: result.rowCount
         });
     } catch (err) { next(err); }
 });
@@ -379,14 +385,13 @@ router.post('/instructor/read-all', authenticate, authorize('instructor'), async
         const result = await query(
             `UPDATE notifications 
              SET is_read = true, read_at = NOW() 
-             WHERE user_id = $1 AND is_read = false 
-             RETURNING COUNT(*) as count`,
+             WHERE user_id = $1 AND is_read = false`,
             [userId]
         );
 
         res.json({
-            message: `${result.rows[0].count} notifications marked as read`,
-            count: parseInt(result.rows[0].count)
+            message: `${result.rowCount} notifications marked as read`,
+            count: result.rowCount
         });
     } catch (err) {
         next(err);
@@ -578,14 +583,13 @@ router.post('/student/read-all', authenticate, authorize('student'), async (req,
         const result = await query(
             `UPDATE notifications 
              SET is_read = true, read_at = NOW() 
-             WHERE user_id = $1 AND is_read = false 
-             RETURNING COUNT(*) as count`,
+             WHERE user_id = $1 AND is_read = false`,
             [userId]
         );
 
         res.json({
-            message: `${result.rows[0].count} notifications marked as read`,
-            count: parseInt(result.rows[0].count)
+            message: `${result.rowCount} notifications marked as read`,
+            count: result.rowCount
         });
     } catch (err) {
         next(err);

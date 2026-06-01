@@ -75,7 +75,7 @@ router.get('/student/submissions', authenticate, authorize('student'), async (re
              FROM assignment_submissions s
              JOIN assignments a ON s.assignment_id = a.id
              JOIN courses c ON a.course_id = c.id
-             WHERE s.student_id = $1
+             WHERE s.user_id = $1
              ORDER BY s.submitted_at DESC`,
             [req.user.id]
         );
@@ -162,6 +162,32 @@ router.delete('/:id', authenticate, authorize('instructor'), async (req, res, ne
     }
 });
 
+// POST /api/assignments/:id/submit - Student submits an assignment
+router.post('/:id/submit', authenticate, authorize('student'), async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { submission_text, course_id } = req.body;
+
+        // Verify assignment exists
+        const assignment = await query('SELECT * FROM assignments WHERE id = $1', [id]);
+        if (!assignment.rows.length) {
+            return res.status(404).json({ error: 'Assignment not found' });
+        }
+
+        // Upsert submission (allow resubmission)
+        const result = await query(
+            `INSERT INTO assignment_submissions (assignment_id, user_id, content, submitted_at)
+             VALUES ($1, $2, $3, NOW())
+             ON CONFLICT (assignment_id, user_id)
+             DO UPDATE SET content = $3, submitted_at = NOW()
+             RETURNING *`,
+            [id, req.user.id, submission_text]
+        );
+
+        res.status(201).json({ submission: result.rows[0] });
+    } catch (err) { next(err); }
+});
+
 // GET /api/assignments/:id/submissions
 router.get('/:id/submissions', authenticate, authorize('instructor'), async (req, res, next) => {
     try {
@@ -170,7 +196,7 @@ router.get('/:id/submissions', authenticate, authorize('instructor'), async (req
         const result = await query(
             `SELECT sub.*, u.name as student_name, u.email as student_email, a.title as assignment_title
              FROM assignment_submissions sub
-             JOIN users u ON sub.student_id = u.id
+             JOIN users u ON sub.user_id = u.id
              JOIN assignments a ON sub.assignment_id = a.id
              WHERE sub.assignment_id = $1
              ORDER BY sub.submitted_at DESC`,
@@ -359,8 +385,8 @@ router.get('/:id/export', authenticate, authorize('instructor'), async (req, res
             `SELECT sub.*, u.name, u.email,
                     e.enrolled_at, e.progress_percent
              FROM assignment_submissions sub
-             JOIN users u ON sub.student_id = u.id
-             JOIN enrollments e ON sub.student_id = e.student_id AND e.course_id = (SELECT course_id FROM assignments WHERE id = $1)
+             JOIN users u ON sub.user_id = u.id
+             JOIN enrollments e ON sub.user_id = e.student_id AND e.course_id = (SELECT course_id FROM assignments WHERE id = $1)
              WHERE sub.assignment_id = $1
              ORDER BY sub.submitted_at DESC`,
             [id]

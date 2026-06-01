@@ -70,13 +70,51 @@ export default function FloatingAIAssistant() {
 
     const handleQuickAction = async (action) => {
         const quickPrompts = {
-            explain: 'Can you explain the current lesson in simple terms?',
-            summary: 'Please provide a summary of what I\'ve learned so far.',
-            next: 'What should I study next?',
-            practice: 'Can you give me a practice question?',
+            explain: 'Can you explain what I\'m currently learning in simple terms?',
+            summary: 'Please give me a summary of the key concepts covered so far.',
+            next: 'What should I study next and why?',
+            practice: 'Can you give me a practice question to test my understanding?',
         };
 
-        setInput(quickPrompts[action]);
+        const prompt = quickPrompts[action];
+        if (!prompt) return;
+
+        // Auto-send the prompt
+        const userMessage = {
+            id: Date.now(),
+            role: 'user',
+            content: prompt,
+            timestamp: new Date(),
+        };
+
+        setMessages(prev => [...prev, userMessage]);
+        setLoading(true);
+
+        try {
+            const response = await api.post('/ai/chat', {
+                question: prompt,
+                use_deep: false,
+                conversation_history: messages.slice(-10).map(m => ({
+                    role: m.role,
+                    content: m.content,
+                })),
+            });
+
+            const assistantMessage = {
+                id: Date.now() + 1,
+                role: 'assistant',
+                content: response.data.answer,
+                timestamp: new Date(),
+                source: response.data.ai_source,
+            };
+
+            setMessages(prev => [...prev, assistantMessage]);
+        } catch (error) {
+            toast.error('Failed to get AI response. Please try again.');
+            console.error('AI chat error:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (!user) return null;

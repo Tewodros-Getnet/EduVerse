@@ -22,6 +22,15 @@ async function migrate() {
         console.log('✓ notifications.link');
 
         await client.query(`
+            ALTER TABLE notifications
+            ADD COLUMN IF NOT EXISTS read_at TIMESTAMP,
+            ADD COLUMN IF NOT EXISTS priority VARCHAR(20) DEFAULT 'normal',
+            ADD COLUMN IF NOT EXISTS course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+            ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP
+        `);
+        console.log('✓ notifications extra columns');
+
+        await client.query(`
             ALTER TABLE courses 
             ADD COLUMN IF NOT EXISTS price NUMERIC(10,2) DEFAULT 0
         `);
@@ -50,6 +59,13 @@ async function migrate() {
         `);
         console.log('✓ live_sessions table');
 
+        await client.query(`
+            ALTER TABLE live_sessions
+            ADD COLUMN IF NOT EXISTS started_at TIMESTAMP,
+            ADD COLUMN IF NOT EXISTS ended_at TIMESTAMP
+        `);
+        console.log('✓ live_sessions started_at/ended_at');
+
         // Create session_attendance table
         await client.query(`
             CREATE TABLE IF NOT EXISTS session_attendance (
@@ -75,6 +91,30 @@ async function migrate() {
             )
         `);
         console.log('✓ lesson_progress table');
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS session_recordings (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                session_id UUID REFERENCES live_sessions(id) ON DELETE CASCADE,
+                recording_url TEXT NOT NULL,
+                duration_minutes INTEGER,
+                title VARCHAR(500),
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        console.log('✓ session_recordings table');
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS session_chat (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                session_id UUID REFERENCES live_sessions(id) ON DELETE CASCADE,
+                student_id UUID REFERENCES users(id) ON DELETE CASCADE,
+                user_name VARCHAR(255),
+                message TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        console.log('✓ session_chat table');
 
         // Create assignments table
         await client.query(`
@@ -194,7 +234,7 @@ async function migrate() {
         await client.query(`CREATE INDEX IF NOT EXISTS idx_live_sessions_course ON live_sessions(course_id)`);
         await client.query(`CREATE INDEX IF NOT EXISTS idx_session_attendance_session ON session_attendance(session_id)`);
         await client.query(`CREATE INDEX IF NOT EXISTS idx_assignments_course ON assignments(course_id)`);
-        await client.query(`CREATE INDEX IF NOT EXISTS idx_assignment_submissions_student ON assignment_submissions(student_id)`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_assignment_submissions_student ON assignment_submissions(user_id)`);
         await client.query(`CREATE INDEX IF NOT EXISTS idx_course_notes_course ON course_notes(course_id)`);
         await client.query(`CREATE INDEX IF NOT EXISTS idx_assessments_course ON assessments(course_id)`);
         await client.query(`CREATE INDEX IF NOT EXISTS idx_assessment_results_student ON assessment_results(student_id)`);
@@ -202,6 +242,81 @@ async function migrate() {
         await client.query(`CREATE INDEX IF NOT EXISTS idx_enrollments_course ON enrollments(course_id)`);
         await client.query(`CREATE INDEX IF NOT EXISTS idx_chat_history_student ON chat_history(student_id)`);
         console.log('✓ indexes');
+
+        // Security tables for SecurityManager
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS user_sessions (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+                ip_address VARCHAR(50),
+                user_agent TEXT,
+                last_activity TIMESTAMP DEFAULT NOW(),
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        console.log('✓ user_sessions table');
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS activity_logs (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+                action VARCHAR(255) NOT NULL,
+                details TEXT,
+                level VARCHAR(20) DEFAULT 'info',
+                ip_address VARCHAR(50),
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        console.log('✓ activity_logs table');
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS security_events (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+                event_type VARCHAR(100) NOT NULL,
+                description TEXT,
+                severity VARCHAR(20) DEFAULT 'low',
+                ip_address VARCHAR(50),
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        console.log('✓ security_events table');
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS roles (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                name VARCHAR(50) UNIQUE NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+        await client.query(`
+            INSERT INTO roles (name) VALUES ('admin'), ('instructor'), ('student')
+            ON CONFLICT (name) DO NOTHING
+        `);
+        console.log('✓ roles table');
+
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS role_permissions (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                role_id UUID REFERENCES roles(id) ON DELETE CASCADE,
+                resource VARCHAR(100) NOT NULL,
+                action VARCHAR(50) NOT NULL,
+                granted BOOLEAN DEFAULT true,
+                updated_at TIMESTAMP DEFAULT NOW(),
+                UNIQUE(role_id, resource, action)
+            )
+        `);
+        console.log('✓ role_permissions table');
+
+        // Add missing columns to users table for security features
+        await client.query(`
+            ALTER TABLE users
+            ADD COLUMN IF NOT EXISTS is_locked BOOLEAN DEFAULT false,
+            ADD COLUMN IF NOT EXISTS lock_reason TEXT,
+            ADD COLUMN IF NOT EXISTS locked_at TIMESTAMP,
+            ADD COLUMN IF NOT EXISTS last_login_at TIMESTAMP
+        `);
+        console.log('✓ users security columns');
 
         // Ensure quizzes has publish fields and timestamps needed by routes
         await client.query(`
