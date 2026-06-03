@@ -18,8 +18,9 @@ export default function StudentLiveClass() {
     const navigate = useNavigate();
     const { user } = useAuth();
     const socketRef = useRef(null);
-    const peerConnectionsRef = useRef({}); // Map of userId -> RTCPeerConnection
-    const remoteStreamsRef = useRef({}); // Map of userId -> MediaStream
+    const peerConnectionsRef = useRef({});
+    const remoteStreamsRef = useRef({});
+    const screenStreamRef = useRef(null);
 
     const [tab, setTab] = useState('chat');
     const [message, setMessage] = useState('');
@@ -28,14 +29,15 @@ export default function StudentLiveClass() {
     const [micOn, setMicOn] = useState(true);
     const [videoOn, setVideoOn] = useState(true);
     const [handRaised, setHandRaised] = useState(false);
+    const [screenSharing, setScreenSharing] = useState(false);
     const [session, setSession] = useState(null);
     const [joined, setJoined] = useState(false);
     const [localStream, setLocalStream] = useState(null);
-    const [remoteStreams, setRemoteStreams] = useState({}); // Map of userId -> {name, stream}
+    const [remoteStreams, setRemoteStreams] = useState({});
     const chatEndRef = useRef(null);
     const localVideoRef = useRef(null);
     const localStreamRef = useRef(null);
-    const remoteVideoRefs = useRef({}); // Map of userId -> video element ref
+    const remoteVideoRefs = useRef({});
 
     useEffect(() => {
         api.get(`/live/sessions/${id}`)
@@ -137,7 +139,8 @@ export default function StudentLiveClass() {
             setJoined(true);
 
             const token = localStorage.getItem('token');
-            const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000', {
+            const socketUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace('/api', '');
+            const socket = io(socketUrl, {
                 auth: { token },
             });
             socketRef.current = socket;
@@ -198,6 +201,16 @@ export default function StudentLiveClass() {
                 ));
             });
 
+            socket.on('screen-share-state', ({ userId, sharing }) => {
+                setParticipants(prev => prev.map(p =>
+                    p.userId === userId ? { ...p, screenSharing: sharing } : p
+                ));
+                if (sharing) {
+                    const sharer = participants.find(p => p.userId === userId);
+                    toast(`🖥️ ${sharer?.name || 'Someone'} started sharing their screen`, { duration: 3000 });
+                }
+            });
+
             // WebRTC Signaling Handlers
             socket.on('webrtc-offer', async (data) => {
                 try {
@@ -251,15 +264,16 @@ export default function StudentLiveClass() {
                 socketRef.current.emit('leave-class', id);
                 socketRef.current.disconnect();
             }
-            // Clean up all peer connections
-            Object.values(peerConnectionsRef.current).forEach(pc => {
-                pc.close();
-            });
+            Object.values(peerConnectionsRef.current).forEach(pc => pc.close());
             peerConnectionsRef.current = {};
             remoteStreamsRef.current = {};
-            
+
             if (localStreamRef.current) {
                 localStreamRef.current.getTracks().forEach(track => track.stop());
+            }
+            if (screenStreamRef.current) {
+                screenStreamRef.current.getTracks().forEach(track => track.stop());
+                screenStreamRef.current = null;
             }
         };
     }, [id]);
@@ -307,6 +321,70 @@ export default function StudentLiveClass() {
         setHandRaised(next);
         if (next) socketRef.current?.emit('raise-hand', id);
         else socketRef.current?.emit('lower-hand', id);
+    };
+
+    const toggleScreenShare = async () => {
+        if (screenSharing) {
+            // Stop screen share — restore camera track in all peer connections
+            if (screenStreamRef.current) {
+                screenStreamRef.current.getTracks().forEach(t => t.stop());
+                screenStreamRef.current = null;
+            }
+
+            // Replace screen track with camera track in every peer connection
+            const cameraTrack = localStreamRef.current?.getVideoTracks()[0];
+            if (cameraTrack) {
+                Object.values(peerConnectionsRef.current).forEach(pc => {
+                    const sender = pc.getSenders().find(s => s.track?.kind === 'video');
+                    if (sender) sender.replaceTrack(cameraTrack);
+                });
+                // Show camera in local preview
+                if (localVideoRef.current) {
+                    localVideoRef.current.srcObject = localStreamRef.current;
+                }
+            }
+
+            setScreenSharing(false);
+            socketRef.current?.emit('screen-share-state', { classId: id, sharing: false });
+            toast('Screen sharing stopped', { icon: '🖥️', duration: 2000 });
+        } else {
+            try {
+                const screenStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { cursor: 'always' },
+                    audio: false,
+                });
+                screenStreamRef.current = screenStream;
+                const screenTrack = screenStream.getVideoTracks()[0];
+
+                // Replace camera track with screen track in every peer connection
+                Object.values(peerConnectionsRef.current).forEach(pc => {
+                    const sender = pc.getSenders().find(s => s.track?.kind === 'video');
+                    if (sender) sender.replaceTrack(screenTrack);
+                });
+
+                // Show screen in local preview
+                if (localVideoRef.current) {
+                    const previewStream = new MediaStream([
+                        screenTrack,
+                        ...(localStreamRef.current?.getAudioTracks() || [])
+                    ]);
+                    localVideoRef.current.srcObject = previewStream;
+                }
+
+                setScreenSharing(true);
+                socketRef.current?.emit('screen-share-state', { classId: id, sharing: true });
+                toast.success('Screen sharing started');
+
+                // Auto-stop when user clicks browser's "Stop sharing" button
+                screenTrack.onended = () => {
+                    toggleScreenShare();
+                };
+            } catch (err) {
+                if (err.name !== 'NotAllowedError') {
+                    toast.error('Failed to start screen sharing');
+                }
+            }
+        }
     };
 
     if (!session) return <div className="text-center py-20 text-gray-400">Loading session...</div>;
@@ -376,9 +454,15 @@ export default function StudentLiveClass() {
                                         muted
                                         className="w-full h-full object-cover"
                                     />
-                                    <div className="absolute bottom-2 left-2 bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white">
+                                    <div className="absolute bottom-2 left-2 bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
+                                        {screenSharing && <span className="text-green-400">🖥️</span>}
                                         You (Local)
                                     </div>
+                                    {screenSharing && (
+                                        <div className="absolute top-2 right-2 bg-green-500/90 px-2 py-1 rounded text-xs text-white font-medium animate-pulse">
+                                            Sharing Screen
+                                        </div>
+                                    )}
                                 </>
                             ) : (
                                 <div className="h-full flex flex-col items-center justify-center text-gray-500 px-4">
@@ -417,12 +501,19 @@ export default function StudentLiveClass() {
                         {[
                             { icon: videoOn ? '📹' : '📷', label: 'Video', action: toggleVideo, active: videoOn },
                             { icon: micOn ? '🎤' : '🔇', label: 'Mic', action: toggleMic, active: micOn },
+                            { icon: screenSharing ? '🛑' : '🖥️', label: screenSharing ? 'Stop Share' : 'Share Screen', action: toggleScreenShare, active: !screenSharing, highlight: screenSharing },
                             { icon: handRaised ? '✋' : '🖐️', label: handRaised ? 'Lower Hand' : 'Raise Hand', action: toggleHand, active: !handRaised },
                             { icon: '💬', label: 'Chat', action: () => setTab('chat') },
                             { icon: '👥', label: 'People', action: () => setTab('participants') },
                         ].map(ctrl => (
                             <button key={ctrl.label} onClick={ctrl.action}
-                                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition text-sm ${ctrl.active === false ? 'bg-red-500/20 text-red-400' : 'bg-[#12122a] text-gray-300 hover:bg-[#1a1a35] hover:text-white'}`}>
+                                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition text-sm ${
+                                    ctrl.highlight
+                                        ? 'bg-green-500/30 text-green-300 border border-green-500/40 animate-pulse'
+                                        : ctrl.active === false
+                                        ? 'bg-red-500/20 text-red-400'
+                                        : 'bg-[#12122a] text-gray-300 hover:bg-[#1a1a35] hover:text-white'
+                                }`}>
                                 <span className="text-xl">{ctrl.icon}</span>
                                 <span className="text-xs">{ctrl.label}</span>
                             </button>
@@ -479,6 +570,7 @@ export default function StudentLiveClass() {
                                     <div className="flex gap-1 text-sm">
                                         <span className={p.videoOn !== false ? 'text-green-400' : 'text-gray-600'}>📹</span>
                                         <span className={p.micOn !== false ? 'text-green-400' : 'text-gray-600'}>🎤</span>
+                                        {p.screenSharing && <span className="text-green-400">🖥️</span>}
                                     </div>
                                 </div>
                             ))}

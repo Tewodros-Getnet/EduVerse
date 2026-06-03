@@ -125,6 +125,15 @@ function setupSocketHandlers(io) {
             });
         });
 
+        // Screen share state broadcast
+        socket.on('screen-share-state', ({ classId, sharing }) => {
+            if (!classId) return;
+            socket.to(`class-${classId}`).emit('screen-share-state', {
+                userId: socket.userId,
+                sharing,
+            });
+        });
+
         socket.on('disconnect', () => {
             console.log(`[LIVE] User disconnected: ${socket.userId}`);
         });
