@@ -14,12 +14,13 @@ async function getRedisClient() {
 
     client = createClient({
         url: redisUrl,
-        pingInterval: 1000 * 60 * 3, // Ping every 3 minutes to keep connection alive
+        pingInterval: 10000, // Ping every 10 seconds (aggressive keep-alive for Upstash)
         socket: {
-            family: 4, // Force IPv4 to fix ECONNRESET issues with Upstash on Render
+            family: 4, // Force IPv4
             tls: redisUrl.startsWith('rediss://'),
+            rejectUnauthorized: false, // Prevent TLS drop in strict environments
             reconnectStrategy: (retries) => Math.min(retries * 50, 2000),
-            keepAlive: 30000 // Ensure TCP keep-alive is active
+            keepAlive: 10000 // Match aggressive ping
         },
     });
 
