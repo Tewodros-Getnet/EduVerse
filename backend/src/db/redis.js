@@ -2,9 +2,14 @@ const { createClient } = require('redis');
 
 let client = null;
 let isConnected = false;
+let initPromise = null;
 
 async function getRedisClient() {
+    // Return immediately if already connected
     if (client && isConnected) return client;
+
+    // Avoid creating multiple clients if called concurrently
+    if (initPromise) return initPromise;
 
     const redisUrl = process.env.REDIS_URL;
     if (!redisUrl) {
@@ -12,29 +17,54 @@ async function getRedisClient() {
         return null;
     }
 
-    client = createClient({
-        url: redisUrl,
-        pingInterval: 10000, // Ping every 10 seconds (aggressive keep-alive for Upstash)
-        socket: {
-            family: 4, // Force IPv4
-            tls: redisUrl.startsWith('rediss://'),
-            rejectUnauthorized: false, // Prevent TLS drop in strict environments
-            reconnectStrategy: (retries) => Math.min(retries * 50, 2000),
-            keepAlive: 10000 // Match aggressive ping
-        },
-    });
+    initPromise = (async () => {
+        try {
+            client = createClient({
+                url: redisUrl,
+                socket: {
+                    tls: redisUrl.startsWith('rediss://'),
+                    rejectUnauthorized: false,
+                    reconnectStrategy: (retries) => {
+                        if (retries > 10) {
+                            // After 10 retries, stop trying and fall back to in-memory
+                            console.warn('Redis: max retries reached, disabling Redis');
+                            isConnected = false;
+                            client = null;
+                            initPromise = null;
+                            return false; // stop reconnecting
+                        }
+                        return Math.min(retries * 200, 3000);
+                    },
+                },
+            });
 
-    client.on('error', (err) => console.error('Redis client error:', err.message));
-    client.on('connect', () => {
-        isConnected = true;
-        console.log('Redis connected');
-    });
-    client.on('end', () => {
-        isConnected = false;
-    });
+            client.on('error', (err) => {
+                // Log but don't crash — rate limiter falls back to in-memory on errors
+                console.error('Redis client error:', err.message);
+            });
 
-    await client.connect();
-    return client;
+            client.on('connect', () => {
+                isConnected = true;
+                console.log('Redis connected');
+            });
+
+            client.on('end', () => {
+                isConnected = false;
+                initPromise = null;
+            });
+
+            await client.connect();
+            return client;
+        } catch (err) {
+            console.error('Redis connection failed:', err.message);
+            console.warn('Falling back to in-memory rate limiting');
+            client = null;
+            initPromise = null;
+            return null;
+        }
+    })();
+
+    return initPromise;
 }
 
 module.exports = { getRedisClient };
