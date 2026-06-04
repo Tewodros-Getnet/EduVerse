@@ -1,6 +1,15 @@
 const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
+const { createUploader } = require('../lib/cloudinary');
+
+// Cloudinary-backed upload for course thumbnails (images only, 5 MB max)
+const thumbnailUpload = createUploader({
+    folder: 'eduverse/thumbnails',
+    allowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+    resourceType: 'image',
+    fileSizeMb: 5,
+});
 
 const router = express.Router();
 
@@ -132,7 +141,7 @@ router.post('/', authenticate, authorize('instructor', 'admin'), async (req, res
 });
 
 // POST /api/courses/:id/upload-thumbnail - Upload course thumbnail
-router.post('/:id/upload-thumbnail', authenticate, authorize('instructor', 'admin'), async (req, res, next) => {
+router.post('/:id/upload-thumbnail', authenticate, authorize('instructor', 'admin'), thumbnailUpload.single('thumbnail'), async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -142,9 +151,11 @@ router.post('/:id/upload-thumbnail', authenticate, authorize('instructor', 'admi
             return res.status(403).json({ error: 'Unauthorized' });
         }
 
-        // In a real implementation, you would handle file upload here
-        // For now, we'll simulate with a URL
-        const { thumbnail_url } = req.body;
+        // Use Cloudinary URL if a file was uploaded, otherwise fall back to body URL
+        const thumbnail_url = req.file ? req.file.path : req.body.thumbnail_url;
+        if (!thumbnail_url) {
+            return res.status(400).json({ error: 'No image provided' });
+        }
 
         const result = await query(
             'UPDATE courses SET thumbnail_url = $1, updated_at = NOW() WHERE id = $2 RETURNING thumbnail_url',

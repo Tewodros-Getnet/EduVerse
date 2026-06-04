@@ -1,41 +1,16 @@
 const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
+const { createUploader } = require('../lib/cloudinary');
 
 const router = express.Router();
 
-// Setup multer for file uploads
-const uploadDir = path.join(__dirname, '../../uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const name = `${uuidv4()}${ext}`;
-        cb(null, name);
-    }
-});
-
-const upload = multer({
-    storage,
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max
-    fileFilter: (req, file, cb) => {
-        const allowedMimes = ['video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-        if (allowedMimes.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error('Invalid file type'));
-        }
-    }
+// Cloudinary-backed multer upload (videos, PDFs, docs — up to 200 MB)
+const upload = createUploader({
+    folder: 'eduverse/lessons',
+    allowedFormats: ['mp4', 'mov', 'avi', 'mpeg', 'pdf', 'doc', 'docx'],
+    resourceType: 'auto',
+    fileSizeMb: 200,
 });
 
 // POST /api/lessons/upload
@@ -45,9 +20,8 @@ router.post('/upload', authenticate, authorize('instructor', 'admin'), upload.si
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        const fileType = req.body.type || 'video';
-        const fileName = req.file.filename;
-        const fileUrl = `/uploads/${fileName}`;
+        // Cloudinary populates req.file.path with the secure URL
+        const fileUrl = req.file.path;
 
         res.json({ url: fileUrl, message: 'File uploaded successfully' });
     } catch (error) {
