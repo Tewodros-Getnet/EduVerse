@@ -43,6 +43,9 @@ const io = new Server(httpServer, {
     },
 });
 
+// Trust proxy for Render to ensure express-rate-limit works behind the reverse proxy
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(helmet());
 app.use(morgan('combined'));
