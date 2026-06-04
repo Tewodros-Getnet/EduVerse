@@ -16,6 +16,7 @@ async function getRedisClient() {
         url: redisUrl,
         pingInterval: 1000 * 60 * 3, // Ping every 3 minutes to keep connection alive
         socket: {
+            family: 4, // Force IPv4 to fix ECONNRESET issues with Upstash on Render
             tls: redisUrl.startsWith('rediss://'),
             reconnectStrategy: (retries) => Math.min(retries * 50, 2000),
             keepAlive: 30000 // Ensure TCP keep-alive is active
