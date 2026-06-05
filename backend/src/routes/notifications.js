@@ -140,10 +140,10 @@ router.get('/admin/sent', authenticate, authorize('admin'), async (req, res, nex
         // Group by title+message+type to collapse per-user rows into one broadcast row
         const result = await query(
             `SELECT
-                MIN(n.id) as id,
                 n.title,
                 n.message,
                 n.type,
+                MIN(n.created_at) as id,
                 MIN(n.created_at) as created_at,
                 COUNT(*) as recipient_count
              FROM notifications n
@@ -191,7 +191,9 @@ router.get('/admin/stats', authenticate, authorize('admin'), async (req, res, ne
             ),
             query(
                 `SELECT 
-                    COUNT(CASE WHEN is_read THEN 1 END) * 100.0 / COUNT(*) as read_rate
+                    CASE WHEN COUNT(*) = 0 THEN 0
+                    ELSE COUNT(CASE WHEN is_read THEN 1 END) * 100.0 / COUNT(*)
+                    END as read_rate
                  FROM notifications`
             )
         ]);
