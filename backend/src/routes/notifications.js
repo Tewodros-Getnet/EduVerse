@@ -548,33 +548,6 @@ router.get('/student', authenticate, authorize('student'), async (req, res, next
     }
 });
 
-// POST /api/notifications/:id/read - Mark notification as read
-router.post('/:id/read', authenticate, async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const userId = req.user.id;
-
-        const result = await query(
-            `UPDATE notifications 
-             SET is_read = true, read_at = NOW() 
-             WHERE id = $1 AND user_id = $2 
-             RETURNING id, title`,
-            [id, userId]
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Notification not found' });
-        }
-
-        res.json({
-            message: 'Notification marked as read',
-            notification: result.rows[0]
-        });
-    } catch (err) {
-        next(err);
-    }
-});
-
 // POST /api/notifications/student/read-all - Mark all student notifications as read
 router.post('/student/read-all', authenticate, authorize('student'), async (req, res, next) => {
     try {
@@ -590,30 +563,6 @@ router.post('/student/read-all', authenticate, authorize('student'), async (req,
         res.json({
             message: `${result.rowCount} notifications marked as read`,
             count: result.rowCount
-        });
-    } catch (err) {
-        next(err);
-    }
-});
-
-// DELETE /api/notifications/:id - Delete notification
-router.delete('/:id', authenticate, async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const userId = req.user.id;
-
-        const result = await query(
-            'DELETE FROM notifications WHERE id = $1 AND user_id = $2 RETURNING title',
-            [id, userId]
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Notification not found' });
-        }
-
-        res.json({
-            message: 'Notification deleted successfully',
-            title: result.rows[0].title
         });
     } catch (err) {
         next(err);
@@ -721,6 +670,55 @@ router.post('/student/generate', authenticate, authorize('student'), async (req,
     } catch (err) {
         next(err);
     }
+});
+
+// ── Wildcard routes MUST be last to avoid swallowing named sub-routes ──────
+
+// POST /api/notifications/:id/read - Mark a single notification as read
+router.post('/:id/read', authenticate, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id;
+
+        const result = await query(
+            `UPDATE notifications 
+             SET is_read = true, read_at = NOW() 
+             WHERE id = $1 AND user_id = $2 
+             RETURNING id, title`,
+            [id, userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Notification not found' });
+        }
+
+        res.json({
+            message: 'Notification marked as read',
+            notification: result.rows[0]
+        });
+    } catch (err) { next(err); }
+});
+
+// DELETE /api/notifications/:id - Delete a single notification
+router.delete('/:id', authenticate, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id;
+
+        const result = await query(
+            'DELETE FROM notifications WHERE id = $1 AND user_id = $2 RETURNING title',
+            [id, userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Notification not found' });
+        }
+
+        res.json({
+            message: 'Notification deleted successfully',
+            title: result.rows[0].title
+        });
+    } catch (err) { next(err); }
 });
 
 module.exports = router;
