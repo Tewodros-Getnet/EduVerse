@@ -132,7 +132,7 @@ router.get('/instructor/:studentId', authenticate, authorize('instructor'), asyn
                  FROM assignment_submissions sub
                  JOIN assignments a ON sub.assignment_id = a.id
                  JOIN courses c ON a.course_id = c.id
-                 WHERE sub.student_id = $1 AND c.instructor_id = $2
+                 WHERE sub.user_id = $1 AND c.instructor_id = $2
                  ORDER BY timestamp DESC
                  LIMIT 10`,
                 [studentId, req.user.id]
@@ -229,13 +229,11 @@ router.post('/instructor/:studentId/message', authenticate, authorize('instructo
             return res.status(403).json({ error: 'Unauthorized' });
         }
 
-        // In a real implementation, this would send an actual message/email
-        // For now, we'll just log it or store it in a messages table
+        // Store as a notification to the student
         await query(
-            `INSERT INTO messages (sender_id, recipient_id, subject, message, created_at)
-             VALUES ($1, $2, $3, $4, NOW())
-             RETURNING *`,
-            [req.user.id, studentId, subject, message]
+            `INSERT INTO notifications (user_id, title, message, type, created_at, is_read) 
+             VALUES ($1, $2, $3, 'message', NOW(), false)`,
+            [studentId, subject, message]
         );
 
         res.json({ message: 'Message sent successfully' });

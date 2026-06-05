@@ -207,10 +207,10 @@ router.get('/:id/analytics', authenticate, authorize('instructor'), async (req, 
                     AVG(score) as avg_score,
                     MAX(score) as max_score,
                     MIN(score) as min_score,
-                    COUNT(CASE WHEN score >= passing_score THEN 1 END) as passed_count
+                    COUNT(CASE WHEN score >= $2 THEN 1 END) as passed_count
                  FROM quiz_attempts
                  WHERE quiz_id = $1`,
-                [id]
+                [id, quiz.rows[0].passing_score || 70]
             ),
             query(
                 `SELECT 
