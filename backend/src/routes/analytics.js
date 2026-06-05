@@ -628,8 +628,6 @@ router.get('/admin/engagement', authenticate, authorize('admin'), async (req, re
                     DATE_TRUNC('day', ts) as day,
                     COUNT(*) as activities
                  FROM (
-                    SELECT created_at as ts FROM lesson_progress WHERE created_at >= NOW() - INTERVAL '30 days'
-                    UNION ALL
                     SELECT completed_at as ts FROM lesson_progress WHERE completed_at >= NOW() - INTERVAL '30 days'
                     UNION ALL
                     SELECT completed_at as ts FROM quiz_attempts WHERE completed_at >= NOW() - INTERVAL '30 days'
