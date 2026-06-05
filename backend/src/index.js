@@ -30,34 +30,42 @@ const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 const httpServer = createServer(app);
 
+// Trust proxy for Render
+app.set('trust proxy', 1);
+
+// Allowed origins — explicit production URLs + all Vercel preview deployments
+const allowedOrigins = [
+    process.env.STUDENT_FRONTEND_URL,
+    process.env.ADMIN_FRONTEND_URL,
+    process.env.INSTRUCTOR_FRONTEND_URL,
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'http://localhost:3003',
+].filter(Boolean);
+
+function corsOrigin(origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, Render health checks)
+    if (!origin) return callback(null, true);
+    // Allow any Vercel deployment (preview + production) and explicit allowed origins
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+    }
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+}
+
 const io = new Server(httpServer, {
     cors: {
-        origin: [
-            process.env.STUDENT_FRONTEND_URL || 'http://localhost:3000',
-            process.env.ADMIN_FRONTEND_URL || 'http://localhost:3001',
-            process.env.INSTRUCTOR_FRONTEND_URL || 'http://localhost:3002',
-            'http://localhost:3003',
-        ],
+        origin: corsOrigin,
         methods: ['GET', 'POST'],
         credentials: true,
     },
 });
 
-// Trust proxy for Render to ensure express-rate-limit works behind the reverse proxy
-app.set('trust proxy', 1);
-
 // Middleware
 app.use(helmet());
 app.use(morgan('combined'));
-app.use(cors({
-    origin: [
-        process.env.STUDENT_FRONTEND_URL || 'http://localhost:3000',
-        process.env.ADMIN_FRONTEND_URL || 'http://localhost:3001',
-        process.env.INSTRUCTOR_FRONTEND_URL || 'http://localhost:3002',
-        'http://localhost:3003',
-    ],
-    credentials: true,
-}));
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(rateLimiter);
