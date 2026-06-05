@@ -625,18 +625,18 @@ router.get('/admin/engagement', authenticate, authorize('admin'), async (req, re
             ),
             query(
                 `SELECT 
-                    DATE_TRUNC('day', created_at) as day,
+                    DATE_TRUNC('day', ts) as day,
                     COUNT(*) as activities
                  FROM (
-                    SELECT created_at FROM lesson_progress WHERE created_at >= NOW() - INTERVAL '30 days'
+                    SELECT created_at as ts FROM lesson_progress WHERE created_at >= NOW() - INTERVAL '30 days'
                     UNION ALL
-                    SELECT completed_at FROM lesson_progress WHERE completed_at >= NOW() - INTERVAL '30 days'
+                    SELECT completed_at as ts FROM lesson_progress WHERE completed_at >= NOW() - INTERVAL '30 days'
                     UNION ALL
-                    SELECT created_at FROM quiz_attempts WHERE created_at >= NOW() - INTERVAL '30 days'
+                    SELECT completed_at as ts FROM quiz_attempts WHERE completed_at >= NOW() - INTERVAL '30 days'
                     UNION ALL
-                    SELECT submitted_at FROM assignment_submissions WHERE submitted_at >= NOW() - INTERVAL '30 days'
+                    SELECT submitted_at as ts FROM assignment_submissions WHERE submitted_at >= NOW() - INTERVAL '30 days'
                  ) activities
-                 GROUP BY DATE_TRUNC('day', created_at)
+                 GROUP BY DATE_TRUNC('day', ts)
                  ORDER BY day`
             )
         ]);

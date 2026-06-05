@@ -220,15 +220,15 @@ router.post('/admin/stats-summary', authenticate, authorize('admin'), async (req
             query(
                 `SELECT 
                     COUNT(*) as total_activities,
-                    COUNT(CASE WHEN created_at >= NOW() - INTERVAL '${time_period}' THEN 1 END) as recent_activities
+                    COUNT(*) as recent_activities
                  FROM (
-                    SELECT created_at FROM lesson_progress WHERE created_at >= NOW() - INTERVAL '${time_period}'
+                    SELECT created_at as ts FROM lesson_progress WHERE created_at >= NOW() - INTERVAL '${time_period}'
                     UNION ALL
-                    SELECT completed_at FROM lesson_progress WHERE completed_at >= NOW() - INTERVAL '${time_period}'
+                    SELECT completed_at as ts FROM lesson_progress WHERE completed_at >= NOW() - INTERVAL '${time_period}'
                     UNION ALL
-                    SELECT created_at FROM quiz_attempts WHERE created_at >= NOW() - INTERVAL '${time_period}'
+                    SELECT completed_at as ts FROM quiz_attempts WHERE completed_at >= NOW() - INTERVAL '${time_period}'
                     UNION ALL
-                    SELECT submitted_at FROM assignment_submissions WHERE submitted_at >= NOW() - INTERVAL '${time_period}'
+                    SELECT submitted_at as ts FROM assignment_submissions WHERE submitted_at >= NOW() - INTERVAL '${time_period}'
                  ) activities`
             ),
             query(
