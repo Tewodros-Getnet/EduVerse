@@ -1,7 +1,7 @@
 const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
-const { createUploader } = require('../lib/cloudinary');
+const { createUploader, uploadSingle } = require('../lib/cloudinary');
 const { cacheMiddleware, invalidateCache } = require('../lib/cache');
 
 // Cloudinary-backed upload for course thumbnails (images only, 5 MB max)
@@ -143,7 +143,7 @@ router.post('/', authenticate, authorize('instructor', 'admin'), async (req, res
 });
 
 // POST /api/courses/:id/upload-thumbnail - Upload course thumbnail
-router.post('/:id/upload-thumbnail', authenticate, authorize('instructor', 'admin'), thumbnailUpload.single('thumbnail'), async (req, res, next) => {
+router.post('/:id/upload-thumbnail', authenticate, authorize('instructor', 'admin'), uploadSingle(thumbnailUpload, 'thumbnail'), async (req, res, next) => {
     try {
         const { id } = req.params;
 

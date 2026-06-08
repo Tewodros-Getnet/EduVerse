@@ -2,7 +2,7 @@ const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
-const { createUploader } = require('../lib/cloudinary');
+const { createUploader, uploadSingle } = require('../lib/cloudinary');
 const { revokeAllRefreshTokens } = require('../lib/cache');
 
 const router = express.Router();
@@ -42,7 +42,7 @@ router.put('/profile', authenticate, async (req, res, next) => {
 });
 
 // POST /api/users/avatar  — upload profile picture to Cloudinary
-router.post('/avatar', authenticate, avatarUpload.single('avatar'), async (req, res, next) => {
+router.post('/avatar', authenticate, uploadSingle(avatarUpload, 'avatar'), async (req, res, next) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'No image file provided' });
 

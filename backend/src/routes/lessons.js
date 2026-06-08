@@ -1,7 +1,7 @@
 const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
-const { createUploader } = require('../lib/cloudinary');
+const { createUploader, uploadSingle } = require('../lib/cloudinary');
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ const upload = createUploader({
 });
 
 // POST /api/lessons/upload
-router.post('/upload', authenticate, authorize('instructor', 'admin'), upload.single('file'), async (req, res, next) => {
+router.post('/upload', authenticate, authorize('instructor', 'admin'), uploadSingle(upload, 'file'), async (req, res, next) => {
     try {
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
