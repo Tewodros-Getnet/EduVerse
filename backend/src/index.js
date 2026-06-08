@@ -26,6 +26,7 @@ const studentRoutes = require('./routes/students');
 const { setupSocketHandlers } = require('./socket/handlers');
 const { rateLimiter } = require('./middleware/rateLimiter');
 const { errorHandler } = require('./middleware/errorHandler');
+const { migrate } = require('./db/migrate');
 
 const app = express();
 const httpServer = createServer(app);
@@ -102,8 +103,16 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-httpServer.listen(PORT, () => {
-    console.log(`EduVerse backend running on port ${PORT}`);
-});
+// Run migrations then start — ensures schema is always up to date on deploy
+migrate()
+    .catch(err => {
+        // Log but don't crash — missing columns are non-fatal for most routes
+        console.error('Migration warning (non-fatal):', err.message);
+    })
+    .finally(() => {
+        httpServer.listen(PORT, () => {
+            console.log(`EduVerse backend running on port ${PORT}`);
+        });
+    });
 
 module.exports = { app, io };
