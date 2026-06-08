@@ -1,7 +1,7 @@
 const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
-const { cacheGet, cacheSet, invalidateCache } = require('../lib/cache');
+const { cacheGet, cacheSet, cacheMiddleware, invalidateCache } = require('../lib/cache');
 
 const router = express.Router();
 router.use(authenticate, authorize('admin'));
