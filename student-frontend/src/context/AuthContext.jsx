@@ -38,8 +38,13 @@ export function AuthProvider({ children }) {
         setUser(null);
     };
 
+    // Allow profile pages to update the in-memory user without a full re-fetch
+    const updateUser = (updatedFields) => {
+        setUser(prev => prev ? { ...prev, ...updatedFields } : prev);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, updateUser, loading }}>
             {children}
         </AuthContext.Provider>
     );

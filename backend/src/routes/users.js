@@ -2,26 +2,82 @@ const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
+const { createUploader } = require('../lib/cloudinary');
+const { revokeAllRefreshTokens } = require('../lib/cache');
 
 const router = express.Router();
+
+// Cloudinary uploader for avatars (images only, 5 MB max)
+const avatarUpload = createUploader({
+    folder: 'eduverse/avatars',
+    allowedFormats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
+    resourceType: 'image',
+    fileSizeMb: 5,
+});
 
 // GET /api/users/profile
 router.get('/profile', authenticate, async (req, res, next) => {
     try {
-        const result = await query('SELECT id, name, email, role, avatar_url, created_at FROM users WHERE id = $1', [req.user.id]);
+        const result = await query(
+            'SELECT id, name, email, role, avatar_url, bio, created_at FROM users WHERE id = $1',
+            [req.user.id]
+        );
         res.json({ user: result.rows[0] });
     } catch (err) { next(err); }
 });
 
-// PUT /api/users/profile
+// PUT /api/users/profile  — update name and/or bio
 router.put('/profile', authenticate, async (req, res, next) => {
     try {
-        const { name, avatar_url } = req.body;
+        const { name, bio } = req.body;
+        if (!name || !name.trim()) return res.status(400).json({ error: 'Name is required' });
+
         const result = await query(
-            'UPDATE users SET name=$1, avatar_url=$2, updated_at=NOW() WHERE id=$3 RETURNING id, name, email, role, avatar_url',
-            [name, avatar_url, req.user.id]
+            `UPDATE users SET name=$1, bio=$2, updated_at=NOW()
+             WHERE id=$3 RETURNING id, name, email, role, avatar_url, bio, created_at`,
+            [name.trim(), bio || null, req.user.id]
         );
         res.json({ user: result.rows[0] });
+    } catch (err) { next(err); }
+});
+
+// POST /api/users/avatar  — upload profile picture to Cloudinary
+router.post('/avatar', authenticate, avatarUpload.single('avatar'), async (req, res, next) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: 'No image file provided' });
+
+        const avatar_url = req.file.path; // Cloudinary CDN URL
+        const result = await query(
+            `UPDATE users SET avatar_url=$1, updated_at=NOW()
+             WHERE id=$2 RETURNING id, name, email, role, avatar_url, bio, created_at`,
+            [avatar_url, req.user.id]
+        );
+        res.json({ user: result.rows[0] });
+    } catch (err) { next(err); }
+});
+
+// POST /api/users/change-password
+router.post('/change-password', authenticate, async (req, res, next) => {
+    try {
+        const { current_password, new_password } = req.body;
+        if (!current_password || !new_password)
+            return res.status(400).json({ error: 'Both current and new password are required' });
+        if (new_password.length < 8)
+            return res.status(400).json({ error: 'New password must be at least 8 characters' });
+
+        const result = await query('SELECT password_hash FROM users WHERE id=$1', [req.user.id]);
+        if (!result.rows.length) return res.status(404).json({ error: 'User not found' });
+
+        const valid = await bcrypt.compare(current_password, result.rows[0].password_hash);
+        if (!valid) return res.status(401).json({ error: 'Current password is incorrect' });
+
+        const new_hash = await bcrypt.hash(new_password, 12);
+        await query('UPDATE users SET password_hash=$1, updated_at=NOW() WHERE id=$2', [new_hash, req.user.id]);
+
+        // Revoke all existing refresh tokens — forces re-login on all devices
+        await revokeAllRefreshTokens(req.user.id);
+
+        res.json({ message: 'Password changed successfully' });
     } catch (err) { next(err); }
 });
 

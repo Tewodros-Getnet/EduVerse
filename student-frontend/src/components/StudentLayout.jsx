@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Clapperboard, ClipboardList, Sparkles } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Clapperboard, ClipboardList, Sparkles, UserCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import FloatingAIAssistant from './FloatingAIAssistant';
@@ -66,18 +66,28 @@ export default function StudentLayout() {
                     </button>
                     <button onClick={() => setMenuOpen(!menuOpen)}
                         className="flex items-center gap-2 cursor-pointer">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                            {user?.name?.[0]?.toUpperCase()}
+                        <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-purple-500/40 flex-shrink-0">
+                            {user?.avatar_url
+                                ? <img src={user.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                                : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">{user?.name?.[0]?.toUpperCase()}</div>
+                            }
                         </div>
                         <span className="text-sm text-gray-300 hidden lg:block">{user?.name}</span>
                         <span className="text-gray-400 text-xs hidden lg:block">▾</span>
                     </button>
                     {menuOpen && (
-                        <div className="absolute right-0 top-12 bg-[#1a1a35] border border-purple-900/40 rounded-xl shadow-xl z-50 min-w-[160px] py-1">
+                        <div className="absolute right-0 top-12 bg-[#1a1a35] border border-purple-900/40 rounded-xl shadow-xl z-50 min-w-[180px] py-1">
                             <div className="px-4 py-2 border-b border-purple-900/30">
                                 <p className="text-sm font-medium text-white">{user?.name}</p>
                                 <p className="text-xs text-gray-400">{user?.email}</p>
                             </div>
+                            <Link
+                                to="/student/profile"
+                                onClick={() => setMenuOpen(false)}
+                                className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-purple-600/20 hover:text-white transition flex items-center gap-2"
+                            >
+                                <UserCircle className="w-4 h-4" /> My Profile
+                            </Link>
                             <button onClick={handleLogout}
                                 className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-900/20 transition flex items-center gap-2">
                                 🚪 Logout

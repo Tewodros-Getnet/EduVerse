@@ -1,5 +1,12 @@
 const jwt = require('jsonwebtoken');
 const { query } = require('../db');
+const {
+    setUserOnline,
+    setUserOffline,
+    keepAlive,
+    joinRoom,
+    leaveRoom,
+} = require('../lib/cache');
 
 function setupSocketHandlers(io) {
     io.use(async (socket, next) => {
@@ -8,7 +15,6 @@ function setupSocketHandlers(io) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             socket.userId = decoded.userId;
-            // Fetch name and role from DB since JWT only contains userId
             const result = await query('SELECT name, role FROM users WHERE id = $1', [decoded.userId]);
             if (!result.rows.length) return next(new Error('User not found'));
             socket.userName = result.rows[0].name;
@@ -19,25 +25,27 @@ function setupSocketHandlers(io) {
         }
     });
 
-    io.on('connection', (socket) => {
+    io.on('connection', async (socket) => {
         console.log(`[LIVE] User connected: ${socket.userId} (${socket.userRole}) - Session: ${socket.id}`);
 
+        // Mark user online in Redis
+        await setUserOnline(socket.userId, { name: socket.userName, role: socket.userRole, socketId: socket.id });
+
         // --- Live Class Room ---
-        socket.on('join-class', (classId) => {
-            if (!classId) {
-                socket.emit('error', { message: 'Invalid class ID' });
-                return;
-            }
+        socket.on('join-class', async (classId) => {
+            if (!classId) { socket.emit('error', { message: 'Invalid class ID' }); return; }
+
             socket.join(`class-${classId}`);
+            socket.currentRoomId = classId; // track for cleanup on disconnect
+            await joinRoom(socket.userId, classId);
             console.log(`[LIVE] User joined class: ${classId}`);
-            
+
             socket.to(`class-${classId}`).emit('user-joined', {
                 userId: socket.userId,
                 name: socket.userName,
                 role: socket.userRole,
             });
-            
-            // Send current participants list to the new joiner
+
             const room = io.sockets.adapter.rooms.get(`class-${classId}`);
             const participants = room ? [...room].map(sid => {
                 const s = io.sockets.sockets.get(sid);
@@ -46,8 +54,9 @@ function setupSocketHandlers(io) {
             socket.emit('room-participants', participants);
         });
 
-        socket.on('leave-class', (classId) => {
+        socket.on('leave-class', async (classId) => {
             socket.leave(`class-${classId}`);
+            await leaveRoom(socket.userId, classId);
             console.log(`[LIVE] User left class: ${classId}`);
             socket.to(`class-${classId}`).emit('user-left', { userId: socket.userId });
         });
@@ -118,6 +127,7 @@ function setupSocketHandlers(io) {
         // Media state changes (mic/video toggle)
         socket.on('media-state', ({ classId, videoOn, micOn }) => {
             if (!classId) return;
+            keepAlive(socket.userId); // slide the online TTL forward
             socket.to(`class-${classId}`).emit('peer-media-state', {
                 userId: socket.userId,
                 videoOn,
@@ -134,8 +144,14 @@ function setupSocketHandlers(io) {
             });
         });
 
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
             console.log(`[LIVE] User disconnected: ${socket.userId}`);
+            // Clean up online presence and room membership
+            await setUserOffline(socket.userId);
+            if (socket.currentRoomId) {
+                await leaveRoom(socket.userId, socket.currentRoomId);
+                socket.to(`class-${socket.currentRoomId}`).emit('user-left', { userId: socket.userId });
+            }
         });
 
         socket.on('error', (error) => {

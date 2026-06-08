@@ -1,6 +1,7 @@
 const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
+const { getUnreadCount, setUnreadCount, invalidateUnreadCount } = require('../lib/cache');
 
 const router = express.Router();
 
@@ -676,6 +677,27 @@ router.post('/student/generate', authenticate, authorize('student'), async (req,
 
 // ── Wildcard routes MUST be last to avoid swallowing named sub-routes ──────
 
+// GET /api/notifications/unread-count — fast badge count for any role
+router.get('/unread-count', authenticate, async (req, res, next) => {
+    try {
+        // Try cache first — avoids a DB round-trip on every page load
+        const cached = await getUnreadCount(req.user.id);
+        if (cached !== null) {
+            res.setHeader('X-Cache', 'HIT');
+            return res.json({ count: cached });
+        }
+
+        const result = await query(
+            'SELECT COUNT(*) FROM notifications WHERE user_id = $1 AND is_read = false',
+            [req.user.id]
+        );
+        const count = parseInt(result.rows[0].count);
+        await setUnreadCount(req.user.id, count);
+        res.setHeader('X-Cache', 'MISS');
+        res.json({ count });
+    } catch (err) { next(err); }
+});
+
 // POST /api/notifications/:id/read - Mark a single notification as read
 router.post('/:id/read', authenticate, async (req, res, next) => {
     try {
@@ -694,6 +716,7 @@ router.post('/:id/read', authenticate, async (req, res, next) => {
             return res.status(404).json({ error: 'Notification not found' });
         }
 
+        await invalidateUnreadCount(req.user.id);
         res.json({
             message: 'Notification marked as read',
             notification: result.rows[0]
@@ -716,6 +739,7 @@ router.delete('/:id', authenticate, async (req, res, next) => {
             return res.status(404).json({ error: 'Notification not found' });
         }
 
+        await invalidateUnreadCount(req.user.id);
         res.json({
             message: 'Notification deleted successfully',
             title: result.rows[0].title

@@ -1,6 +1,7 @@
 const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
+const { acquireQuizLock, releaseQuizLock } = require('../lib/cache');
 
 const router = express.Router();
 
@@ -74,44 +75,58 @@ router.post('/submit', authenticate, authorize('student'), async (req, res, next
     try {
         const { quiz_id, answers } = req.body;
 
-        // Check attempt count
-        const attempts = await query('SELECT COUNT(*) FROM quiz_attempts WHERE student_id=$1 AND quiz_id=$2', [req.user.id, quiz_id]);
-        const quiz = await query('SELECT * FROM quizzes WHERE id = $1', [quiz_id]);
-        if (!quiz.rows.length) return res.status(404).json({ error: 'Quiz not found' });
-
-        if (parseInt(attempts.rows[0].count) >= quiz.rows[0].max_attempts) {
-            return res.status(400).json({ error: 'Max attempts reached' });
+        // ── Acquire lock — prevents double-submit from rapid taps / network retry
+        const locked = await acquireQuizLock(req.user.id, quiz_id);
+        if (!locked) {
+            return res.status(429).json({ error: 'Submission already in progress, please wait' });
         }
 
-        // Grade answers
-        const questions = await query('SELECT * FROM quiz_questions WHERE quiz_id = $1', [quiz_id]);
-        let score = 0, totalPoints = 0;
-        const gradedAnswers = questions.rows.map(q => {
-            totalPoints += q.points;
-            const userAnswer = answers[q.id];
-            const correct = userAnswer?.toString().toLowerCase() === q.correct_answer.toLowerCase();
-            if (correct) score += q.points;
-            return { question_id: q.id, user_answer: userAnswer, correct, correct_answer: q.correct_answer };
-        });
+        try {
+            // Check attempt count
+            const attempts = await query(
+                'SELECT COUNT(*) FROM quiz_attempts WHERE student_id=$1 AND quiz_id=$2',
+                [req.user.id, quiz_id]
+            );
+            const quiz = await query('SELECT * FROM quizzes WHERE id = $1', [quiz_id]);
+            if (!quiz.rows.length) return res.status(404).json({ error: 'Quiz not found' });
 
-        const percentScore = Math.round((score / totalPoints) * 100);
-        const passed = percentScore >= quiz.rows[0].passing_score;
-        const correctCount = gradedAnswers.filter(a => a.correct).length;
-        const incorrectCount = gradedAnswers.length - correctCount;
+            if (parseInt(attempts.rows[0].count) >= quiz.rows[0].max_attempts) {
+                return res.status(400).json({ error: 'Max attempts reached' });
+            }
 
-        await query(
-            'INSERT INTO quiz_attempts (student_id, quiz_id, score, answers) VALUES ($1,$2,$3,$4)',
-            [req.user.id, quiz_id, percentScore, JSON.stringify(gradedAnswers)]
-        );
+            // Grade answers
+            const questions = await query('SELECT * FROM quiz_questions WHERE quiz_id = $1', [quiz_id]);
+            let score = 0, totalPoints = 0;
+            const gradedAnswers = questions.rows.map(q => {
+                totalPoints += q.points;
+                const userAnswer = answers[q.id];
+                const correct = userAnswer?.toString().toLowerCase() === q.correct_answer.toLowerCase();
+                if (correct) score += q.points;
+                return { question_id: q.id, user_answer: userAnswer, correct, correct_answer: q.correct_answer };
+            });
 
-        res.json({
-            score: percentScore,
-            passed,
-            graded_answers: gradedAnswers,
-            passing_score: quiz.rows[0].passing_score,
-            correct_answers: correctCount,
-            incorrect_answers: incorrectCount,
-        });
+            const percentScore = Math.round((score / totalPoints) * 100);
+            const passed = percentScore >= quiz.rows[0].passing_score;
+            const correctCount = gradedAnswers.filter(a => a.correct).length;
+            const incorrectCount = gradedAnswers.length - correctCount;
+
+            await query(
+                'INSERT INTO quiz_attempts (student_id, quiz_id, score, answers) VALUES ($1,$2,$3,$4)',
+                [req.user.id, quiz_id, percentScore, JSON.stringify(gradedAnswers)]
+            );
+
+            res.json({
+                score: percentScore,
+                passed,
+                graded_answers: gradedAnswers,
+                passing_score: quiz.rows[0].passing_score,
+                correct_answers: correctCount,
+                incorrect_answers: incorrectCount,
+            });
+        } finally {
+            // Always release the lock — even if an error occurred
+            await releaseQuizLock(req.user.id, quiz_id);
+        }
     } catch (err) { next(err); }
 });
 

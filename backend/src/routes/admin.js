@@ -1,6 +1,7 @@
 const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
+const { cacheGet, cacheSet, invalidateCache } = require('../lib/cache');
 
 const router = express.Router();
 router.use(authenticate, authorize('admin'));
@@ -8,13 +9,20 @@ router.use(authenticate, authorize('admin'));
 // GET /api/admin/dashboard
 router.get('/dashboard', async (req, res, next) => {
     try {
+        const cacheKey = 'admin:dashboard';
+        const cached = await cacheGet(`cache:${cacheKey}`);
+        if (cached) {
+            res.setHeader('X-Cache', 'HIT');
+            return res.json(cached);
+        }
+
         const [users, courses, aiRequests, recentUsers] = await Promise.all([
             query('SELECT COUNT(*) as total FROM users'),
             query("SELECT COUNT(*) FILTER (WHERE status='published') as active FROM courses"),
             query('SELECT COUNT(*) as total FROM chat_history'),
             query('SELECT id, name, email, role, is_active, created_at FROM users ORDER BY created_at DESC LIMIT 5'),
         ]);
-        res.json({
+        const payload = {
             stats: {
                 total_users: parseInt(users.rows[0].total),
                 active_courses: parseInt(courses.rows[0].active),
@@ -22,7 +30,10 @@ router.get('/dashboard', async (req, res, next) => {
                 system_health: 99.9,
             },
             recent_users: recentUsers.rows,
-        });
+        };
+        await cacheSet(`cache:${cacheKey}`, payload, 120); // 2-min TTL
+        res.setHeader('X-Cache', 'MISS');
+        res.json(payload);
     } catch (err) { next(err); }
 });
 
@@ -53,6 +64,7 @@ router.patch('/users/:id/status', async (req, res, next) => {
             'INSERT INTO audit_logs (user_id, action, resource, ip_address, details) VALUES ($1,$2,$3,$4,$5)',
             [req.user.id, is_active ? 'USER_ACTIVATED' : 'USER_DEACTIVATED', 'users', req.ip, JSON.stringify({ target_id: req.params.id })]
         );
+        await invalidateCache('admin:dashboard');
         res.json({ message: 'User status updated' });
     } catch (err) { next(err); }
 });
@@ -65,6 +77,7 @@ router.delete('/users/:id', async (req, res, next) => {
             'INSERT INTO audit_logs (user_id, action, resource, ip_address, details) VALUES ($1,$2,$3,$4,$5)',
             [req.user.id, 'USER_DELETED', 'users', req.ip, JSON.stringify({ target_id: req.params.id })]
         );
+        await invalidateCache('admin:dashboard');
         res.json({ message: 'User deleted' });
     } catch (err) { next(err); }
 });
@@ -143,7 +156,7 @@ router.get('/audit-logs', async (req, res, next) => {
 });
 
 // GET /api/admin/analytics
-router.get('/analytics', async (req, res, next) => {
+router.get('/analytics', cacheMiddleware('admin:analytics', 300), async (req, res, next) => {
     try {
         const [userGrowth, courseStats, aiUsage, quizStats] = await Promise.all([
             query(`SELECT DATE_TRUNC('week', created_at) as week, COUNT(*) as new_users

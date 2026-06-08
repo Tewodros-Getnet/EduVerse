@@ -32,6 +32,8 @@ import InstructorStudents from './pages/instructor/Students';
 import InstructorLiveClasses from './pages/instructor/LiveClasses';
 import InstructorAnalytics from './pages/instructor/Analytics';
 import InstructorAITools from './pages/instructor/AITools';
+import InstructorProfile from './pages/instructor/Profile';
+import StudentProfile from './pages/student/Profile';
 
 function ProtectedRoute({ children, role }) {
     const { user, loading } = useAuth();
@@ -69,6 +71,7 @@ function AppRoutes() {
                 <Route path="grades" element={<Grades />} />
                 <Route path="course-notes/:courseId" element={<CourseNotes />} />
                 <Route path="assessments" element={<Assessments />} />
+                <Route path="profile" element={<StudentProfile />} />
             </Route>
 
             {/* Instructor routes */}
@@ -84,6 +87,7 @@ function AppRoutes() {
                 <Route path="live/:id" element={<InstructorLiveClasses />} />
                 <Route path="analytics" element={<InstructorAnalytics />} />
                 <Route path="ai-tools" element={<InstructorAITools />} />
+                <Route path="profile" element={<InstructorProfile />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

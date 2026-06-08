@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
+import { UserCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -65,16 +66,30 @@ export default function InstructorLayout() {
                     </button>
                     <button onClick={() => setMenuOpen(!menuOpen)}
                         className="flex items-center gap-2 cursor-pointer">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                            {user?.name?.[0]?.toUpperCase()}
+                        <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-purple-500/40 flex-shrink-0">
+                            {user?.avatar_url
+                                ? <img src={user.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                                : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">{user?.name?.[0]?.toUpperCase()}</div>
+                            }
                         </div>
                         <span className="text-sm text-gray-300 hidden lg:block">{user?.name}</span>
                     </button>
                     {menuOpen && (
-                        <div className="absolute right-0 top-full mt-2 w-48 bg-[#1a1a35] border border-purple-900/40 rounded-xl shadow-xl z-50">
+                        <div className="absolute right-0 top-full mt-2 w-52 bg-[#1a1a35] border border-purple-900/40 rounded-xl shadow-xl z-50 py-1">
+                            <div className="px-4 py-2.5 border-b border-purple-900/30">
+                                <p className="text-sm font-medium text-white">{user?.name}</p>
+                                <p className="text-xs text-gray-400">{user?.email}</p>
+                            </div>
+                            <Link
+                                to="/instructor/profile"
+                                onClick={() => setMenuOpen(false)}
+                                className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-purple-600/20 hover:text-white transition flex items-center gap-2"
+                            >
+                                <UserCircle className="w-4 h-4" /> My Profile
+                            </Link>
                             <button onClick={handleLogout}
-                                className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-purple-600/20 hover:text-white transition">
-                                Logout
+                                className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-purple-600/20 hover:text-white transition">
+                                🚪 Logout
                             </button>
                         </div>
                     )}
