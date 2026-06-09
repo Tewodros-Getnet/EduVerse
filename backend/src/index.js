@@ -107,5 +107,3 @@ httpServer.listen(PORT, () => {
 });
 
 module.exports = { app, io };
-
-module.exports = { app, io };

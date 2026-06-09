@@ -318,13 +318,6 @@ async function migrate() {
         `);
         console.log('✓ users security columns');
 
-        // Profile bio — added for user profile pages
-        await client.query(`
-            ALTER TABLE users
-            ADD COLUMN IF NOT EXISTS bio TEXT
-        `);
-        console.log('✓ users.bio');
-
         // Ensure quizzes has publish fields and timestamps needed by routes
         await client.query(`
             ALTER TABLE quizzes
