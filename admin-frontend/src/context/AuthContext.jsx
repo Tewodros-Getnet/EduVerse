@@ -15,7 +15,10 @@ export function AuthProvider({ children }) {
                     if (res.data.user.role === 'admin') setUser(res.data.user);
                     else logout();
                 })
-                .catch(() => logout())
+                .catch(() => {
+                    localStorage.removeItem('admin_token');
+                    localStorage.removeItem('admin_refreshToken');
+                })
                 .finally(() => setLoading(false));
         } else {
             setLoading(false);
@@ -26,12 +29,22 @@ export function AuthProvider({ children }) {
         const res = await api.post('/auth/login', { email, password, role: 'admin' });
         if (res.data.user.role !== 'admin') throw new Error('Not an admin account');
         localStorage.setItem('admin_token', res.data.accessToken);
+        if (res.data.refreshToken) {
+            localStorage.setItem('admin_refreshToken', res.data.refreshToken);
+        }
         setUser(res.data.user);
         return res.data.user;
     };
 
-    const logout = () => {
+    const logout = async () => {
+        const refreshToken = localStorage.getItem('admin_refreshToken');
+        try {
+            await api.post('/auth/logout', { refreshToken });
+        } catch {
+            // Ignore — clear local state regardless
+        }
         localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_refreshToken');
         setUser(null);
     };
 

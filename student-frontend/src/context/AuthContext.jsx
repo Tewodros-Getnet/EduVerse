@@ -12,7 +12,10 @@ export function AuthProvider({ children }) {
         if (token) {
             api.get('/auth/me')
                 .then(res => setUser(res.data.user))
-                .catch(() => localStorage.removeItem('token'))
+                .catch(() => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('refreshToken');
+                })
                 .finally(() => setLoading(false));
         } else {
             setLoading(false);
@@ -22,6 +25,9 @@ export function AuthProvider({ children }) {
     const login = async (email, password, role) => {
         const res = await api.post('/auth/login', { email, password, role });
         localStorage.setItem('token', res.data.accessToken);
+        if (res.data.refreshToken) {
+            localStorage.setItem('refreshToken', res.data.refreshToken);
+        }
         setUser(res.data.user);
         return res.data.user;
     };
@@ -29,12 +35,23 @@ export function AuthProvider({ children }) {
     const register = async (name, email, password, role) => {
         const res = await api.post('/auth/register', { name, email, password, role });
         localStorage.setItem('token', res.data.accessToken);
+        if (res.data.refreshToken) {
+            localStorage.setItem('refreshToken', res.data.refreshToken);
+        }
         setUser(res.data.user);
         return res.data.user;
     };
 
-    const logout = () => {
+    const logout = async () => {
+        const refreshToken = localStorage.getItem('refreshToken');
+        try {
+            // Tell the server to revoke this refresh token
+            await api.post('/auth/logout', { refreshToken });
+        } catch {
+            // Ignore — clear local state regardless
+        }
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         setUser(null);
     };
 
