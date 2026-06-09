@@ -137,7 +137,20 @@ router.get('/:id', authenticate, async (req, res, next) => {
             'SELECT * FROM lessons WHERE course_id = $1 ORDER BY order_index',
             [id]
         );
-        res.json({ course: course.rows[0], lessons: lessons.rows });
+
+        // Auto-calculate duration_hours from lesson durations (video/mixed only)
+        const totalMinutes = lessons.rows.reduce((sum, l) => {
+            if (l.content_type === 'video' || l.content_type === 'mixed') {
+                return sum + (parseInt(l.duration_minutes) || 0);
+            }
+            return sum;
+        }, 0);
+        const courseData = {
+            ...course.rows[0],
+            duration_hours: totalMinutes > 0 ? Math.round((totalMinutes / 60) * 10) / 10 : (course.rows[0].duration_hours || 0)
+        };
+
+        res.json({ course: courseData, lessons: lessons.rows });
     } catch (err) { next(err); }
 });
 

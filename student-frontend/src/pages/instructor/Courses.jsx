@@ -9,7 +9,7 @@ export default function InstructorCourses() {
     const [courses, setCourses] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
-    const [form, setForm] = useState({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, duration_hours: 0, prerequisites: '' });
+    const [form, setForm] = useState({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' });
     const [saving, setSaving] = useState(false);
     const [showAnalytics, setShowAnalytics] = useState(null);
     const [publishingCourse, setPublishingCourse] = useState(null);
@@ -41,7 +41,7 @@ export default function InstructorCourses() {
             const res = await api.post('/courses', form);
             setCourses(prev => [res.data.course, ...prev]);
             setShowForm(false);
-            setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, duration_hours: 0, prerequisites: '' });
+            setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' });
             toast.success('✓ Course created successfully!');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Failed to create course');
@@ -56,7 +56,7 @@ export default function InstructorCourses() {
             const res = await api.put(`/courses/${editingId}`, form);
             setCourses(prev => prev.map(c => c.id === editingId ? res.data.course : c));
             setEditingId(null);
-            setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, duration_hours: 0, prerequisites: '' });
+            setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' });
             toast.success('✓ Course updated successfully!');
             setShowForm(false);
         } catch (err) {
@@ -72,7 +72,6 @@ export default function InstructorCourses() {
             difficulty_level: course.difficulty_level,
             category: course.category,
             price: course.price || 0,
-            duration_hours: course.duration_hours || 0,
             prerequisites: course.prerequisites || ''
         });
         setShowForm(true);
@@ -162,7 +161,7 @@ export default function InstructorCourses() {
                         <p className="text-gray-400 mt-2">Manage and create your courses</p>
                     </div>
                     <button
-                        onClick={() => { setShowForm(!showForm); setEditingId(null); setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, duration_hours: 0, prerequisites: '' }); }}
+                        onClick={() => { setShowForm(!showForm); setEditingId(null); setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' }); }}
                         className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white font-medium transition duration-200 shadow-lg hover:shadow-purple-500/25">
                         <Plus className="w-5 h-5" />
                         Create Course
@@ -229,28 +228,17 @@ export default function InstructorCourses() {
                                         className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition" />
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">Price (USD)</label>
-                                    <div className="relative">
-                                        <span className="absolute left-4 top-3 text-gray-400">$</span>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            value={form.price}
-                                            onChange={e => setForm(f => ({ ...f, price: parseFloat(e.target.value) || 0 }))}
-                                            className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">Duration (hours)</label>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">Price (USD)</label>
+                                <div className="relative">
+                                    <span className="absolute left-4 top-3 text-gray-400">$</span>
                                     <input
                                         type="number"
                                         min="0"
-                                        value={form.duration_hours}
-                                        onChange={e => setForm(f => ({ ...f, duration_hours: parseInt(e.target.value) || 0 }))}
-                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition" />
+                                        step="0.01"
+                                        value={form.price}
+                                        onChange={e => setForm(f => ({ ...f, price: parseFloat(e.target.value) || 0 }))}
+                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition" />
                                 </div>
                             </div>
                             <div>
@@ -271,7 +259,7 @@ export default function InstructorCourses() {
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => { setShowForm(false); setEditingId(null); setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, duration_hours: 0, prerequisites: '' }); }}
+                                    onClick={() => { setShowForm(false); setEditingId(null); setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' }); }}
                                     className="px-6 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 hover:text-white font-medium transition">
                                     Cancel
                                 </button>

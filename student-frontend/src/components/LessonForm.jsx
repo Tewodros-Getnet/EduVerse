@@ -246,6 +246,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                     </div>
                 )}
 
+                {(formData.content_type === 'video' || formData.content_type === 'mixed') && (
                 <div>
                     <label className="block text-sm font-semibold text-gray-300 mb-2">
                         ⏱️ Duration (minutes)
@@ -260,6 +261,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                         min="1"
                     />
                 </div>
+                )}
 
                 <div className="flex gap-3 pt-4">
                     <button
