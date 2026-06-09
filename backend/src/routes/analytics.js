@@ -241,42 +241,43 @@ router.get('/student/progress', authenticate, authorize('student'), async (req, 
         const { time_range = 'week' } = req.query;
         const userId = req.user.id;
 
-        let timeFilter;
-        switch (time_range) {
-            case 'week':
-                timeFilter = "AND e.enrolled_at >= NOW() - INTERVAL '7 days'";
-                break;
-            case 'month':
-                timeFilter = "AND e.enrolled_at >= NOW() - INTERVAL '30 days'";
-                break;
-            case 'year':
-                timeFilter = "AND e.enrolled_at >= NOW() - INTERVAL '365 days'";
-                break;
-            default:
-                timeFilter = "AND e.enrolled_at >= NOW() - INTERVAL '7 days'";
-        }
-
-        const progressQuery = `
-            SELECT 
-                c.id as course_id,
-                c.title as course_title,
+        // Always return ALL enrolled courses (no time filter on enrollment date)
+        // so the dashboard shows every course the student is in, not just recent ones
+        const coursesResult = await query(
+            `SELECT 
+                c.id,
+                c.title,
+                c.thumbnail_url,
+                c.category,
+                c.difficulty_level,
+                u.name as instructor_name,
                 e.progress_percent,
-                e.enrolled_at
+                e.enrolled_at,
+                -- backwards-compatible alias
+                c.id as course_id,
+                c.title as course_title
             FROM enrollments e
             JOIN courses c ON e.course_id = c.id
-            WHERE e.student_id = $1 ${timeFilter}
-            ORDER BY c.title
-        `;
+            LEFT JOIN users u ON c.instructor_id = u.id
+            WHERE e.student_id = $1
+            ORDER BY e.enrolled_at DESC`,
+            [userId]
+        );
 
-        const result = await query(progressQuery, [userId]);
+        const courses = coursesResult.rows;
 
         res.json({
             time_range,
-            progress_data: result.rows,
+            // Primary field the dashboard reads
+            courses,
+            // Legacy alias kept for any other consumers
+            progress_data: courses,
             summary: {
-                total_courses: result.rows.length,
-                avg_progress: Math.round(result.rows.reduce((acc, row) => acc + (row.progress_percent || 0), 0) / result.rows.length) || 0,
-                completed_courses: result.rows.filter(row => row.progress_percent >= 100).length
+                total_courses: courses.length,
+                avg_progress: courses.length
+                    ? Math.round(courses.reduce((acc, r) => acc + (r.progress_percent || 0), 0) / courses.length)
+                    : 0,
+                completed_courses: courses.filter(r => r.progress_percent >= 100).length
             }
         });
     } catch (err) {
