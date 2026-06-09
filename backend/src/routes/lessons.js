@@ -32,9 +32,29 @@ router.post('/upload', authenticate, authorize('instructor', 'admin'), upload.si
 // GET /api/lessons/course/:courseId
 router.get('/course/:courseId', authenticate, async (req, res, next) => {
     try {
+        const { courseId } = req.params;
+
+        // Instructors and admins can always view their own course lessons
+        if (req.user.role === 'instructor' || req.user.role === 'admin') {
+            const result = await query(
+                'SELECT * FROM lessons WHERE course_id = $1 ORDER BY order_index',
+                [courseId]
+            );
+            return res.json({ lessons: result.rows });
+        }
+
+        // Students must be enrolled to access lesson list
+        const enrollment = await query(
+            'SELECT id FROM enrollments WHERE student_id = $1 AND course_id = $2',
+            [req.user.id, courseId]
+        );
+        if (!enrollment.rows.length) {
+            return res.status(403).json({ error: 'You must be enrolled in this course to access lessons' });
+        }
+
         const result = await query(
             'SELECT * FROM lessons WHERE course_id = $1 ORDER BY order_index',
-            [req.params.courseId]
+            [courseId]
         );
         res.json({ lessons: result.rows });
     } catch (err) { next(err); }
@@ -45,7 +65,24 @@ router.get('/:id', authenticate, async (req, res, next) => {
     try {
         const result = await query('SELECT * FROM lessons WHERE id = $1', [req.params.id]);
         if (!result.rows.length) return res.status(404).json({ error: 'Lesson not found' });
-        res.json({ lesson: result.rows[0] });
+
+        const lesson = result.rows[0];
+
+        // Instructors and admins bypass enrollment check
+        if (req.user.role === 'instructor' || req.user.role === 'admin') {
+            return res.json({ lesson });
+        }
+
+        // Students must be enrolled in the course this lesson belongs to
+        const enrollment = await query(
+            'SELECT id FROM enrollments WHERE student_id = $1 AND course_id = $2',
+            [req.user.id, lesson.course_id]
+        );
+        if (!enrollment.rows.length) {
+            return res.status(403).json({ error: 'You must be enrolled in this course to access lessons' });
+        }
+
+        res.json({ lesson });
     } catch (err) { next(err); }
 });
 
@@ -75,6 +112,18 @@ router.put('/:id', authenticate, authorize('instructor', 'admin'), async (req, r
     try {
         const { title, text_content, content_type, video_url, pdf_url, duration_minutes, order_index } = req.body;
 
+        // Verify instructor owns the course this lesson belongs to
+        const lessonCheck = await query(
+            `SELECT l.id, c.instructor_id FROM lessons l
+             JOIN courses c ON l.course_id = c.id
+             WHERE l.id = $1`,
+            [req.params.id]
+        );
+        if (!lessonCheck.rows.length) return res.status(404).json({ error: 'Lesson not found' });
+        if (lessonCheck.rows[0].instructor_id !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+
         const result = await query(
             `UPDATE lessons SET title=$1, text_content=$2, content_type=$3, video_url=$4, pdf_url=$5,
              duration_minutes=$6, order_index=$7, updated_at=NOW()
@@ -90,6 +139,18 @@ router.put('/:id', authenticate, authorize('instructor', 'admin'), async (req, r
 // DELETE /api/lessons/:id
 router.delete('/:id', authenticate, authorize('instructor', 'admin'), async (req, res, next) => {
     try {
+        // Verify instructor owns the course this lesson belongs to
+        const lessonCheck = await query(
+            `SELECT l.id, c.instructor_id FROM lessons l
+             JOIN courses c ON l.course_id = c.id
+             WHERE l.id = $1`,
+            [req.params.id]
+        );
+        if (!lessonCheck.rows.length) return res.status(404).json({ error: 'Lesson not found' });
+        if (lessonCheck.rows[0].instructor_id !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+
         await query('DELETE FROM lessons WHERE id = $1', [req.params.id]);
         res.json({ message: 'Lesson deleted' });
     } catch (err) { next(err); }
@@ -98,14 +159,14 @@ router.delete('/:id', authenticate, authorize('instructor', 'admin'), async (req
 // POST /api/lessons/:id/complete
 router.post('/:id/complete', authenticate, authorize('student'), async (req, res, next) => {
     try {
-        const { course_id } = req.body;
+        const { course_id, watch_time } = req.body;
 
         await query(
-            `INSERT INTO lesson_progress (student_id, lesson_id, completed)
-             VALUES ($1, $2, true)
+            `INSERT INTO lesson_progress (student_id, lesson_id, completed, watch_time)
+             VALUES ($1, $2, true, $3)
              ON CONFLICT (student_id, lesson_id) 
-             DO UPDATE SET completed = true, completed_at = NOW()`,
-            [req.user.id, req.params.id]
+             DO UPDATE SET completed = true, completed_at = NOW(), watch_time = GREATEST(lesson_progress.watch_time, EXCLUDED.watch_time)`,
+            [req.user.id, req.params.id, watch_time || 0]
         );
 
         // Update course progress

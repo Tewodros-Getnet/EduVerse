@@ -137,7 +137,8 @@ async function migrate() {
             CREATE TABLE IF NOT EXISTS assignment_submissions (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 assignment_id UUID REFERENCES assignments(id) ON DELETE CASCADE,
-                student_id UUID REFERENCES users(id) ON DELETE CASCADE,
+                user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+                content TEXT,
                 submission_text TEXT,
                 file_url TEXT,
                 score INTEGER,
@@ -146,7 +147,7 @@ async function migrate() {
                 graded_at TIMESTAMP,
                 graded_by UUID REFERENCES users(id),
                 created_at TIMESTAMP DEFAULT NOW(),
-                UNIQUE(assignment_id, student_id)
+                UNIQUE(assignment_id, user_id)
             )
         `);
         console.log('✓ assignment_submissions table');
@@ -336,6 +337,40 @@ async function migrate() {
             ADD COLUMN IF NOT EXISTS started_at TIMESTAMP
         `);
         console.log('✓ quiz_attempts.started_at');
+
+        // Add watch_time to lesson_progress so frontend can track video progress per lesson
+        await client.query(`
+            ALTER TABLE lesson_progress
+            ADD COLUMN IF NOT EXISTS watch_time INTEGER DEFAULT 0
+        `);
+        console.log('✓ lesson_progress.watch_time');
+
+        // Ensure assignment_submissions has user_id (some installs used student_id) and
+        // the UNIQUE constraint matches what the routes expect: (assignment_id, user_id)
+        await client.query(`
+            ALTER TABLE assignment_submissions
+            ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES users(id) ON DELETE CASCADE
+        `);
+        // Backfill user_id from student_id where user_id is still null
+        await client.query(`
+            UPDATE assignment_submissions SET user_id = student_id
+            WHERE user_id IS NULL AND student_id IS NOT NULL
+        `);
+        // Add the correct unique constraint if it doesn't already exist
+        await client.query(`
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint
+                    WHERE conname = 'assignment_submissions_assignment_id_user_id_key'
+                ) THEN
+                    ALTER TABLE assignment_submissions
+                    ADD CONSTRAINT assignment_submissions_assignment_id_user_id_key
+                    UNIQUE (assignment_id, user_id);
+                END IF;
+            END$$;
+        `);
+        console.log('✓ assignment_submissions.user_id and unique constraint');
 
         // Seed admin user
         const adminEmail = 'admin@eduverse.com';

@@ -2,7 +2,7 @@ const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
 const { createUploader } = require('../lib/cloudinary');
-const { cacheMiddleware, invalidateCache } = require('../lib/cache');
+const { cacheGet, cacheSet, invalidateCache } = require('../lib/cache');
 
 // Cloudinary-backed upload for course thumbnails (images only, 5 MB max)
 const thumbnailUpload = createUploader({
@@ -15,9 +15,17 @@ const thumbnailUpload = createUploader({
 const router = express.Router();
 
 // GET /api/courses  — cache per query string so filters still work
-router.get('/', authenticate, cacheMiddleware('courses:list', 60), async (req, res, next) => {
+router.get('/', authenticate, async (req, res, next) => {
     try {
         const { category, difficulty, search, page = 1, limit = 12 } = req.query;
+
+        // Cache key varies by every filter so different filter combinations don't collide
+        const cacheKey = `cache:courses:list:${category || ''}:${difficulty || ''}:${encodeURIComponent(search || '')}:${page}:${limit}`;
+        const cached = await cacheGet(cacheKey);
+        if (cached !== null) {
+            res.setHeader('X-Cache', 'HIT');
+            return res.json(cached);
+        }
         const offset = (parseInt(page) - 1) * parseInt(limit);
         const params = [];
         let idx = 1;
@@ -43,7 +51,12 @@ router.get('/', authenticate, cacheMiddleware('courses:list', 60), async (req, r
             LIMIT $${idx++} OFFSET $${idx++}`;
 
         const result = await query(sql, params);
-        res.json({ courses: result.rows, page: Number(page), limit: Number(limit) });
+        const payload = { courses: result.rows, page: Number(page), limit: Number(limit) };
+
+        // Store in cache (60 s TTL) and mark as MISS
+        res.setHeader('X-Cache', 'MISS');
+        await cacheSet(cacheKey, payload, 60);
+        res.json(payload);
     } catch (err) { next(err); }
 });
 
@@ -137,7 +150,7 @@ router.post('/', authenticate, authorize('instructor', 'admin'), async (req, res
              VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'draft') RETURNING *`,
             [req.user.id, title, description, difficulty_level, category, tags, thumbnail_url, price]
         );
-        await invalidateCache('courses:list', 'admin:dashboard');
+        await invalidateCache('courses:list:*', 'admin:dashboard');
         res.status(201).json({ course: result.rows[0] });
     } catch (err) { next(err); }
 });
@@ -190,7 +203,7 @@ router.post('/:id/publish', authenticate, authorize('instructor', 'admin'), asyn
             ['published', id]
         );
 
-        await invalidateCache('courses:list', 'admin:dashboard');
+        await invalidateCache('courses:list:*', 'admin:dashboard');
         res.json({ course: result.rows[0] });
     } catch (err) { next(err); }
 });
@@ -326,7 +339,7 @@ router.put('/:id', authenticate, authorize('instructor', 'admin'), async (req, r
             [title, description, difficulty_level, category, status, thumbnail_url, id, req.user.id, req.user.role]
         );
         if (!result.rows.length) return res.status(404).json({ error: 'Course not found or unauthorized' });
-        await invalidateCache('courses:list', 'admin:dashboard');
+        await invalidateCache('courses:list:*', 'admin:dashboard');
         res.json({ course: result.rows[0] });
     } catch (err) { next(err); }
 });
@@ -391,7 +404,7 @@ router.delete('/:id', authenticate, authorize('instructor', 'admin'), async (req
         }
 
         await query('DELETE FROM courses WHERE id = $1', [id]);
-        await invalidateCache('courses:list', 'admin:dashboard');
+        await invalidateCache('courses:list:*', 'admin:dashboard');
         res.json({ message: 'Course deleted successfully' });
     } catch (err) { next(err); }
 });

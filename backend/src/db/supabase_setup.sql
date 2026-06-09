@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS assignment_submissions (
   graded_at TIMESTAMP,
   graded_by UUID REFERENCES users(id),
   created_at TIMESTAMP DEFAULT NOW(),
-  UNIQUE(assignment_id, student_id)
+  UNIQUE(assignment_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS assessments (
