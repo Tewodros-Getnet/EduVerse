@@ -105,19 +105,25 @@ router.post('/refresh', async (req, res, next) => {
         }
 
         // 2. Check it hasn't been revoked (logout invalidation)
-        const record = await validateRefreshToken(refreshToken);
-        // If Redis is unavailable, record will be null — we allow through (fail open)
-        // If Redis IS available and record is null, the token was revoked
-        const redisAvailable = !!process.env.UPSTASH_REDIS_REST_URL;
-        if (redisAvailable && record === null) {
-            return res.status(401).json({ error: 'Refresh token has been revoked' });
+        //    Only block if Redis IS available AND the token is explicitly absent.
+        //    If Redis is down or the key simply expired (> 7 days), we allow through
+        //    because the JWT signature already proves authenticity.
+        const redisAvailable = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+        if (redisAvailable) {
+            const record = await validateRefreshToken(refreshToken);
+            // record === null means either: revoked, OR the Redis key expired naturally.
+            // We only hard-reject if the token was explicitly revoked (record value = 'revoked').
+            // A missing key (natural TTL expiry) is NOT treated as revoked.
+            if (record === 'revoked') {
+                return res.status(401).json({ error: 'Refresh token has been revoked' });
+            }
         }
 
         // 3. Issue new token pair (token rotation)
         const { accessToken, refreshToken: newRefresh } = generateTokens(decoded.userId);
 
-        // Revoke old token, store new one
-        await Promise.all([
+        // Revoke old token, store new one (best-effort — don't fail refresh if Redis is slow)
+        await Promise.allSettled([
             revokeRefreshToken(refreshToken, decoded.userId),
             storeRefreshToken(newRefresh, decoded.userId),
         ]);

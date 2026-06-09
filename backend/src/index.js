@@ -106,4 +106,23 @@ httpServer.listen(PORT, () => {
     console.log(`EduVerse backend running on port ${PORT}`);
 });
 
+// ── Keep-alive ping (Render free tier spins down after 15 min inactivity) ────
+// Pings the health endpoint every 10 minutes so the instance stays warm.
+// Only runs in production to avoid noise in local dev.
+if (process.env.NODE_ENV === 'production') {
+    const SELF_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+    setInterval(async () => {
+        try {
+            const https = require('https');
+            const http = require('http');
+            const client = SELF_URL.startsWith('https') ? https : http;
+            client.get(`${SELF_URL}/health`, (res) => {
+                console.log(`[keep-alive] ping → ${res.statusCode}`);
+            }).on('error', (err) => {
+                console.warn('[keep-alive] ping failed:', err.message);
+            });
+        } catch { /* ignore */ }
+    }, 10 * 60 * 1000); // every 10 minutes
+}
+
 module.exports = { app, io };

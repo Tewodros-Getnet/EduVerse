@@ -284,7 +284,8 @@ async function storeRefreshToken(token, userId) {
     const hash = _shortHash(token);
     try {
         await Promise.all([
-            r.set(P + `rt:${hash}`, JSON.stringify({ userId, issuedAt: Date.now() }), { ex: REFRESH_TTL }),
+            // Store as 'active' so we can distinguish from 'revoked'
+            r.set(P + `rt:${hash}`, JSON.stringify({ userId, issuedAt: Date.now(), status: 'active' }), { ex: REFRESH_TTL }),
             r.sadd(P + `rt:user:${userId}`, hash),
             r.expire(P + `rt:user:${userId}`, REFRESH_TTL),
         ]);
@@ -292,14 +293,14 @@ async function storeRefreshToken(token, userId) {
 }
 
 /**
- * Returns { userId, issuedAt } if the token is valid, or null if revoked / never issued.
+ * Returns the stored record if the token is active, or null if not found / expired.
  */
 async function validateRefreshToken(token) {
     return get(`rt:${_shortHash(token)}`);
 }
 
 /**
- * Revoke a single refresh token (normal logout).
+ * Revoke a single refresh token (normal logout) — marks it as 'revoked'.
  */
 async function revokeRefreshToken(token, userId) {
     const hash = _shortHash(token);
@@ -307,7 +308,9 @@ async function revokeRefreshToken(token, userId) {
     if (!r) return;
     try {
         await Promise.all([
-            r.del(P + `rt:${hash}`),
+            // Mark as revoked with a short TTL so the key lingers long enough
+            // to reject any concurrent retry attempts (30 minutes)
+            r.set(P + `rt:${hash}`, 'revoked', { ex: 30 * 60 }),
             userId ? r.srem(P + `rt:user:${userId}`, hash) : Promise.resolve(),
         ]);
     } catch { /* silent */ }
