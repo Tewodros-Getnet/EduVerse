@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 
 const AuthContext = createContext(null);
@@ -7,13 +7,30 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Defined before useEffect so it can be called inside it safely
+    const logout = useCallback(async () => {
+        const refreshToken = localStorage.getItem('admin_refreshToken');
+        try {
+            await api.post('/auth/logout', { refreshToken });
+        } catch {
+            // Ignore — clear local state regardless
+        }
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_refreshToken');
+        setUser(null);
+    }, []);
+
     useEffect(() => {
         const token = localStorage.getItem('admin_token');
-        if (token) {
+        if (token && token !== 'undefined' && token !== 'null') {
+            // Always re-fetch full user profile on mount so avatar/bio/etc are fresh after refresh
             api.get('/auth/me')
                 .then(res => {
-                    if (res.data.user.role === 'admin') setUser(res.data.user);
-                    else logout();
+                    if (res.data.user?.role === 'admin') {
+                        setUser(res.data.user);
+                    } else {
+                        logout();
+                    }
                 })
                 .catch(() => {
                     localStorage.removeItem('admin_token');
@@ -23,7 +40,7 @@ export function AuthProvider({ children }) {
         } else {
             setLoading(false);
         }
-    }, []);
+    }, [logout]);
 
     const login = async (email, password) => {
         const res = await api.post('/auth/login', { email, password, role: 'admin' });
@@ -36,20 +53,12 @@ export function AuthProvider({ children }) {
         return res.data.user;
     };
 
-    const logout = async () => {
-        const refreshToken = localStorage.getItem('admin_refreshToken');
-        try {
-            await api.post('/auth/logout', { refreshToken });
-        } catch {
-            // Ignore — clear local state regardless
-        }
-        localStorage.removeItem('admin_token');
-        localStorage.removeItem('admin_refreshToken');
-        setUser(null);
+    const updateUser = (updatedFields) => {
+        setUser(prev => prev ? { ...prev, ...updatedFields } : prev);
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, updateUser, loading }}>
             {children}
         </AuthContext.Provider>
     );
