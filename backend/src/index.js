@@ -70,6 +70,17 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(rateLimiter);
 
+// Prevent browser from caching authenticated API responses.
+// Without this, the browser returns 304 Not Modified for user-specific
+// endpoints (analytics, progress, courses) even after login/logout,
+// serving stale data from the previous session.
+app.use('/api', (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
