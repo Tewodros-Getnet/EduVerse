@@ -139,7 +139,7 @@ export default function StudentLiveClass() {
             setJoined(true);
 
             const token = localStorage.getItem('token');
-            const socketUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace('/api', '');
+            const socketUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
             const socket = io(socketUrl, {
                 auth: { token },
             });
@@ -396,19 +396,39 @@ export default function StudentLiveClass() {
                     <div className="text-5xl mb-4">📹</div>
                     <h1 className="text-xl font-bold text-white mb-2">{session.title}</h1>
                     <p className="text-gray-400 text-sm mb-1">{session.course_title}</p>
+                    <p className="text-gray-400 text-xs mb-1">{session.instructor_name && `by ${session.instructor_name}`}</p>
                     <p className="text-gray-500 text-xs mb-6">
                         {session.status === 'live' ? '🔴 Live now' : `Scheduled: ${new Date(session.scheduled_at).toLocaleString()}`}
                     </p>
                     {session.status === 'live' ? (
-                        <button onClick={joinSession}
-                            className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-semibold hover:opacity-90 transition">
-                            Join Live Class
-                        </button>
+                        <div className="space-y-3">
+                            {/* In-app WebRTC join */}
+                            <button onClick={joinSession}
+                                className="w-full px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-semibold hover:opacity-90 transition">
+                                📹 Join with In-App Video
+                            </button>
+                            {/* External meeting URL fallback */}
+                            {session.meeting_url && (
+                                <a
+                                    href={session.meeting_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block w-full px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl text-white font-semibold hover:opacity-90 transition text-center"
+                                >
+                                    🔗 Join via External Meeting Link
+                                </a>
+                            )}
+                        </div>
                     ) : (
                         <div>
                             <p className="text-yellow-400 text-sm mb-4">This session hasn't started yet.</p>
-                            <Link to="/student" className="px-6 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-300 text-sm hover:text-white transition">
-                                Back to Dashboard
+                            {session.meeting_url && (
+                                <p className="text-gray-400 text-xs mb-4">
+                                    Meeting link will be available once the session starts.
+                                </p>
+                            )}
+                            <Link to="/student/live" className="px-6 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-300 text-sm hover:text-white transition">
+                                Back to Live Classes
                             </Link>
                         </div>
                     )}
