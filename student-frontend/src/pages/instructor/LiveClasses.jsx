@@ -66,7 +66,10 @@ export default function InstructorLiveClasses() {
     const handleCreateSession = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/live/sessions', formData);
+            await api.post('/live/sessions', {
+                ...formData,
+                course_id: formData.courseId,  // backend expects course_id
+            });
             toast.success('Live session created successfully!');
             setShowCreateForm(false);
             setFormData({
