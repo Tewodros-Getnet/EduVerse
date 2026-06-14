@@ -353,13 +353,23 @@ export default function InstructorLiveClasses() {
                                 </button>
                             )}
                             {session.status === 'live' && (
-                                <button
-                                    onClick={() => handleEndSession(session.id)}
-                                    disabled={endingSession === session.id}
-                                    className="px-3 py-2.5 bg-red-600/20 border border-red-500/30 rounded-xl text-red-300 text-sm font-medium hover:bg-red-600/30 transition disabled:opacity-50"
-                                >
-                                    {endingSession === session.id ? '⏳' : '⏹️ End'}
-                                </button>
+                                <>
+                                    <a
+                                        href={`/instructor/live/${session.id}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="px-3 py-2.5 bg-cyan-600/20 border border-cyan-500/30 rounded-xl text-cyan-300 text-sm font-medium hover:bg-cyan-600/30 transition"
+                                    >
+                                        📹 Join as Host
+                                    </a>
+                                    <button
+                                        onClick={() => handleEndSession(session.id)}
+                                        disabled={endingSession === session.id}
+                                        className="px-3 py-2.5 bg-red-600/20 border border-red-500/30 rounded-xl text-red-300 text-sm font-medium hover:bg-red-600/30 transition disabled:opacity-50"
+                                    >
+                                        {endingSession === session.id ? '⏳' : '⏹️ End'}
+                                    </button>
+                                </>
                             )}
                             <button
                                 onClick={() => {

@@ -84,7 +84,7 @@ function AppRoutes() {
                 <Route path="quizzes" element={<InstructorQuizzes />} />
                 <Route path="students" element={<InstructorStudents />} />
                 <Route path="live-classes" element={<InstructorLiveClasses />} />
-                <Route path="live/:id" element={<InstructorLiveClasses />} />
+                <Route path="live/:id" element={<StudentLiveClass />} />
                 <Route path="analytics" element={<InstructorAnalytics />} />
                 <Route path="ai-tools" element={<InstructorAITools />} />
                 <Route path="profile" element={<InstructorProfile />} />
