@@ -8,7 +8,6 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPw, setShowPw] = useState(false);
-    const [role, setRole] = useState('student');
     const [loading, setLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const { login } = useAuth();
@@ -19,7 +18,7 @@ export default function Login() {
         setTimeout(() => setIsVisible(true), 100);
     }, []);
 
-    const handleLogin = async (selectedRole = role) => {
+    const handleLogin = async (selectedRole) => {
         if (!email || !password) return toast.error('Please fill in all fields');
         setLoading(true);
         try {
@@ -38,7 +37,7 @@ export default function Login() {
     };
 
     const handleKey = (e) => {
-        if (e.key === 'Enter') handleLogin();
+        if (e.key === 'Enter') handleLogin('student');
     };
 
     return (
@@ -54,19 +53,6 @@ export default function Login() {
                     </div>
                     <h1 className="text-3xl font-bold text-[var(--text)] animate-gradient-text">Welcome Back</h1>
                     <p className="text-[var(--muted)] mt-1">Sign in to continue your learning journey</p>
-                </div>
-
-                <div className="flex items-center justify-center gap-2 mb-6">
-                    {['student', 'instructor'].map((option) => (
-                        <button
-                            key={option}
-                            type="button"
-                            onClick={() => setRole(option)}
-                            className={`px-4 py-2 rounded-full border text-sm font-medium transition-all duration-300 ${role === option ? 'bg-purple-500 text-white border-transparent scale-105 shadow-lg shadow-purple-500/30' : 'bg-[var(--surface-2)] text-[var(--text)] border-[var(--border)] hover:bg-[var(--surface)] hover:scale-105'}`}
-                        >
-                            {option === 'student' ? 'Student' : 'Instructor'}
-                        </button>
-                    ))}
                 </div>
 
                 <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 space-y-5 shadow-xl shadow-black/10 hover:border-purple-500/30 transition-colors duration-300">
