@@ -105,7 +105,7 @@ router.get('/instructor/students/:courseId', authenticate, authorize('instructor
 });
 
 // GET /api/analytics/student/dashboard
-router.get('/student/dashboard', authenticate, authorize('student'), async (req, res, next) => {
+router.get('/student/dashboard', authenticate, authorize('student', 'instructor'), async (req, res, next) => {
     try {
         const [enrollments, completedCourses, quizStats, badges, streak] = await Promise.all([
             query('SELECT COUNT(*) FROM enrollments WHERE student_id = $1', [req.user.id]),
@@ -136,7 +136,7 @@ router.get('/student/dashboard', authenticate, authorize('student'), async (req,
 });
 
 // GET /api/analytics/student/progress?time_range=week|month|year
-router.get('/student/progress', authenticate, authorize('student'), async (req, res, next) => {
+router.get('/student/progress', authenticate, authorize('student', 'instructor'), async (req, res, next) => {
     try {
         const { time_range = 'week' } = req.query;
         const userId = req.user.id;
@@ -186,7 +186,7 @@ router.get('/student/progress', authenticate, authorize('student'), async (req, 
 });
 
 // GET /api/analytics/student/recent-activity
-router.get('/student/recent-activity', authenticate, authorize('student'), async (req, res, next) => {
+router.get('/student/recent-activity', authenticate, authorize('student', 'instructor'), async (req, res, next) => {
     try {
         const userId = req.user.id;
 
@@ -221,7 +221,7 @@ router.get('/student/recent-activity', authenticate, authorize('student'), async
 });
 
 // GET /api/analytics/student/progress/:courseId
-router.get('/student/progress/:courseId', authenticate, authorize('student'), async (req, res, next) => {
+router.get('/student/progress/:courseId', authenticate, authorize('student', 'instructor'), async (req, res, next) => {
     try {
         const [enrollment, lessons, quizzes] = await Promise.all([
             query(
