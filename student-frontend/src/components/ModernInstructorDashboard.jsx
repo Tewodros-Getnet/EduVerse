@@ -71,7 +71,7 @@ export default function ModernInstructorDashboard() {
             : `$${Math.round(totalRevenue).toLocaleString()}`;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-6 space-y-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4 md:p-6 space-y-8 overflow-x-hidden">
             {/* Welcome Section */}
             <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl shadow-lg p-8 text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-5 rounded-full -mr-20 -mt-20"></div>
@@ -117,7 +117,7 @@ export default function ModernInstructorDashboard() {
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left Column - Courses & Actions */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-6 min-w-0">
                     {/* Quick Actions */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <ActionCard
@@ -204,7 +204,7 @@ export default function ModernInstructorDashboard() {
                 </div>
 
                 {/* Right Column - Sidebar Stats */}
-                <div className="space-y-6">
+                <div className="space-y-6 min-w-0">
                     {/* Performance Overview */}
                     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-6">📈 Performance</h3>
@@ -248,7 +248,7 @@ export default function ModernInstructorDashboard() {
                     {/* AI Tools Access */}
                     <Link
                         to="/instructor/ai-tools"
-                        className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-2xl p-6 hover:shadow-lg transition-all group"
+                        className="block bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-2xl p-6 hover:shadow-lg transition-all group"
                     >
                         <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🤖</div>
                         <h3 className="font-bold mb-1">AI Tools</h3>
