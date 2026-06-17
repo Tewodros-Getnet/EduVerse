@@ -138,7 +138,7 @@ export default function StudentLiveClass() {
             await api.post(`/live/sessions/${id}/join`);
             setJoined(true);
 
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('student_token') || localStorage.getItem('instructor_token');
             const socketUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
             const socket = io(socketUrl, {
                 auth: { token },

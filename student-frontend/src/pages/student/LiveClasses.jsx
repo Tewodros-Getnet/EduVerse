@@ -50,7 +50,11 @@ export default function StudentLiveClasses() {
     const filterSessions = () => {
         const now = new Date();
         return sessions.filter(session => {
-            if (activeTab === 'upcoming') return new Date(session.scheduled_at) > now && session.status === 'scheduled';
+            if (activeTab === 'upcoming') {
+                // Show both scheduled future sessions AND currently live sessions
+                return session.status === 'live' ||
+                    (new Date(session.scheduled_at) > now && session.status === 'scheduled');
+            }
             if (activeTab === 'live') return session.status === 'live';
             return session.status === 'completed' || session.status === 'ended';
         });
