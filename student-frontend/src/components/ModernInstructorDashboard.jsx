@@ -115,7 +115,7 @@ export default function ModernInstructorDashboard() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-hidden">
                 {/* Left Column - Courses & Actions */}
                 <div className="lg:col-span-2 space-y-6 min-w-0">
                     {/* Quick Actions */}
@@ -204,7 +204,7 @@ export default function ModernInstructorDashboard() {
                 </div>
 
                 {/* Right Column - Sidebar Stats */}
-                <div className="space-y-6 min-w-0">
+                <div className="space-y-6 min-w-0 overflow-hidden">
                     {/* Performance Overview */}
                     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-6">📈 Performance</h3>
@@ -248,11 +248,11 @@ export default function ModernInstructorDashboard() {
                     {/* AI Tools Access */}
                     <Link
                         to="/instructor/ai-tools"
-                        className="block bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-2xl p-6 hover:shadow-lg transition-all group"
+                        className="block w-full overflow-hidden bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-2xl p-6 hover:shadow-lg transition-all group"
                     >
                         <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🤖</div>
-                        <h3 className="font-bold mb-1">AI Tools</h3>
-                        <p className="text-sm text-indigo-100">Generate quizzes, content, & feedback</p>
+                        <h3 className="font-bold text-lg mb-1">AI Tools</h3>
+                        <p className="text-sm text-indigo-100">Generate quizzes, content &amp; feedback</p>
                     </Link>
 
                     {/* Student Management */}
@@ -266,14 +266,6 @@ export default function ModernInstructorDashboard() {
                         </div>
                     </div>
 
-                    {/* Recent Feedback */}
-                    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-2xl p-6 border border-blue-200 dark:border-blue-800">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-3">💬 Student Feedback</h3>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 italic">
-                            "Your course is excellent! I learned so much." - Student
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">⭐⭐⭐⭐⭐ 5/5</p>
-                    </div>
                 </div>
             </div>
         </div>
