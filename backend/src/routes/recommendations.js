@@ -5,7 +5,7 @@ const { authenticate, authorize } = require('../middleware/auth');
 const router = express.Router();
 
 // GET /api/recommendations/next
-router.get('/next', authenticate, authorize('student', 'instructor'), async (req, res, next) => {
+router.get('/next', authenticate, authorize('student'), async (req, res, next) => {
     try {
         const { course_id } = req.query;
 

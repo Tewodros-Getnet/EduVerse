@@ -6,7 +6,7 @@ const api = axios.create({ baseURL: BASE_URL });
 
 // ── Request: attach current access token ─────────────────────────────────────
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('student_token') || localStorage.getItem('instructor_token');
     // Only attach header if we actually have a real token string
     if (token && token !== 'undefined' && token !== 'null') {
         config.headers.Authorization = `Bearer ${token}`;
@@ -35,11 +35,17 @@ api.interceptors.response.use(
             !original.url?.includes('/auth/refresh') &&
             !original.url?.includes('/auth/login')
         ) {
-            const refreshToken = localStorage.getItem('refreshToken');
+            const studentRefresh = localStorage.getItem('student_refreshToken');
+            const instructorRefresh = localStorage.getItem('instructor_refreshToken');
+            const refreshToken = studentRefresh || instructorRefresh;
+            const isStudent = !!studentRefresh;
 
             // No refresh token stored → force login immediately
             if (!refreshToken) {
-                localStorage.removeItem('token');
+                localStorage.removeItem('student_token');
+                localStorage.removeItem('student_refreshToken');
+                localStorage.removeItem('instructor_token');
+                localStorage.removeItem('instructor_refreshToken');
                 window.location.href = '/login';
                 return Promise.reject(err);
             }
@@ -61,8 +67,11 @@ api.interceptors.response.use(
                 const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
                 const { accessToken, refreshToken: newRefresh } = data;
 
-                localStorage.setItem('token', accessToken);
-                localStorage.setItem('refreshToken', newRefresh);
+                // Write new tokens back to the same role key that was used
+                const tokenKey = isStudent ? 'student_token' : 'instructor_token';
+                const refreshKey = isStudent ? 'student_refreshToken' : 'instructor_refreshToken';
+                localStorage.setItem(tokenKey, accessToken);
+                localStorage.setItem(refreshKey, newRefresh);
 
                 api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
                 original.headers.Authorization = `Bearer ${accessToken}`;
@@ -71,8 +80,10 @@ api.interceptors.response.use(
                 return api(original); // retry the original request
             } catch (refreshErr) {
                 processQueue(refreshErr, null);
-                localStorage.removeItem('token');
-                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('student_token');
+                localStorage.removeItem('student_refreshToken');
+                localStorage.removeItem('instructor_token');
+                localStorage.removeItem('instructor_refreshToken');
                 window.location.href = '/login';
                 return Promise.reject(refreshErr);
             } finally {

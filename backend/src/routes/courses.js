@@ -49,7 +49,7 @@ router.get('/', authenticate, async (req, res, next) => {
 });
 
 // GET /api/courses/my/enrolled  — must be before /:id
-router.get('/my/enrolled', authenticate, authorize('student', 'instructor'), async (req, res, next) => {
+router.get('/my/enrolled', authenticate, authorize('student'), async (req, res, next) => {
     try {
         const result = await query(
             `SELECT c.*, e.progress_percent, e.enrolled_at, u.name as instructor_name
@@ -93,7 +93,7 @@ router.get('/my/teaching', authenticate, authorize('instructor'), async (req, re
 });
 
 // GET /api/courses/enrolled - Get student's enrolled courses
-router.get('/enrolled', authenticate, authorize('student', 'instructor'), async (req, res, next) => {
+router.get('/enrolled', authenticate, authorize('student'), async (req, res, next) => {
     try {
         const result = await query(
             `SELECT c.*, e.progress_percent, e.enrolled_at, u.name as instructor_name

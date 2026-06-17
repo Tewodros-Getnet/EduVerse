@@ -3,32 +3,45 @@ import api from '../api/axios';
 
 const AuthContext = createContext(null);
 
+// Determine which localStorage key to use based on role
+const getKeys = (role) => ({
+    tokenKey: role === 'instructor' ? 'instructor_token' : 'student_token',
+    refreshKey: role === 'instructor' ? 'instructor_refreshToken' : 'student_refreshToken',
+});
+
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Defined before useEffect so it can be called inside it safely
     const logout = useCallback(async () => {
-        const refreshToken = localStorage.getItem('refreshToken');
+        const refreshToken = localStorage.getItem('student_refreshToken') ||
+                             localStorage.getItem('instructor_refreshToken');
         try {
-            await api.post('/auth/logout', { refreshToken });
+            if (refreshToken) await api.post('/auth/logout', { refreshToken });
         } catch {
             // Ignore — clear local state regardless
         }
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+        // Clear all role-specific keys
+        localStorage.removeItem('student_token');
+        localStorage.removeItem('student_refreshToken');
+        localStorage.removeItem('instructor_token');
+        localStorage.removeItem('instructor_refreshToken');
         setUser(null);
     }, []);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        // Try student token first, then instructor token
+        const token = localStorage.getItem('student_token') ||
+                      localStorage.getItem('instructor_token');
         if (token && token !== 'undefined' && token !== 'null') {
             // Always re-fetch full user profile on mount so avatar/bio/etc are fresh after refresh
             api.get('/auth/me')
                 .then(res => setUser(res.data.user))
                 .catch(() => {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('refreshToken');
+                    localStorage.removeItem('student_token');
+                    localStorage.removeItem('student_refreshToken');
+                    localStorage.removeItem('instructor_token');
+                    localStorage.removeItem('instructor_refreshToken');
                 })
                 .finally(() => setLoading(false));
         } else {
@@ -38,9 +51,10 @@ export function AuthProvider({ children }) {
 
     const login = async (email, password, role) => {
         const res = await api.post('/auth/login', { email, password, role });
-        localStorage.setItem('token', res.data.accessToken);
+        const { tokenKey, refreshKey } = getKeys(res.data.user.role);
+        localStorage.setItem(tokenKey, res.data.accessToken);
         if (res.data.refreshToken) {
-            localStorage.setItem('refreshToken', res.data.refreshToken);
+            localStorage.setItem(refreshKey, res.data.refreshToken);
         }
         setUser(res.data.user);
         return res.data.user;
@@ -48,9 +62,10 @@ export function AuthProvider({ children }) {
 
     const register = async (name, email, password, role) => {
         const res = await api.post('/auth/register', { name, email, password, role });
-        localStorage.setItem('token', res.data.accessToken);
+        const { tokenKey, refreshKey } = getKeys(res.data.user.role);
+        localStorage.setItem(tokenKey, res.data.accessToken);
         if (res.data.refreshToken) {
-            localStorage.setItem('refreshToken', res.data.refreshToken);
+            localStorage.setItem(refreshKey, res.data.refreshToken);
         }
         setUser(res.data.user);
         return res.data.user;
