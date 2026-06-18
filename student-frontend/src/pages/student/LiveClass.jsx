@@ -34,6 +34,7 @@ export default function StudentLiveClass() {
     const [joined, setJoined] = useState(false);
     const [localStream, setLocalStream] = useState(null);
     const [remoteStreams, setRemoteStreams] = useState({});
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const chatEndRef = useRef(null);
     const localVideoRef = useRef(null);
     const localStreamRef = useRef(null);
@@ -438,14 +439,15 @@ export default function StudentLiveClass() {
     }
 
     return (
-        <div className="h-[calc(100vh-80px)] flex flex-col bg-[#0d0d1a]">
-            <div className="flex items-center justify-between px-4 py-2 bg-[#12122a] border-b border-purple-900/30">
-                <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                    <span className="text-sm font-medium text-white">{session.title}</span>
-                    <span className="text-xs text-gray-400">({session.course_title})</span>
+        <div className="h-[calc(100vh-80px)] flex flex-col bg-[#0d0d1a] relative">
+            {/* Top bar */}
+            <div className="flex items-center justify-between px-4 py-2 bg-[#12122a] border-b border-purple-900/30 flex-shrink-0">
+                <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse flex-shrink-0" />
+                    <span className="text-sm font-medium text-white truncate">{session.title}</span>
+                    <span className="text-xs text-gray-400 hidden sm:block truncate">({session.course_title})</span>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="text-sm text-gray-400">👥 {participants.length}</span>
                     <button onClick={() => navigate('/student')}
                         className="px-3 py-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-sm hover:bg-red-500/30 transition">
@@ -454,101 +456,113 @@ export default function StudentLiveClass() {
                 </div>
             </div>
 
+            {/* Main area */}
             <div className="flex-1 flex overflow-hidden">
-                <div className="flex-1 flex flex-col p-4 gap-4">
-                    {/* Video Grid - Responsive layout */}
+                {/* Video + Controls */}
+                <div className="flex-1 flex flex-col p-2 sm:p-4 gap-2 sm:gap-4 min-w-0">
+                    {/* Video Grid */}
                     <div className="flex-1 bg-black rounded-2xl overflow-auto" style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                        gap: '1rem',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+                        gap: '0.5rem',
                         padding: '0.5rem'
                     }}>
                         {/* Local Video */}
-                        <div className="bg-black rounded-2xl overflow-hidden min-h-[250px] relative">
+                        <div className="bg-black rounded-2xl overflow-hidden min-h-[180px] sm:min-h-[250px] relative">
                             {localStream ? (
                                 <>
-                                    <video
-                                        ref={localVideoRef}
-                                        autoPlay
-                                        playsInline
-                                        muted
-                                        className="w-full h-full object-cover"
-                                    />
+                                    <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
                                     <div className="absolute bottom-2 left-2 bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
                                         {screenSharing && <span className="text-green-400">🖥️</span>}
-                                        You (Local)
+                                        You
                                     </div>
                                     {screenSharing && (
                                         <div className="absolute top-2 right-2 bg-green-500/90 px-2 py-1 rounded text-xs text-white font-medium animate-pulse">
-                                            Sharing Screen
+                                            Sharing
                                         </div>
                                     )}
                                 </>
                             ) : (
                                 <div className="h-full flex flex-col items-center justify-center text-gray-500 px-4">
-                                    <div className="text-5xl mb-3">📹</div>
-                                    <p className="text-sm">Local camera preview</p>
-                                    <p className="text-xs text-gray-400 mt-2">Allow camera and microphone access to join with video.</p>
+                                    <div className="text-4xl mb-2">📹</div>
+                                    <p className="text-xs text-gray-400 text-center">Allow camera access to show video</p>
                                 </div>
                             )}
                         </div>
 
-                        {/* Remote Videos Grid */}
+                        {/* Remote Videos */}
                         {Object.entries(remoteStreams).map(([userId, remoteData]) => (
-                            <div key={userId} className="bg-black rounded-2xl overflow-hidden min-h-[250px] relative">
-                                <video
-                                    ref={el => { if (el) remoteVideoRefs.current[userId] = el; }}
-                                    autoPlay
-                                    playsInline
-                                    className="w-full h-full object-cover"
-                                />
+                            <div key={userId} className="bg-black rounded-2xl overflow-hidden min-h-[180px] sm:min-h-[250px] relative">
+                                <video ref={el => { if (el) remoteVideoRefs.current[userId] = el; }} autoPlay playsInline className="w-full h-full object-cover" />
                                 <div className="absolute bottom-2 left-2 bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white">
                                     {remoteData.name}
                                 </div>
                             </div>
                         ))}
 
-                        {/* Empty State */}
                         {Object.keys(remoteStreams).length === 0 && localStream && (
-                            <div className="h-[150px] bg-[#1a1a35] rounded-2xl flex items-center justify-center text-gray-400 text-xs col-span-full">
-                                Waiting for other participants to join...
+                            <div className="h-[120px] sm:h-[150px] bg-[#1a1a35] rounded-2xl flex items-center justify-center text-gray-400 text-xs col-span-full">
+                                Waiting for others to join...
                             </div>
                         )}
                     </div>
 
                     {/* Controls */}
-                    <div className="flex items-center justify-center gap-4 py-2">
+                    <div className="flex items-center justify-center gap-2 sm:gap-4 py-1 sm:py-2 flex-wrap">
                         {[
                             { icon: videoOn ? '📹' : '📷', label: 'Video', action: toggleVideo, active: videoOn },
                             { icon: micOn ? '🎤' : '🔇', label: 'Mic', action: toggleMic, active: micOn },
-                            { icon: screenSharing ? '🛑' : '🖥️', label: screenSharing ? 'Stop Share' : 'Share Screen', action: toggleScreenShare, active: !screenSharing, highlight: screenSharing },
-                            { icon: handRaised ? '✋' : '🖐️', label: handRaised ? 'Lower Hand' : 'Raise Hand', action: toggleHand, active: !handRaised },
-                            { icon: '💬', label: 'Chat', action: () => setTab('chat') },
-                            { icon: '👥', label: 'People', action: () => setTab('participants') },
+                            { icon: screenSharing ? '🛑' : '🖥️', label: screenSharing ? 'Stop' : 'Share', action: toggleScreenShare, active: !screenSharing, highlight: screenSharing },
+                            { icon: handRaised ? '✋' : '🖐️', label: handRaised ? 'Lower' : 'Hand', action: toggleHand, active: !handRaised },
+                            { icon: '💬', label: 'Chat', action: () => { setTab('chat'); setSidebarOpen(true); } },
+                            { icon: '👥', label: 'People', action: () => { setTab('participants'); setSidebarOpen(true); } },
                         ].map(ctrl => (
                             <button key={ctrl.label} onClick={ctrl.action}
-                                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition text-sm ${
+                                className={`flex flex-col items-center gap-0.5 px-2 sm:px-3 py-2 rounded-xl transition ${
                                     ctrl.highlight
                                         ? 'bg-green-500/30 text-green-300 border border-green-500/40 animate-pulse'
                                         : ctrl.active === false
                                         ? 'bg-red-500/20 text-red-400'
                                         : 'bg-[#12122a] text-gray-300 hover:bg-[#1a1a35] hover:text-white'
                                 }`}>
-                                <span className="text-xl">{ctrl.icon}</span>
-                                <span className="text-xs">{ctrl.label}</span>
+                                <span className="text-lg sm:text-xl">{ctrl.icon}</span>
+                                <span className="text-xs hidden sm:block">{ctrl.label}</span>
                             </button>
                         ))}
                     </div>
                 </div>
 
-                <div className="w-72 bg-[#12122a] border-l border-purple-900/30 flex flex-col">
-                    <div className="flex border-b border-purple-900/30">
+                {/* Side Panel — fixed on desktop, drawer on mobile */}
+                {/* Mobile overlay backdrop */}
+                {sidebarOpen && (
+                    <div
+                        className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
+
+                {/* Panel itself */}
+                <div className={`
+                    bg-[#12122a] border-l border-purple-900/30 flex flex-col
+                    lg:relative lg:w-72 lg:translate-x-0 lg:flex
+                    fixed right-0 top-0 bottom-0 w-72 z-40 transition-transform duration-300
+                    ${sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+                `}>
+                    {/* Panel header with tabs + close button */}
+                    <div className="flex border-b border-purple-900/30 flex-shrink-0">
                         {['chat', 'participants'].map(t => (
                             <button key={t} onClick={() => setTab(t)}
                                 className={`flex-1 py-3 text-sm font-medium capitalize transition ${tab === t ? 'text-white border-b-2 border-purple-500' : 'text-gray-400 hover:text-white'}`}>
-                                {t === 'chat' ? `💬 Chat` : `👥 People (${participants.length})`}
+                                {t === 'chat' ? `💬 Chat` : `👥 (${participants.length})`}
                             </button>
                         ))}
+                        {/* Close button — mobile only */}
+                        <button
+                            onClick={() => setSidebarOpen(false)}
+                            className="lg:hidden px-3 py-3 text-gray-400 hover:text-white transition text-lg"
+                        >
+                            ✕
+                        </button>
                     </div>
 
                     {tab === 'chat' ? (
@@ -568,7 +582,7 @@ export default function StudentLiveClass() {
                                 ))}
                                 <div ref={chatEndRef} />
                             </div>
-                            <form onSubmit={sendMessage} className="p-3 border-t border-purple-900/30 flex gap-2">
+                            <form onSubmit={sendMessage} className="p-3 border-t border-purple-900/30 flex gap-2 flex-shrink-0">
                                 <input value={message} onChange={e => setMessage(e.target.value)} placeholder="Type a message..."
                                     className="flex-1 bg-[#1a1a35] border border-purple-900/40 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
                                 <button type="submit" className="px-3 py-2 bg-purple-600 rounded-xl text-white text-sm hover:bg-purple-500 transition">→</button>
