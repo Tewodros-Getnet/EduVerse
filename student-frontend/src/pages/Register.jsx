@@ -20,8 +20,14 @@ export default function Register() {
         if (form.password.length < 6) return toast.error('Password must be at least 6 characters');
         setLoading(true);
         try {
-            const user = await register(form.name, form.email, form.password, form.role);
-            navigate(user.role === 'student' ? '/student' : '/instructor');
+            const res = await import('../api/axios').then(m => m.default.post('/auth/register', form));
+            // Show dev OTP in console if no SendGrid key configured
+            if (res.data.dev_otp) {
+                console.log('%c[DEV] OTP:', 'color:orange;font-weight:bold', res.data.dev_otp);
+                toast(`Dev mode — OTP: ${res.data.dev_otp}`, { icon: '🔑', duration: 10000 });
+            }
+            toast.success('OTP sent! Check your email.');
+            navigate(`/verify-otp?userId=${res.data.userId}`);
         } catch (err) {
             toast.error(err.response?.data?.error || 'Registration failed');
         } finally { setLoading(false); }

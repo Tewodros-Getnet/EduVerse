@@ -30,7 +30,14 @@ export default function Login() {
                 navigate('/login');
             }
         } catch (err) {
-            toast.error(err.response?.data?.error || 'Login failed');
+            const data = err.response?.data;
+            // Handle unverified email — redirect to OTP page
+            if (data?.needsVerification) {
+                toast.error('Please verify your email first.');
+                navigate(`/verify-otp?userId=${data.userId}`);
+                return;
+            }
+            toast.error(data?.error || 'Login failed');
         } finally {
             setLoading(false);
         }
