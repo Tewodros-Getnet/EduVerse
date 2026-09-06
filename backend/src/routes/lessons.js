@@ -98,10 +98,13 @@ router.post('/', authenticate, authorize('instructor', 'admin'), async (req, res
             return res.status(403).json({ error: 'Unauthorized' });
         }
 
+        const parsedDuration = duration_minutes !== '' && duration_minutes != null ? parseInt(duration_minutes) : null;
+        const parsedOrder = order_index !== '' && order_index != null ? parseInt(order_index) : null;
+
         const result = await query(
             `INSERT INTO lessons (course_id, title, text_content, content_type, video_url, pdf_url, duration_minutes, order_index)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-            [course_id, title, text_content, content_type || 'text', video_url, pdf_url, duration_minutes, order_index]
+            [course_id, title, text_content, content_type || 'text', video_url || null, pdf_url || null, parsedDuration, parsedOrder]
         );
         res.status(201).json({ lesson: result.rows[0] });
     } catch (err) { next(err); }
@@ -124,11 +127,14 @@ router.put('/:id', authenticate, authorize('instructor', 'admin'), async (req, r
             return res.status(403).json({ error: 'Unauthorized' });
         }
 
+        const parsedDuration = duration_minutes !== '' && duration_minutes != null ? parseInt(duration_minutes) : null;
+        const parsedOrder = order_index !== '' && order_index != null ? parseInt(order_index) : null;
+
         const result = await query(
             `UPDATE lessons SET title=$1, text_content=$2, content_type=$3, video_url=$4, pdf_url=$5,
              duration_minutes=$6, order_index=$7, updated_at=NOW()
              WHERE id=$8 RETURNING *`,
-            [title, text_content, content_type, video_url, pdf_url, duration_minutes, order_index, req.params.id]
+            [title, text_content, content_type, video_url || null, pdf_url || null, parsedDuration, parsedOrder, req.params.id]
         );
 
         if (!result.rows.length) return res.status(404).json({ error: 'Lesson not found' });
