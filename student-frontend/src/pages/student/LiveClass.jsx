@@ -40,10 +40,14 @@ export default function StudentLiveClass() {
     const localStreamRef = useRef(null);
     const remoteVideoRefs = useRef({});
 
+    const isInstructor = user?.role === 'instructor';
+    const liveListPath = isInstructor ? '/instructor/live-classes' : '/student/live';
+    const homePath = isInstructor ? '/instructor' : '/student';
+
     useEffect(() => {
         api.get(`/live/sessions/${id}`)
             .then(res => setSession(res.data.session))
-            .catch(() => { toast.error('Session not found'); navigate('/student'); });
+            .catch(() => { toast.error('Session not found'); navigate(homePath); });
     }, [id]);
 
     const setupLocalMedia = async () => {
@@ -428,7 +432,7 @@ export default function StudentLiveClass() {
                                     Meeting link will be available once the session starts.
                                 </p>
                             )}
-                            <Link to="/student/live" className="px-6 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-300 text-sm hover:text-white transition">
+                            <Link to={liveListPath} className="px-6 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-300 text-sm hover:text-white transition">
                                 Back to Live Classes
                             </Link>
                         </div>
@@ -449,7 +453,7 @@ export default function StudentLiveClass() {
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="text-sm text-gray-400">👥 {participants.length}</span>
-                    <button onClick={() => navigate('/student')}
+                    <button onClick={() => navigate(homePath)}
                         className="px-3 py-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-sm hover:bg-red-500/30 transition">
                         Leave
                     </button>
