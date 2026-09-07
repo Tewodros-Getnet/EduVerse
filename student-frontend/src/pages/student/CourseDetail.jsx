@@ -371,6 +371,30 @@ export default function CourseDetail() {
                                 </div>
                             )}
 
+                            {/* PDF Viewer — shown inline below video (or alone if no video) */}
+                            {activeLesson.pdf_url && (
+                                <div className="mb-4 rounded-xl overflow-hidden border border-purple-900/30">
+                                    {activeLesson.pdf_url.match(/\.(doc|docx)$/i) ? (
+                                        /* Word docs — use Google Docs viewer */
+                                        <iframe
+                                            src={`https://docs.google.com/gview?url=${encodeURIComponent(activeLesson.pdf_url)}&embedded=true`}
+                                            className="w-full"
+                                            style={{ height: '600px' }}
+                                            title="Document viewer"
+                                        />
+                                    ) : (
+                                        /* PDF — embed directly; browsers render it natively */
+                                        <embed
+                                            src={activeLesson.pdf_url}
+                                            type="application/pdf"
+                                            className="w-full"
+                                            style={{ height: '600px' }}
+                                            title="PDF viewer"
+                                        />
+                                    )}
+                                </div>
+                            )}
+
                             {/* Lesson Content */}
                             <div className="space-y-4">
                                 {activeLesson.text_content && (
@@ -382,9 +406,13 @@ export default function CourseDetail() {
                                 {/* Learning Resources */}
                                 <div className="flex flex-wrap gap-2">
                                     {activeLesson.pdf_url && (
-                                        <a href={activeLesson.pdf_url} target="_blank" rel="noreferrer"
+                                        <a
+                                            href={activeLesson.pdf_url}
+                                            download
+                                            target="_blank"
+                                            rel="noreferrer"
                                             className="inline-flex items-center gap-2 px-4 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-sm text-white hover:border-purple-500 transition">
-                                            📄 Download PDF
+                                            ⬇️ Download {activeLesson.pdf_url.match(/\.(doc|docx)$/i) ? 'Document' : 'PDF'}
                                         </a>
                                     )}
                                     <Link to={`/student/course-notes/${id}`}

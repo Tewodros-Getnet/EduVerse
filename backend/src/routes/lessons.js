@@ -5,10 +5,10 @@ const { createUploader } = require('../lib/cloudinary');
 
 const router = express.Router();
 
-// Cloudinary-backed multer upload (videos, PDFs, docs — up to 200 MB)
+// Cloudinary-backed multer upload (videos, PDFs — up to 200 MB)
 const upload = createUploader({
     folder: 'eduverse/lessons',
-    allowedFormats: ['mp4', 'mov', 'avi', 'mpeg', 'pdf', 'doc', 'docx'],
+    allowedFormats: ['mp4', 'mov', 'avi', 'mpeg', 'pdf'],
     resourceType: 'auto',
     fileSizeMb: 200,
 });
@@ -117,7 +117,7 @@ router.put('/:id', authenticate, authorize('instructor', 'admin'), async (req, r
 
         // Verify instructor owns the course this lesson belongs to
         const lessonCheck = await query(
-            `SELECT l.id, c.instructor_id FROM lessons l
+            `SELECT l.id, l.order_index as existing_order, c.instructor_id FROM lessons l
              JOIN courses c ON l.course_id = c.id
              WHERE l.id = $1`,
             [req.params.id]
@@ -128,7 +128,10 @@ router.put('/:id', authenticate, authorize('instructor', 'admin'), async (req, r
         }
 
         const parsedDuration = duration_minutes !== '' && duration_minutes != null ? parseInt(duration_minutes) : null;
-        const parsedOrder = order_index !== '' && order_index != null ? parseInt(order_index) : null;
+        // Fall back to the existing order_index if none provided — prevents NOT NULL violation
+        const parsedOrder = (order_index !== '' && order_index != null)
+            ? parseInt(order_index)
+            : lessonCheck.rows[0].existing_order;
 
         const result = await query(
             `UPDATE lessons SET title=$1, text_content=$2, content_type=$3, video_url=$4, pdf_url=$5,

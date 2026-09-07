@@ -9,7 +9,8 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
         content_type: lesson?.content_type || 'text',
         video_url: lesson?.video_url || '',
         pdf_url: lesson?.pdf_url || '',
-        duration_minutes: lesson?.duration_minutes || ''
+        duration_minutes: lesson?.duration_minutes || '',
+        order_index: lesson?.order_index ?? ''
     });
 
     const [uploadingVideo, setUploadingVideo] = useState(false);
@@ -216,7 +217,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                             <input
                                 ref={pdfInputRef}
                                 type="file"
-                                accept=".pdf,.doc,.docx,.txt"
+                                accept=".pdf"
                                 onChange={(e) => handleFileUpload(e.target.files?.[0], 'pdf')}
                                 className="hidden"
                             />
