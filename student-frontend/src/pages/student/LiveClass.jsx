@@ -283,6 +283,13 @@ export default function StudentLiveClass() {
         };
     }, [id]);
 
+    // Fix: attach local stream to video element whenever stream or joined state changes
+    useEffect(() => {
+        if (localVideoRef.current && localStream) {
+            localVideoRef.current.srcObject = localStream;
+        }
+    }, [localStream, joined]);
+
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
@@ -453,6 +460,13 @@ export default function StudentLiveClass() {
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="text-sm text-gray-400">👥 {participants.length}</span>
+                    <button
+                        onClick={() => setSidebarOpen(o => !o)}
+                        className="px-3 py-1.5 bg-purple-600/20 text-purple-300 border border-purple-500/30 rounded-lg text-sm hover:bg-purple-600/30 transition"
+                        title={sidebarOpen ? 'Close panel' : 'Open panel'}
+                    >
+                        {sidebarOpen ? '✕ Panel' : '☰ Panel'}
+                    </button>
                     <button onClick={() => navigate(homePath)}
                         className="px-3 py-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-sm hover:bg-red-500/30 transition">
                         Leave
@@ -476,9 +490,31 @@ export default function StudentLiveClass() {
                             {localStream ? (
                                 <>
                                     <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
-                                    <div className="absolute bottom-2 left-2 bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
-                                        {screenSharing && <span className="text-green-400">🖥️</span>}
-                                        You
+                                    {/* Cam-off overlay */}
+                                    {!videoOn && (
+                                        <div className="absolute inset-0 bg-[#0d0d1a] flex flex-col items-center justify-center gap-2">
+                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold">
+                                                {user?.name?.[0]?.toUpperCase() || 'Y'}
+                                            </div>
+                                            <span className="text-xs text-gray-400">Camera off</span>
+                                        </div>
+                                    )}
+                                    {/* Bottom-left label row */}
+                                    <div className="absolute bottom-2 left-2 flex items-center gap-1">
+                                        <div className="bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
+                                            {screenSharing && <span className="text-green-400">🖥️</span>}
+                                            You
+                                        </div>
+                                        {!micOn && (
+                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
+                                                🔇
+                                            </div>
+                                        )}
+                                        {!videoOn && (
+                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
+                                                📷
+                                            </div>
+                                        )}
                                     </div>
                                     {screenSharing && (
                                         <div className="absolute top-2 right-2 bg-green-500/90 px-2 py-1 rounded text-xs text-white font-medium animate-pulse">
@@ -495,14 +531,41 @@ export default function StudentLiveClass() {
                         </div>
 
                         {/* Remote Videos */}
-                        {Object.entries(remoteStreams).map(([userId, remoteData]) => (
-                            <div key={userId} className="bg-black rounded-2xl overflow-hidden min-h-[180px] sm:min-h-[250px] relative">
-                                <video ref={el => { if (el) remoteVideoRefs.current[userId] = el; }} autoPlay playsInline className="w-full h-full object-cover" />
-                                <div className="absolute bottom-2 left-2 bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white">
-                                    {remoteData.name}
+                        {Object.entries(remoteStreams).map(([userId, remoteData]) => {
+                            const participant = participants.find(p => p.userId === userId);
+                            const remoteVideoOff = participant?.videoOn === false;
+                            const remoteMicOff = participant?.micOn === false;
+                            return (
+                                <div key={userId} className="bg-black rounded-2xl overflow-hidden min-h-[180px] sm:min-h-[250px] relative">
+                                    <video ref={el => { if (el) remoteVideoRefs.current[userId] = el; }} autoPlay playsInline className="w-full h-full object-cover" />
+                                    {/* Cam-off overlay */}
+                                    {remoteVideoOff && (
+                                        <div className="absolute inset-0 bg-[#0d0d1a] flex flex-col items-center justify-center gap-2">
+                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold">
+                                                {(remoteData.name || '?')[0].toUpperCase()}
+                                            </div>
+                                            <span className="text-xs text-gray-400">Camera off</span>
+                                        </div>
+                                    )}
+                                    {/* Bottom-left label row */}
+                                    <div className="absolute bottom-2 left-2 flex items-center gap-1">
+                                        <div className="bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white">
+                                            {remoteData.name}
+                                        </div>
+                                        {remoteMicOff && (
+                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-white">
+                                                🔇
+                                            </div>
+                                        )}
+                                        {remoteVideoOff && (
+                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-white">
+                                                📷
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
 
                         {Object.keys(remoteStreams).length === 0 && localStream && (
                             <div className="h-[120px] sm:h-[150px] bg-[#1a1a35] rounded-2xl flex items-center justify-center text-gray-400 text-xs col-span-full">
@@ -536,21 +599,19 @@ export default function StudentLiveClass() {
                     </div>
                 </div>
 
-                {/* Side Panel — fixed on desktop, drawer on mobile */}
-                {/* Mobile overlay backdrop */}
+                {/* Overlay backdrop — shown on all screen sizes when sidebar is open */}
                 {sidebarOpen && (
                     <div
-                        className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                        className="fixed inset-0 bg-black/50 z-30"
                         onClick={() => setSidebarOpen(false)}
                     />
                 )}
 
-                {/* Panel itself */}
+                {/* Panel itself — drawer on all screen sizes */}
                 <div className={`
                     bg-[#12122a] border-l border-purple-900/30 flex flex-col
-                    lg:relative lg:w-72 lg:translate-x-0 lg:flex
                     fixed right-0 top-0 bottom-0 w-72 z-40 transition-transform duration-300
-                    ${sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+                    ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}
                 `}>
                     {/* Panel header with tabs + close button */}
                     <div className="flex border-b border-purple-900/30 flex-shrink-0">
@@ -560,10 +621,10 @@ export default function StudentLiveClass() {
                                 {t === 'chat' ? `💬 Chat` : `👥 (${participants.length})`}
                             </button>
                         ))}
-                        {/* Close button — mobile only */}
+                        {/* Close button — always visible */}
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="lg:hidden px-3 py-3 text-gray-400 hover:text-white transition text-lg"
+                            className="px-3 py-3 text-gray-400 hover:text-white transition text-lg"
                         >
                             ✕
                         </button>
