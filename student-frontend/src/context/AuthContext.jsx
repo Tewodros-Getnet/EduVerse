@@ -21,27 +21,38 @@ export function AuthProvider({ children }) {
         } catch {
             // Ignore — clear local state regardless
         }
-        // Clear all role-specific keys
+        // Clear all role-specific keys including the role marker
         localStorage.removeItem('student_token');
         localStorage.removeItem('student_refreshToken');
         localStorage.removeItem('instructor_token');
         localStorage.removeItem('instructor_refreshToken');
+        localStorage.removeItem('auth_role');
         setUser(null);
     }, []);
 
     useEffect(() => {
-        // Try student token first, then instructor token
-        const token = localStorage.getItem('student_token') ||
-                      localStorage.getItem('instructor_token');
+        // Use auth_role to pick the right token on mount
+        const role = localStorage.getItem('auth_role');
+        const token = role === 'instructor'
+            ? localStorage.getItem('instructor_token')
+            : role === 'student'
+            ? localStorage.getItem('student_token')
+            : localStorage.getItem('student_token') || localStorage.getItem('instructor_token');
+
         if (token && token !== 'undefined' && token !== 'null') {
             // Always re-fetch full user profile on mount so avatar/bio/etc are fresh after refresh
             api.get('/auth/me')
-                .then(res => setUser(res.data.user))
+                .then(res => {
+                    setUser(res.data.user);
+                    // Keep auth_role in sync with what the server says
+                    localStorage.setItem('auth_role', res.data.user.role);
+                })
                 .catch(() => {
                     localStorage.removeItem('student_token');
                     localStorage.removeItem('student_refreshToken');
                     localStorage.removeItem('instructor_token');
                     localStorage.removeItem('instructor_refreshToken');
+                    localStorage.removeItem('auth_role');
                 })
                 .finally(() => setLoading(false));
         } else {
@@ -53,6 +64,7 @@ export function AuthProvider({ children }) {
         const res = await api.post('/auth/login', { email, password, role });
         const { tokenKey, refreshKey } = getKeys(res.data.user.role);
         localStorage.setItem(tokenKey, res.data.accessToken);
+        localStorage.setItem('auth_role', res.data.user.role);
         if (res.data.refreshToken) {
             localStorage.setItem(refreshKey, res.data.refreshToken);
         }
@@ -64,6 +76,7 @@ export function AuthProvider({ children }) {
         const res = await api.post('/auth/register', { name, email, password, role });
         const { tokenKey, refreshKey } = getKeys(res.data.user.role);
         localStorage.setItem(tokenKey, res.data.accessToken);
+        localStorage.setItem('auth_role', res.data.user.role);
         if (res.data.refreshToken) {
             localStorage.setItem(refreshKey, res.data.refreshToken);
         }

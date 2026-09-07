@@ -6,8 +6,15 @@ const api = axios.create({ baseURL: BASE_URL });
 
 // ── Request: attach current access token ─────────────────────────────────────
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('student_token') || localStorage.getItem('instructor_token');
-    // Only attach header if we actually have a real token string
+    // Use stored role to pick the right token — prevents student token being
+    // sent for instructor requests when both keys exist in localStorage.
+    const role = localStorage.getItem('auth_role');
+    const token = role === 'instructor'
+        ? localStorage.getItem('instructor_token')
+        : role === 'student'
+        ? localStorage.getItem('student_token')
+        : localStorage.getItem('student_token') || localStorage.getItem('instructor_token');
+
     if (token && token !== 'undefined' && token !== 'null') {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -35,10 +42,11 @@ api.interceptors.response.use(
             !original.url?.includes('/auth/refresh') &&
             !original.url?.includes('/auth/login')
         ) {
+            const role = localStorage.getItem('auth_role');
             const studentRefresh = localStorage.getItem('student_refreshToken');
             const instructorRefresh = localStorage.getItem('instructor_refreshToken');
-            const refreshToken = studentRefresh || instructorRefresh;
-            const isStudent = !!studentRefresh;
+            const isStudent = role === 'student' || (!role && !!studentRefresh && !instructorRefresh);
+            const refreshToken = isStudent ? studentRefresh : (instructorRefresh || studentRefresh);
 
             // No refresh token stored → force login immediately
             if (!refreshToken) {
@@ -46,6 +54,7 @@ api.interceptors.response.use(
                 localStorage.removeItem('student_refreshToken');
                 localStorage.removeItem('instructor_token');
                 localStorage.removeItem('instructor_refreshToken');
+                localStorage.removeItem('auth_role');
                 window.location.href = '/login';
                 return Promise.reject(err);
             }
@@ -84,6 +93,7 @@ api.interceptors.response.use(
                 localStorage.removeItem('student_refreshToken');
                 localStorage.removeItem('instructor_token');
                 localStorage.removeItem('instructor_refreshToken');
+                localStorage.removeItem('auth_role');
                 window.location.href = '/login';
                 return Promise.reject(refreshErr);
             } finally {
