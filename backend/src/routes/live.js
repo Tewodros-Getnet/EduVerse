@@ -143,7 +143,7 @@ router.get('/instructor/sessions', authenticate, authorize('instructor'), async 
         const result = await query(
             `SELECT ls.*, c.title as course_title,
                     COUNT(sa.student_id) as attendance_count,
-                    COUNT(CASE WHEN ls.status = 'completed' THEN 1 END) as completed_sessions
+                    COUNT(CASE WHEN ls.status = 'ended' THEN 1 END) as completed_sessions
              FROM live_sessions ls
              JOIN courses c ON ls.course_id = c.id
              LEFT JOIN session_attendance sa ON ls.id = sa.session_id
@@ -231,7 +231,7 @@ router.post('/sessions/:id/start', authenticate, authorize('instructor'), async 
         }
 
         const result = await query(
-            'UPDATE live_sessions SET status = $1, started_at = NOW() WHERE id = $2 RETURNING *',
+            'UPDATE live_sessions SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
             ['live', id]
         );
 
@@ -277,8 +277,8 @@ router.post('/sessions/:id/end', authenticate, authorize('instructor'), async (r
         }
 
         const result = await query(
-            'UPDATE live_sessions SET status = $1, ended_at = NOW() WHERE id = $2 RETURNING *',
-            ['completed', id]
+            'UPDATE live_sessions SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+            ['ended', id]
         );
 
         res.json({ session: result.rows[0] });

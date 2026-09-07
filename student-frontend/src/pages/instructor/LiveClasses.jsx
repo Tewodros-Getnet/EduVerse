@@ -111,7 +111,10 @@ export default function InstructorLiveClasses() {
         setStartingSession(sessionId);
         try {
             const response = await api.post(`/live/sessions/${sessionId}/start`);
-            setSessions(prev => prev.map(s => s.id === sessionId ? response.data.session : s));
+            // Merge returned session with existing to preserve list-only fields (course_title, attendance_count)
+            setSessions(prev => prev.map(s =>
+                s.id === sessionId ? { ...s, ...response.data.session } : s
+            ));
             toast.success('Live session started!');
         } catch (error) {
             toast.error('Failed to start live session');
@@ -124,8 +127,11 @@ export default function InstructorLiveClasses() {
         setEndingSession(sessionId);
         try {
             const response = await api.post(`/live/sessions/${sessionId}/end`);
-            setSessions(prev => prev.map(s => s.id === sessionId ? response.data.session : s));
-            toast.success('Live session ended!');
+            // Merge returned session with existing to preserve list-only fields (course_title, attendance_count)
+            setSessions(prev => prev.map(s =>
+                s.id === sessionId ? { ...s, ...response.data.session } : s
+            ));
+            toast.success('Live session ended successfully!');
         } catch (error) {
             toast.error('Failed to end live session');
         } finally {
@@ -170,7 +176,7 @@ export default function InstructorLiveClasses() {
         switch (status) {
             case 'scheduled': return 'bg-blue-500/20 text-blue-300';
             case 'live': return 'bg-red-500/20 text-red-300';
-            case 'completed': return 'bg-green-500/20 text-green-300';
+            case 'ended': return 'bg-green-500/20 text-green-300';
             default: return 'bg-gray-500/20 text-gray-300';
         }
     };
@@ -314,7 +320,7 @@ export default function InstructorLiveClasses() {
                             <span className={`text-xs px-3 py-1.5 rounded-full font-semibold uppercase tracking-wide ${getStatusColor(session.status)} shadow-lg`}>
                                 {session.status === 'live' && '🔴 Live'}
                                 {session.status === 'scheduled' && '⏰ Scheduled'}
-                                {session.status === 'completed' && '✓ Completed'}
+                                {session.status === 'ended' && '✓ Ended'}
                             </span>
                         </div>
 
