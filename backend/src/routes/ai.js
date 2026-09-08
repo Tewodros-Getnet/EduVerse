@@ -39,7 +39,7 @@ async function askGemini(question, context) {
         throw new Error('GEMINI_API_KEY not configured');
     }
     const response = await apiClient.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
         {
             contents: [{ parts: [{ text: `You are an AI tutor for EduVerse. Context: ${context}\n\nQuestion: ${question}` }] }]
         },
