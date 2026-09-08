@@ -19,7 +19,7 @@ async function askGroq(question, context) {
     const response = await apiClient.post(
         'https://api.groq.com/openai/v1/chat/completions',
         {
-            model: 'llama-3.1-8b-instant',
+            model: 'openai/gpt-oss-20b',
             messages: [
                 { role: 'system', content: `You are an AI tutor for EduVerse. Context: ${context}` },
                 { role: 'user', content: question },
