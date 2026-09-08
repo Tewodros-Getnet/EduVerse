@@ -13,7 +13,6 @@ export default function CourseDetail() {
     const [activeLesson, setActiveLesson] = useState(null);
     const [completedLessons, setCompletedLessons] = useState(new Set());
     const [lessonProgress, setLessonProgress] = useState({});
-    const [completing, setCompleting] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [overallProgress, setOverallProgress] = useState(0);
@@ -63,7 +62,6 @@ export default function CourseDetail() {
 
     const markComplete = async () => {
         if (!activeLesson || completedLessons.has(activeLesson.id)) return;
-        setCompleting(true);
         try {
             await api.post(`/lessons/${activeLesson.id}/complete`, { course_id: id, watch_time: watchTime });
             setCompletedLessons(prev => new Set([...prev, activeLesson.id]));
@@ -76,16 +74,13 @@ export default function CourseDetail() {
                     watch_time: watchTime
                 }
             }));
-            toast.success('Lesson marked as complete!');
 
             // Update overall progress
             const newCompletedCount = completedLessons.size + 1;
             const newProgress = Math.round((newCompletedCount / lessons.length) * 100);
             setOverallProgress(newProgress);
         } catch {
-            toast.error('Failed to mark complete');
-        } finally {
-            setCompleting(false);
+            // Silent fail — auto-complete should not interrupt the viewing experience
         }
     };
 
@@ -366,7 +361,7 @@ export default function CourseDetail() {
                                     </p>
                                     <p className="text-[var(--text)] font-medium mb-1">No video for this lesson</p>
                                     <p className="text-sm text-[var(--muted)] max-w-md mx-auto">
-                                        Use the lesson text, course notes, and AI tutor. Mark complete when you are done with the material.
+                                        Read through the lesson content, take notes, or ask the AI Tutor.
                                     </p>
                                 </div>
                             )}
@@ -445,26 +440,15 @@ export default function CourseDetail() {
                             </div>
 
                             {/* Lesson Actions */}
-                            <div className="mt-6 pt-4 border-t border-purple-900/30 flex justify-between items-center gap-2">
+                            <div className="mt-6 pt-4 border-t border-purple-900/30 flex justify-end items-center gap-2">
+                                {/* Quick Actions */}
                                 <div className="flex gap-2">
-                                    {completedLessons.has(activeLesson.id) ? (
-                                        <span className="flex items-center gap-1.5 text-sm text-green-400">
+                                    {completedLessons.has(activeLesson.id) && (
+                                        <span className="flex items-center gap-1.5 text-sm text-green-400 mr-auto">
                                             <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</span>
                                             Completed
                                         </span>
-                                    ) : (
-                                        <button
-                                            onClick={markComplete}
-                                            disabled={completing}
-                                            className="px-4 py-2 bg-green-600/30 border border-green-500/30 rounded-xl text-sm text-green-300 hover:bg-green-600/40 transition disabled:opacity-50"
-                                        >
-                                            {completing ? 'Saving…' : '✓ Mark Complete'}
-                                        </button>
                                     )}
-                                </div>
-
-                                {/* Quick Actions */}
-                                <div className="flex gap-2">
                                     <Link to={`/student/assignments/${id}`}
                                         className="px-3 py-2 bg-green-600/30 border border-green-500/30 rounded-xl text-sm text-green-300 hover:bg-green-600/40 transition">
                                         Assignments
