@@ -36,9 +36,9 @@ router.post('/upload', authenticate, authorize('instructor', 'admin'), (req, res
 });
 
 // GET /api/lessons/pdf-proxy?url=<cloudinary_url>&download=1
-// Proxies a Cloudinary PDF through the backend so the browser can embed or
-// download it without hitting CORS / cross-origin download restrictions.
-router.get('/pdf-proxy', authenticate, async (req, res, next) => {
+// No auth required — the embed/iframe tags can't send Authorization headers.
+// Security: only Cloudinary URLs are accepted (validated below).
+router.get('/pdf-proxy', async (req, res, next) => {
     try {
         const { url, download } = req.query;
         if (!url) return res.status(400).json({ error: 'url query param required' });
