@@ -49,14 +49,9 @@ router.get('/pdf-proxy', async (req, res, next) => {
             return res.status(400).json({ error: 'Only Cloudinary URLs are supported' });
         }
 
-        // Fix misclassified PDFs: Cloudinary sometimes stores PDFs under /image/upload/
-        // but they must be fetched from /raw/upload/ to serve correctly
-        const fixedUrl = url.replace(/\/image\/upload\//, '/raw/upload/');
-
-        // Fetch the file from Cloudinary
+        // Fetch helper with redirect following
         const fetchUrl = (urlStr) => new Promise((resolve, reject) => {
             https.get(urlStr, (upstream) => {
-                // Follow one redirect (Cloudinary sometimes redirects)
                 if (upstream.statusCode >= 300 && upstream.statusCode < 400 && upstream.headers.location) {
                     return fetchUrl(upstream.headers.location).then(resolve).catch(reject);
                 }
@@ -64,10 +59,26 @@ router.get('/pdf-proxy', async (req, res, next) => {
             }).on('error', reject);
         });
 
-        const upstream = await fetchUrl(fixedUrl);
+        // Try the original URL first.
+        // If Cloudinary returns non-200 (e.g. PDF mis-stored as image type),
+        // fall back to the /raw/upload/ path variant.
+        let upstream = await fetchUrl(url);
+
+        if (upstream.statusCode !== 200 && url.includes('/image/upload/')) {
+            const rawUrl = url.replace('/image/upload/', '/raw/upload/');
+            upstream = await fetchUrl(rawUrl);
+        }
+
+        // If still failing, try with fl_attachment flag (forces download for image-stored PDFs)
+        if (upstream.statusCode !== 200 && url.includes('/image/upload/')) {
+            const attachUrl = url.replace('/image/upload/', '/image/upload/fl_attachment/');
+            upstream = await fetchUrl(attachUrl);
+        }
 
         if (upstream.statusCode !== 200) {
-            return res.status(upstream.statusCode).json({ error: 'Failed to fetch file from Cloudinary' });
+            return res.status(502).json({ 
+                error: `Cloudinary returned ${upstream.statusCode}. Please re-upload the PDF.`
+            });
         }
 
         const contentType = upstream.headers['content-type'] || 'application/pdf';
