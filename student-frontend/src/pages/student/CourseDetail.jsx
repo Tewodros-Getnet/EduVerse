@@ -374,25 +374,13 @@ export default function CourseDetail() {
 
                             {/* PDF Viewer — shown inline below video (or alone if no video) */}
                             {activeLesson.pdf_url && (
-                                <div className="mb-4 rounded-xl overflow-hidden border border-purple-900/30">
-                                    {activeLesson.pdf_url.match(/\.(doc|docx)$/i) ? (
-                                        /* Word docs — use Google Docs viewer */
-                                        <iframe
-                                            src={`https://docs.google.com/gview?url=${encodeURIComponent(activeLesson.pdf_url)}&embedded=true`}
-                                            className="w-full"
-                                            style={{ height: '600px' }}
-                                            title="Document viewer"
-                                        />
-                                    ) : (
-                                        /* PDF — proxy through backend to avoid Cloudinary CORS block */
-                                        <embed
-                                            src={pdfProxyUrl(activeLesson.pdf_url)}
-                                            type="application/pdf"
-                                            className="w-full"
-                                            style={{ height: '600px' }}
-                                            title="PDF viewer"
-                                        />
-                                    )}
+                                <div className="mb-4 rounded-xl overflow-hidden border border-purple-900/30 bg-[#0d0d1a]">
+                                    <iframe
+                                        src={`https://docs.google.com/viewer?url=${encodeURIComponent(activeLesson.pdf_url)}&embedded=true`}
+                                        className="w-full"
+                                        style={{ height: '600px', border: 'none' }}
+                                        title="PDF Viewer"
+                                    />
                                 </div>
                             )}
 
