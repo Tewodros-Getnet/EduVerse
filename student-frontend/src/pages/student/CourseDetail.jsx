@@ -4,6 +4,12 @@ import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { toEmbedVideoUrl, shouldUseVideoElement } from '../../utils/videoUrl';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// Returns a backend-proxied URL for Cloudinary PDFs to avoid CORS/download issues
+const pdfProxyUrl = (url, download = false) =>
+    `${API_BASE}/lessons/pdf-proxy?url=${encodeURIComponent(url)}${download ? '&download=1' : ''}`;
+
 export default function CourseDetail() {
     const { id } = useParams();
     const [course, setCourse] = useState(null);
@@ -378,9 +384,9 @@ export default function CourseDetail() {
                                             title="Document viewer"
                                         />
                                     ) : (
-                                        /* PDF — embed directly; browsers render it natively */
+                                        /* PDF — proxy through backend to avoid Cloudinary CORS block */
                                         <embed
-                                            src={activeLesson.pdf_url}
+                                            src={pdfProxyUrl(activeLesson.pdf_url)}
                                             type="application/pdf"
                                             className="w-full"
                                             style={{ height: '600px' }}
@@ -402,10 +408,8 @@ export default function CourseDetail() {
                                 <div className="flex flex-wrap gap-2">
                                     {activeLesson.pdf_url && (
                                         <a
-                                            href={activeLesson.pdf_url}
+                                            href={pdfProxyUrl(activeLesson.pdf_url, true)}
                                             download
-                                            target="_blank"
-                                            rel="noreferrer"
                                             className="inline-flex items-center gap-2 px-4 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-sm text-white hover:border-purple-500 transition">
                                             ⬇️ Download {activeLesson.pdf_url.match(/\.(doc|docx)$/i) ? 'Document' : 'PDF'}
                                         </a>

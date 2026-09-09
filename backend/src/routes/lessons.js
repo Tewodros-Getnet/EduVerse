@@ -2,6 +2,7 @@ const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
 const { createUploader } = require('../lib/cloudinary');
+const https = require('https');
 
 const router = express.Router();
 
@@ -26,6 +27,55 @@ router.post('/upload', authenticate, authorize('instructor', 'admin'), upload.si
         res.json({ url: fileUrl, message: 'File uploaded successfully' });
     } catch (error) {
         next(error);
+    }
+});
+
+// GET /api/lessons/pdf-proxy?url=<cloudinary_url>&download=1
+// Proxies a Cloudinary PDF through the backend so the browser can embed or
+// download it without hitting CORS / cross-origin download restrictions.
+router.get('/pdf-proxy', authenticate, async (req, res, next) => {
+    try {
+        const { url, download } = req.query;
+        if (!url) return res.status(400).json({ error: 'url query param required' });
+
+        // Only allow Cloudinary URLs to prevent open-redirect abuse
+        const parsed = new URL(url);
+        if (!parsed.hostname.endsWith('cloudinary.com') && !parsed.hostname.endsWith('res.cloudinary.com')) {
+            return res.status(400).json({ error: 'Only Cloudinary URLs are supported' });
+        }
+
+        // Fetch the file from Cloudinary
+        const fetchUrl = (urlStr) => new Promise((resolve, reject) => {
+            https.get(urlStr, (upstream) => {
+                // Follow one redirect (Cloudinary sometimes redirects)
+                if (upstream.statusCode >= 300 && upstream.statusCode < 400 && upstream.headers.location) {
+                    return fetchUrl(upstream.headers.location).then(resolve).catch(reject);
+                }
+                resolve(upstream);
+            }).on('error', reject);
+        });
+
+        const upstream = await fetchUrl(url);
+
+        if (upstream.statusCode !== 200) {
+            return res.status(upstream.statusCode).json({ error: 'Failed to fetch file from Cloudinary' });
+        }
+
+        const contentType = upstream.headers['content-type'] || 'application/pdf';
+        const filename = url.split('/').pop().split('?')[0] || 'document.pdf';
+
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Access-Control-Allow-Origin', '*');
+
+        if (download === '1') {
+            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        } else {
+            res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+        }
+
+        upstream.pipe(res);
+    } catch (err) {
+        next(err);
     }
 });
 
