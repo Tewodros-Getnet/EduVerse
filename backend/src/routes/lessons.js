@@ -6,28 +6,50 @@ const https = require('https');
 
 const router = express.Router();
 
-// Cloudinary-backed multer upload (videos, PDFs — up to 200 MB)
-const upload = createUploader({
+// Separate uploaders — Cloudinary requires explicit resource_type for PDFs
+// Using 'auto' sometimes misclassifies PDFs as 'image' which breaks serving.
+const videoUpload = createUploader({
     folder: 'eduverse/lessons',
-    allowedFormats: ['mp4', 'mov', 'avi', 'mpeg', 'pdf'],
-    resourceType: 'auto',
+    allowedFormats: ['mp4', 'mov', 'avi', 'mpeg'],
+    resourceType: 'video',
     fileSizeMb: 200,
 });
 
+const pdfUpload = createUploader({
+    folder: 'eduverse/lessons',
+    allowedFormats: ['pdf'],
+    resourceType: 'raw',
+    fileSizeMb: 20,
+});
+
 // POST /api/lessons/upload
-router.post('/upload', authenticate, authorize('instructor', 'admin'), upload.single('file'), async (req, res, next) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ error: 'No file uploaded' });
-        }
+// Detects file type and routes to the correct Cloudinary uploader
+router.post('/upload', authenticate, authorize('instructor', 'admin'), (req, res, next) => {
+    // Peek at the mimetype from the incoming multipart header to pick uploader
+    // multer runs before we know the type, so use a small pre-check middleware
+    const multerMiddleware = (fileReq) => {
+        return new Promise((resolve, reject) => {
+            // Use a raw multer instance just to read the mimetype
+            const rawUpload = require('multer')({ storage: require('multer').memoryStorage(), limits: { fileSize: 1 } });
+            rawUpload.single('file')(fileReq, res, (err) => {
+                // Ignore size limit error — we just want the mimetype
+                resolve(fileReq.file?.mimetype || '');
+            });
+        });
+    };
 
-        // Cloudinary populates req.file.path with the secure URL
-        const fileUrl = req.file.path;
+    // Check content-type hint from field name or use pdf uploader as fallback
+    const contentType = req.headers['content-type'] || '';
 
-        res.json({ url: fileUrl, message: 'File uploaded successfully' });
-    } catch (error) {
-        next(error);
-    }
+    // Use a discriminator: if client sends ?type=pdf use pdf uploader, else video
+    const type = req.query.type || '';
+    const uploader = type === 'pdf' ? pdfUpload : videoUpload;
+
+    uploader.single('file')(req, res, (err) => {
+        if (err) return next(err);
+        if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+        res.json({ url: req.file.path, message: 'File uploaded successfully' });
+    });
 });
 
 // GET /api/lessons/pdf-proxy?url=<cloudinary_url>&download=1
@@ -44,6 +66,10 @@ router.get('/pdf-proxy', authenticate, async (req, res, next) => {
             return res.status(400).json({ error: 'Only Cloudinary URLs are supported' });
         }
 
+        // Fix misclassified PDFs: Cloudinary sometimes stores PDFs under /image/upload/
+        // but they must be fetched from /raw/upload/ to serve correctly
+        const fixedUrl = url.replace(/\/image\/upload\//, '/raw/upload/');
+
         // Fetch the file from Cloudinary
         const fetchUrl = (urlStr) => new Promise((resolve, reject) => {
             https.get(urlStr, (upstream) => {
@@ -55,7 +81,7 @@ router.get('/pdf-proxy', authenticate, async (req, res, next) => {
             }).on('error', reject);
         });
 
-        const upstream = await fetchUrl(url);
+        const upstream = await fetchUrl(fixedUrl);
 
         if (upstream.statusCode !== 200) {
             return res.status(upstream.statusCode).json({ error: 'Failed to fetch file from Cloudinary' });

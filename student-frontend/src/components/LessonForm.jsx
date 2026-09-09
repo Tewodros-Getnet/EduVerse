@@ -39,7 +39,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                 setUploadingPdf(true);
             }
 
-            const res = await api.post('/lessons/upload', formDataObj, {
+            const res = await api.post(`/lessons/upload?type=${fileType}`, formDataObj, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
