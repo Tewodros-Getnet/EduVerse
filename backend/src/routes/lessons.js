@@ -82,7 +82,9 @@ router.get('/pdf-proxy', async (req, res, next) => {
         }
 
         const contentType = upstream.headers['content-type'] || 'application/pdf';
-        const filename = url.split('/').pop().split('?')[0] || 'document.pdf';
+        // Strip the timestamp prefix (e.g. "1788928978809-") Cloudinary adds for uniqueness
+        const rawFilename = url.split('/').pop().split('?')[0] || 'document.pdf';
+        const filename = rawFilename.replace(/^\d+-/, '');
 
         res.setHeader('Content-Type', contentType);
         res.setHeader('Access-Control-Allow-Origin', '*');
