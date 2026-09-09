@@ -23,25 +23,8 @@ const pdfUpload = createUploader({
 });
 
 // POST /api/lessons/upload
-// Detects file type and routes to the correct Cloudinary uploader
+// Routes to video or PDF uploader based on ?type= query param
 router.post('/upload', authenticate, authorize('instructor', 'admin'), (req, res, next) => {
-    // Peek at the mimetype from the incoming multipart header to pick uploader
-    // multer runs before we know the type, so use a small pre-check middleware
-    const multerMiddleware = (fileReq) => {
-        return new Promise((resolve, reject) => {
-            // Use a raw multer instance just to read the mimetype
-            const rawUpload = require('multer')({ storage: require('multer').memoryStorage(), limits: { fileSize: 1 } });
-            rawUpload.single('file')(fileReq, res, (err) => {
-                // Ignore size limit error — we just want the mimetype
-                resolve(fileReq.file?.mimetype || '');
-            });
-        });
-    };
-
-    // Check content-type hint from field name or use pdf uploader as fallback
-    const contentType = req.headers['content-type'] || '';
-
-    // Use a discriminator: if client sends ?type=pdf use pdf uploader, else video
     const type = req.query.type || '';
     const uploader = type === 'pdf' ? pdfUpload : videoUpload;
 
