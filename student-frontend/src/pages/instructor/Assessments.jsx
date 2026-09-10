@@ -11,7 +11,10 @@ const InstructorAssessments = () => {
     const [selectedAssessment, setSelectedAssessment] = useState(null);
     const [showResultsModal, setShowResultsModal] = useState(false);
     const [assessmentResults, setAssessmentResults] = useState([]);
+    const [enrolledStudents, setEnrolledStudents] = useState([]);
     const [resultsLoading, setResultsLoading] = useState(false);
+    const [savingGrade, setSavingGrade] = useState(null); // studentId being saved
+    const [gradeInputs, setGradeInputs] = useState({}); // { [studentId]: { score, remarks } }
     const [confirmDialog, setConfirmDialog] = useState({
         open: false,
         title: '',
@@ -31,10 +34,9 @@ const InstructorAssessments = () => {
         title: '',
         description: '',
         courseId: '',
+        type: 'exam',
         startDate: '',
-        endDate: '',
         duration: 60,
-        questions: []
     });
 
     useEffect(() => {
@@ -66,11 +68,6 @@ const InstructorAssessments = () => {
 
     const handleCreateAssessment = async (e) => {
         e.preventDefault();
-        if (formData.questions.length === 0) {
-            toast.error('Please add at least one question');
-            return;
-        }
-
         try {
             await api.post('/assessments', formData);
             toast.success('Assessment created successfully!');
@@ -79,10 +76,9 @@ const InstructorAssessments = () => {
                 title: '',
                 description: '',
                 courseId: '',
+                type: 'exam',
                 startDate: '',
-                endDate: '',
                 duration: 60,
-                questions: []
             });
             fetchAssessments();
         } catch (error) {
@@ -110,12 +106,30 @@ const InstructorAssessments = () => {
         });
     };
 
-    const handleViewResults = async (assessmentId) => {
+    const handleViewResults = async (assessment) => {
+        setSelectedAssessment(assessment);
         setResultsLoading(true);
         setShowResultsModal(true);
+        setGradeInputs({});
         try {
-            const response = await api.get(`/assessments/${assessmentId}/results`);
-            setAssessmentResults(response.data.results);
+            const [resultsRes, studentsRes] = await Promise.all([
+                api.get(`/assessments/${assessment.id}/results`),
+                api.get(`/courses/${assessment.course_id}/students`),
+            ]);
+            const results = resultsRes.data.results || [];
+            const students = studentsRes.data.students || [];
+            setAssessmentResults(results);
+            setEnrolledStudents(students);
+            // Pre-fill grade inputs with existing scores so instructor can edit them
+            const inputs = {};
+            results.forEach(r => {
+                inputs[r.student_id] = { score: r.score ?? '', remarks: r.remarks || '' };
+            });
+            // Students with no result yet get empty inputs
+            students.forEach(s => {
+                if (!inputs[s.id]) inputs[s.id] = { score: '', remarks: '' };
+            });
+            setGradeInputs(inputs);
         } catch (error) {
             toast.error('Failed to load assessment results');
             setShowResultsModal(false);
@@ -124,29 +138,33 @@ const InstructorAssessments = () => {
         }
     };
 
-    const addQuestion = () => {
-        setFormData({
-            ...formData,
-            questions: [...formData.questions, {
-                question: '',
-                options: ['', '', '', ''],
-                correctAnswer: 0,
-                points: 10
-            }]
-        });
-    };
-
-    const updateQuestion = (index, field, value) => {
-        const updatedQuestions = [...formData.questions];
-        updatedQuestions[index][field] = value;
-        setFormData({ ...formData, questions: updatedQuestions });
-    };
-
-    const removeQuestion = (index) => {
-        setFormData({
-            ...formData,
-            questions: formData.questions.filter((_, i) => i !== index)
-        });
+    const handleSaveGrade = async (studentId) => {
+        const input = gradeInputs[studentId];
+        if (input.score === '' || input.score === null) {
+            toast.error('Please enter a score');
+            return;
+        }
+        const score = parseInt(input.score);
+        if (isNaN(score) || score < 0 || score > 100) {
+            toast.error('Score must be a number between 0 and 100');
+            return;
+        }
+        setSavingGrade(studentId);
+        try {
+            await api.post(`/assessments/${selectedAssessment.id}/results`, {
+                student_id: studentId,
+                score,
+                remarks: input.remarks,
+            });
+            toast.success('Grade saved');
+            // Refresh results
+            const res = await api.get(`/assessments/${selectedAssessment.id}/results`);
+            setAssessmentResults(res.data.results || []);
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Failed to save grade');
+        } finally {
+            setSavingGrade(null);
+        }
     };
 
     if (loading) {
@@ -199,35 +217,19 @@ const InstructorAssessments = () => {
                                 </select>
                             </div>
                         </div>
-                        <div>
-                            <label className="block text-sm text-gray-400 mb-1">Description</label>
-                            <textarea
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                rows={3}
-                                className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm resize-none"
-                            />
-                        </div>
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Start Date</label>
-                                <input
-                                    type="datetime-local"
-                                    value={formData.startDate}
-                                    onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                <label className="block text-sm text-gray-400 mb-1">Type</label>
+                                <select
+                                    value={formData.type}
+                                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                                     className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm"
                                     required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-400 mb-1">End Date</label>
-                                <input
-                                    type="datetime-local"
-                                    value={formData.endDate}
-                                    onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm"
-                                    required
-                                />
+                                >
+                                    {['exam', 'midterm', 'final', 'quiz', 'assignment', 'project', 'practical'].map(t => (
+                                        <option key={t} value={t} className="capitalize">{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div>
                                 <label className="block text-sm text-gray-400 mb-1">Duration (min)</label>
@@ -241,77 +243,26 @@ const InstructorAssessments = () => {
                                 />
                             </div>
                         </div>
-
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-white font-medium">Questions</h3>
-                                <button
-                                    type="button"
-                                    onClick={addQuestion}
-                                    className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-sm transition"
-                                >
-                                    + Add Question
-                                </button>
-                            </div>
-
-                            {formData.questions.map((q, qIndex) => (
-                                <div key={qIndex} className="bg-[#1a1a35] border border-purple-900/40 rounded-xl p-4">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h4 className="text-white text-sm font-medium">Question {qIndex + 1}</h4>
-                                        <button
-                                            type="button"
-                                            onClick={() => removeQuestion(qIndex)}
-                                            className="text-red-400 hover:text-red-300 text-sm"
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <input
-                                            type="text"
-                                            placeholder="Question text"
-                                            value={q.question}
-                                            onChange={(e) => updateQuestion(qIndex, 'question', e.target.value)}
-                                            className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500"
-                                            required
-                                        />
-                                        {q.options.map((option, oIndex) => (
-                                            <div key={oIndex} className="flex items-center gap-2">
-                                                <input
-                                                    type="radio"
-                                                    name={`correct-${qIndex}`}
-                                                    checked={q.correctAnswer === oIndex}
-                                                    onChange={() => updateQuestion(qIndex, 'correctAnswer', oIndex)}
-                                                    className="text-purple-500"
-                                                />
-                                                <input
-                                                    type="text"
-                                                    placeholder={`Option ${oIndex + 1}`}
-                                                    value={option}
-                                                    onChange={(e) => {
-                                                        const newOptions = [...q.options];
-                                                        newOptions[oIndex] = e.target.value;
-                                                        updateQuestion(qIndex, 'options', newOptions);
-                                                    }}
-                                                    className="flex-1 bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500"
-                                                    required
-                                                />
-                                            </div>
-                                        ))}
-                                        <input
-                                            type="number"
-                                            placeholder="Points"
-                                            value={q.points}
-                                            onChange={(e) => updateQuestion(qIndex, 'points', parseInt(e.target.value))}
-                                            className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500"
-                                            min="1"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                            ))}
+                        <div>
+                            <label className="block text-sm text-gray-400 mb-1">Scheduled Date</label>
+                            <input
+                                type="datetime-local"
+                                value={formData.startDate}
+                                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm"
+                                required
+                            />
                         </div>
-
+                        <div>
+                            <label className="block text-sm text-gray-400 mb-1">Description</label>
+                            <textarea
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                rows={3}
+                                className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm resize-none"
+                                placeholder="Describe what this assessment covers..."
+                            />
+                        </div>
                         <div className="flex gap-3">
                             <button
                                 type="submit"
@@ -339,19 +290,22 @@ const InstructorAssessments = () => {
                                 <h3 className="font-semibold text-white">{assessment.title}</h3>
                                 <p className="text-sm text-gray-400 mt-1">{assessment.course_title}</p>
                             </div>
-                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${assessment.status === 'active' ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-300'
-                                }`}>
-                                {assessment.status}
+                            <span className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${
+                                new Date(assessment.scheduled_date) > new Date()
+                                    ? 'bg-blue-500/20 text-blue-300'
+                                    : 'bg-green-500/20 text-green-300'
+                            }`}>
+                                {new Date(assessment.scheduled_date) > new Date() ? 'Upcoming' : 'Past'}
                             </span>
                         </div>
                         <p className="text-sm text-gray-300 mb-4 line-clamp-2">{assessment.description}</p>
                         <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-                            <span>📅 {new Date(assessment.start_date).toLocaleDateString()}</span>
-                            <span>⏱️ {assessment.duration} min</span>
+                            <span>📅 {new Date(assessment.scheduled_date).toLocaleDateString()}</span>
+                            <span>⏱️ {assessment.duration_minutes} min</span>
                         </div>
                         <div className="flex gap-2">
                             <button
-                                onClick={() => handleViewResults(assessment.id)}
+                                onClick={() => handleViewResults(assessment)}
                                 className="flex-1 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-purple-400 text-sm hover:bg-purple-600/20 transition"
                             >
                                 View Results
@@ -394,12 +348,17 @@ const InstructorAssessments = () => {
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
                         <div className="flex items-center justify-between p-6 border-b border-purple-900/30">
-                            <h2 className="text-xl font-bold text-white">Assessment Results</h2>
+                            <div>
+                                <h2 className="text-xl font-bold text-white">Assessment Results</h2>
+                                {selectedAssessment && (
+                                    <p className="text-sm text-gray-400 mt-0.5">{selectedAssessment.title}</p>
+                                )}
+                            </div>
                             <button
                                 onClick={() => setShowResultsModal(false)}
-                                className="text-gray-400 hover:text-white transition"
+                                className="text-gray-400 hover:text-white transition text-xl"
                             >
-                                ←
+                                ✕
                             </button>
                         </div>
 
@@ -408,66 +367,113 @@ const InstructorAssessments = () => {
                                 <div className="flex items-center justify-center py-12">
                                     <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
                                 </div>
-                            ) : assessmentResults.length === 0 ? (
-                                <div className="text-center py-12">
-                                    <p className="text-gray-400">No results available yet.</p>
-                                    <p className="text-sm text-gray-500 mt-2">Students haven't taken this assessment yet.</p>
-                                </div>
                             ) : (
                                 <div className="space-y-4">
-                                    {/* Summary Stats */}
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                        <div className="bg-[#1a1a35] border border-purple-900/40 rounded-xl p-4 text-center">
-                                            <div className="text-2xl font-bold text-white">{assessmentResults.length}</div>
-                                            <div className="text-sm text-gray-400">Total Submissions</div>
-                                        </div>
-                                        <div className="bg-[#1a1a35] border border-purple-900/40 rounded-xl p-4 text-center">
-                                            <div className="text-2xl font-bold text-green-400">
-                                                {Math.round(assessmentResults.reduce((sum, r) => sum + (r.score || 0), 0) / assessmentResults.length)}%
-                                            </div>
-                                            <div className="text-sm text-gray-400">Average Score</div>
-                                        </div>
-                                        <div className="bg-[#1a1a35] border border-purple-900/40 rounded-xl p-4 text-center">
-                                            <div className="text-2xl font-bold text-blue-400">
-                                                {Math.max(...assessmentResults.map(r => r.score || 0))}%
-                                            </div>
-                                            <div className="text-sm text-gray-400">Highest Score</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Results Table */}
-                                    <div className="bg-[#1a1a35] border border-purple-900/40 rounded-xl overflow-hidden">
-                                        <div className="px-4 py-3 border-b border-purple-900/40">
-                                            <h3 className="font-semibold text-white">Student Results</h3>
-                                        </div>
-                                        <div className="divide-y divide-purple-900/20">
-                                            {assessmentResults.map((result, index) => (
-                                                <div key={result.id} className="px-4 py-3 flex items-center justify-between hover:bg-[#0d0d1a] transition">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs text-white font-bold">
-                                                            {(result.student_name || '?')[0]}
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-white font-medium">{result.student_name}</p>
-                                                            <p className="text-xs text-gray-400">
-                                                                Submitted: {new Date(result.created_at).toLocaleDateString()}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className={`text-lg font-bold ${result.score >= 80 ? 'text-green-400' :
-                                                            result.score >= 60 ? 'text-yellow-400' : 'text-red-400'
-                                                            }`}>
-                                                            {result.score}%
-                                                        </div>
-                                                        {result.remarks && (
-                                                            <p className="text-xs text-gray-400 mt-1">{result.remarks}</p>
-                                                        )}
-                                                    </div>
+                                    {/* Summary Stats — only shown when there are graded results */}
+                                    {assessmentResults.filter(r => r.score !== null).length > 0 && (
+                                        <div className="grid grid-cols-3 gap-4 mb-2">
+                                            <div className="bg-[#1a1a35] border border-purple-900/40 rounded-xl p-4 text-center">
+                                                <div className="text-2xl font-bold text-white">
+                                                    {assessmentResults.filter(r => r.score !== null).length}
                                                 </div>
-                                            ))}
+                                                <div className="text-sm text-gray-400">Graded</div>
+                                            </div>
+                                            <div className="bg-[#1a1a35] border border-purple-900/40 rounded-xl p-4 text-center">
+                                                <div className="text-2xl font-bold text-green-400">
+                                                    {Math.round(
+                                                        assessmentResults
+                                                            .filter(r => r.score !== null)
+                                                            .reduce((sum, r) => sum + r.score, 0) /
+                                                        assessmentResults.filter(r => r.score !== null).length
+                                                    )}%
+                                                </div>
+                                                <div className="text-sm text-gray-400">Average</div>
+                                            </div>
+                                            <div className="bg-[#1a1a35] border border-purple-900/40 rounded-xl p-4 text-center">
+                                                <div className="text-2xl font-bold text-blue-400">
+                                                    {Math.max(...assessmentResults.filter(r => r.score !== null).map(r => r.score))}%
+                                                </div>
+                                                <div className="text-sm text-gray-400">Highest</div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
+
+                                    {/* Student Grade List */}
+                                    {enrolledStudents.length === 0 ? (
+                                        <div className="text-center py-12 text-gray-400">
+                                            <p>No students enrolled in this course yet.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-[#1a1a35] border border-purple-900/40 rounded-xl overflow-hidden">
+                                            <div className="px-4 py-3 border-b border-purple-900/40 flex items-center justify-between">
+                                                <h3 className="font-semibold text-white">Students ({enrolledStudents.length})</h3>
+                                                <span className="text-xs text-gray-400">Enter scores 0–100</span>
+                                            </div>
+                                            <div className="divide-y divide-purple-900/20">
+                                                {enrolledStudents.map(student => {
+                                                    const existing = assessmentResults.find(r => r.student_id === student.id);
+                                                    const input = gradeInputs[student.id] || { score: '', remarks: '' };
+                                                    const isGraded = existing && existing.score !== null;
+                                                    return (
+                                                        <div key={student.id} className="px-4 py-4">
+                                                            <div className="flex items-center justify-between gap-4">
+                                                                {/* Student info */}
+                                                                <div className="flex items-center gap-3 min-w-0">
+                                                                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs text-white font-bold flex-shrink-0">
+                                                                        {student.name[0].toUpperCase()}
+                                                                    </div>
+                                                                    <div className="min-w-0">
+                                                                        <p className="text-white font-medium truncate">{student.name}</p>
+                                                                        <p className="text-xs text-gray-400 truncate">{student.email}</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Grade inputs */}
+                                                                <div className="flex items-center gap-2 flex-shrink-0">
+                                                                    <div className="flex items-center gap-1">
+                                                                        <input
+                                                                            type="number"
+                                                                            min="0"
+                                                                            max="100"
+                                                                            placeholder="Score"
+                                                                            value={input.score}
+                                                                            onChange={e => setGradeInputs(prev => ({
+                                                                                ...prev,
+                                                                                [student.id]: { ...prev[student.id], score: e.target.value }
+                                                                            }))}
+                                                                            className="w-20 bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-purple-500 text-center"
+                                                                        />
+                                                                        <span className="text-gray-500 text-sm">%</span>
+                                                                    </div>
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder="Remarks (optional)"
+                                                                        value={input.remarks}
+                                                                        onChange={e => setGradeInputs(prev => ({
+                                                                            ...prev,
+                                                                            [student.id]: { ...prev[student.id], remarks: e.target.value }
+                                                                        }))}
+                                                                        className="w-36 bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                                                    />
+                                                                    <button
+                                                                        onClick={() => handleSaveGrade(student.id)}
+                                                                        disabled={savingGrade === student.id}
+                                                                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                                                                            isGraded
+                                                                                ? 'bg-blue-600/20 border border-blue-500/30 text-blue-300 hover:bg-blue-600/30'
+                                                                                : 'bg-green-600/20 border border-green-500/30 text-green-300 hover:bg-green-600/30'
+                                                                        } disabled:opacity-50`}
+                                                                    >
+                                                                        {savingGrade === student.id ? '⏳' : isGraded ? 'Update' : 'Save'}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>

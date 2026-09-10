@@ -977,7 +977,6 @@ router.get('/instructor/content-analytics', authenticate, authorize('instructor'
                  LEFT JOIN lessons l ON c.id = l.course_id
                  LEFT JOIN lesson_progress lp ON l.id = lp.lesson_id
                  WHERE c.instructor_id = $1
-                 GROUP BY 'lessons'
                  
                  UNION ALL
                  
@@ -990,7 +989,6 @@ router.get('/instructor/content-analytics', authenticate, authorize('instructor'
                  LEFT JOIN quizzes q ON c.id = q.course_id
                  LEFT JOIN quiz_attempts qa ON q.id = qa.quiz_id
                  WHERE c.instructor_id = $2
-                 GROUP BY 'quizzes'
                  
                  UNION ALL
                  
@@ -1003,7 +1001,6 @@ router.get('/instructor/content-analytics', authenticate, authorize('instructor'
                  LEFT JOIN assignments a ON c.id = a.course_id
                  LEFT JOIN assignment_submissions sub ON a.id = sub.assignment_id
                  WHERE c.instructor_id = $3
-                 GROUP BY 'assignments'
                  
                  UNION ALL
                  
@@ -1015,8 +1012,7 @@ router.get('/instructor/content-analytics', authenticate, authorize('instructor'
                  FROM courses c
                  LEFT JOIN live_sessions ls ON c.id = ls.course_id
                  LEFT JOIN session_attendance sa ON ls.id = sa.session_id
-                 WHERE c.instructor_id = $4
-                 GROUP BY 'live_sessions'`,
+                 WHERE c.instructor_id = $4`,
                 [req.user.id, req.user.id, req.user.id, req.user.id]
             )
         ]);

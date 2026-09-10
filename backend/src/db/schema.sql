@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS assessments (
   course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
   title VARCHAR(500) NOT NULL,
   description TEXT,
-  type VARCHAR(50) CHECK (type IN ('quiz', 'exam', 'assignment')),
+  type VARCHAR(50) CHECK (type IN ('quiz', 'exam', 'assignment', 'project', 'midterm', 'final', 'practical')),
   scheduled_date TIMESTAMP,
   duration_minutes INTEGER,
   total_points INTEGER DEFAULT 100,
@@ -256,3 +256,13 @@ CREATE INDEX IF NOT EXISTS idx_lesson_progress_student ON lesson_progress(studen
 CREATE INDEX IF NOT EXISTS idx_lesson_progress_lesson ON lesson_progress(lesson_id);
 CREATE INDEX IF NOT EXISTS idx_live_sessions_course ON live_sessions(course_id);
 CREATE INDEX IF NOT EXISTS idx_session_attendance_session ON session_attendance(session_id);
+
+-- Migration: widen assessments.type constraint to include all supported types
+DO $$
+BEGIN
+    ALTER TABLE assessments DROP CONSTRAINT IF EXISTS assessments_type_check;
+    ALTER TABLE assessments ADD CONSTRAINT assessments_type_check
+        CHECK (type IN ('quiz', 'exam', 'assignment', 'project', 'midterm', 'final', 'practical'));
+EXCEPTION WHEN others THEN
+    NULL; -- ignore if already updated
+END $$;

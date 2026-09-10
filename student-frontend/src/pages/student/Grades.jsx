@@ -21,23 +21,31 @@ export default function Grades() {
             const quizzes = (quizRes.data.attempts || []).map(a => ({
                 type: 'quiz',
                 name: a.quiz_title || a.title,
+                course: a.course_title || '—',
                 score: a.score,
                 date: a.completed_at,
             }));
 
             const assignments = (assignRes.data.submissions || [])
                 .filter(s => s.score !== null)
-                .map(s => ({
-                    type: 'assignment',
-                    name: s.title,
-                    score: s.score,
-                    date: s.submitted_at,
-                    maxPoints: s.total_points || s.max_points,
-                }));
+                .map(s => {
+                    const maxPoints = s.total_points || s.max_points || 100;
+                    const pct = Math.min(100, Math.round((s.score / maxPoints) * 100));
+                    return {
+                        type: 'assignment',
+                        name: s.title,
+                        course: s.course_title || '—',
+                        score: pct,
+                        rawScore: s.score,
+                        maxPoints,
+                        date: s.submitted_at,
+                    };
+                });
 
             const assessments = (assessRes.data.results || []).map(r => ({
                 type: 'assessment',
                 name: r.assessment_title,
+                course: r.course_title || '—',
                 score: r.score,
                 date: r.updated_at || r.created_at,
                 assessmentType: r.assessment_type,
@@ -78,7 +86,7 @@ export default function Grades() {
             {/* GPA Summary */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: 'Overall GPA', value: grades.overallGPA, icon: '🎯', color: 'from-purple-600 to-pink-600' },
+                    { label: 'Avg Score', value: `${grades.overallGPA}%`, icon: '🎯', color: 'from-purple-600 to-pink-600' },
                     { label: 'Quizzes', value: grades.quizzes.length, icon: '📝', color: 'from-blue-600 to-cyan-500' },
                     { label: 'Assignments', value: grades.assignments.length, icon: '📋', color: 'from-green-600 to-emerald-500' },
                     { label: 'Assessments', value: grades.assessments.length, icon: '📑', color: 'from-yellow-600 to-orange-500' },
@@ -109,13 +117,14 @@ export default function Grades() {
                             <tr className="border-b border-purple-900/30 bg-[#0d0d1a]">
                                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-300 uppercase tracking-wider">Type</th>
                                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-300 uppercase tracking-wider">Name</th>
+                                <th className="text-left px-6 py-4 text-xs font-bold text-gray-300 uppercase tracking-wider">Course</th>
                                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-300 uppercase tracking-wider">Score</th>
                                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-300 uppercase tracking-wider">Date</th>
                             </tr>
                         </thead>
                         <tbody>
                             {displayGrades.length === 0 ? (
-                                <tr><td colSpan={4} className="text-center py-16 text-gray-500">
+                                <tr><td colSpan={5} className="text-center py-16 text-gray-500">
                                     <div className="text-4xl mb-3">📊</div>
                                     <div className="text-lg font-medium">No grades yet</div>
                                     <div className="text-sm mt-1">Complete quizzes, assignments, and assessments to see your grades here</div>
@@ -132,9 +141,15 @@ export default function Grades() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-sm font-medium text-white">{grade.name}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-400">{grade.course}</td>
                                         <td className="px-6 py-4">
                                             <span className={`text-sm font-bold ${grade.score >= 80 ? 'text-green-400' : grade.score >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
                                                 {grade.score}%
+                                                {grade.type === 'assignment' && grade.maxPoints !== 100 && (
+                                                    <span className="text-xs font-normal text-gray-500 ml-1">
+                                                        ({grade.rawScore}/{grade.maxPoints})
+                                                    </span>
+                                                )}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-400">{new Date(grade.date).toLocaleDateString()}</td>

@@ -45,14 +45,13 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
 
             const urlField = fileType === 'video' ? 'video_url' : 'pdf_url';
             setFormData(prev => {
-                const isText = prev.content_type === 'text';
-                const hasVideo = urlField === 'video_url' ? true : prev.video_url;
-                const hasPdf = urlField === 'pdf_url' ? true : prev.pdf_url;
+                const hasVideo = urlField === 'video_url' ? true : !!prev.video_url;
+                const hasPdf   = urlField === 'pdf_url'   ? true : !!prev.pdf_url;
                 const newContentType = (hasVideo && hasPdf) ? 'mixed' : (hasVideo ? 'video' : hasPdf ? 'pdf' : 'text');
                 return {
                     ...prev,
                     [urlField]: res.data.url,
-                    content_type: isText ? fileType : newContentType
+                    content_type: newContentType
                 };
             });
             toast.success(`${fileType.toUpperCase()} uploaded successfully`);
@@ -80,12 +79,13 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
             return;
         }
         if (formData.content_type === 'pdf' && !formData.pdf_url) {
-            toast.error('Please provide a PDF URL or upload a document');
+            toast.error('Please provide a PDF URL or upload a PDF file');
             return;
         }
         if (formData.content_type === 'mixed') {
-            if (!formData.video_url || !formData.pdf_url) {
-                toast.error('Please include both a video URL/upload and a PDF URL/upload for mixed content');
+            const hasAny = formData.video_url || formData.pdf_url || formData.text_content.trim();
+            if (!hasAny) {
+                toast.error('Please add at least one piece of content for a mixed lesson');
                 return;
             }
         }
@@ -143,7 +143,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                                 {type === 'text' && '📝 Text'}
                                 {type === 'video' && '🎬 Video'}
                                 {type === 'pdf' && '📄 PDF'}
-                                {type === 'mixed' && '🎯 Mixed'}
+                                {type === 'mixed' && '🎯 Mixed (Video + PDF + Text)'}
                             </button>
                         ))}
                     </div>
@@ -162,7 +162,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                                     value={formData.video_url}
                                     onChange={handleChange}
                                     className="flex-1 bg-[#1a1a35] border border-purple-900/40 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500 transition"
-                                    placeholder="https://youtube.com/watch?v=... or /uploads/your-video.mp4"
+                                    placeholder="https://youtube.com/watch?v=... or Cloudinary video URL"
                                 />
                                 <button
                                     type="button"
@@ -193,7 +193,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                 {(formData.content_type === 'pdf' || formData.content_type === 'mixed') && (
                     <div className="bg-[#0d0d1a] rounded-xl p-4 border border-purple-900/30">
                         <label className="block text-sm font-semibold text-gray-300 mb-3">
-                            📄 Document (PDF/DOC)
+                            📄 PDF Document
                         </label>
                         <div className="space-y-3">
                             <div className="flex gap-2">
@@ -203,7 +203,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                                     value={formData.pdf_url}
                                     onChange={handleChange}
                                     className="flex-1 bg-[#1a1a35] border border-purple-900/40 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500 transition"
-                                    placeholder="https://example.com/document.pdf or /uploads/your-doc.pdf"
+                                    placeholder="https://example.com/document.pdf"
                                 />
                                 <button
                                     type="button"
@@ -247,7 +247,6 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                     </div>
                 )}
 
-                {(formData.content_type === 'video' || formData.content_type === 'mixed') && (
                 <div>
                     <label className="block text-sm font-semibold text-gray-300 mb-2">
                         ⏱️ Duration (minutes)
@@ -262,7 +261,6 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                         min="1"
                     />
                 </div>
-                )}
 
                 <div className="flex gap-3 pt-4">
                     <button

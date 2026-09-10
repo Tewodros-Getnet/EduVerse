@@ -131,12 +131,15 @@ router.get('/:id', authenticate, async (req, res, next) => {
 // POST /api/assessments (create)
 router.post('/', authenticate, authorize('instructor', 'admin'), async (req, res, next) => {
     try {
-        const { courseId, title, description, startDate, endDate, duration, questions } = req.body;
+        const { courseId, title, description, startDate, endDate, duration, type } = req.body;
 
         // Validate courseId
         if (!courseId) {
             return res.status(400).json({ error: 'Course ID is required' });
         }
+
+        const validTypes = ['quiz', 'exam', 'assignment', 'project', 'midterm', 'final', 'practical'];
+        const assessmentType = validTypes.includes(type) ? type : 'exam';
 
         // Verify instructor owns the course
         const course = await query('SELECT instructor_id FROM courses WHERE id = $1', [courseId]);
@@ -150,7 +153,7 @@ router.post('/', authenticate, authorize('instructor', 'admin'), async (req, res
         const result = await query(
             `INSERT INTO assessments (course_id, title, scheduled_date, duration_minutes, description, type) 
              VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
-            [courseId, title, new Date(startDate).toISOString(), duration || 120, description, 'project']
+            [courseId, title, new Date(startDate).toISOString(), duration || 120, description, assessmentType]
         );
         res.status(201).json({ assessment: result.rows[0] });
     } catch (err) { next(err); }
