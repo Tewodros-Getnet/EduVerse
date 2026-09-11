@@ -209,6 +209,7 @@ export default function InstructorCourseDetail() {
         } catch { toast.error('Failed to delete assessment'); }
     };
 
+    const handleCreateAssessment = async (e) => {
         e.preventDefault();
         setSavingAssessment(true);
         try {
