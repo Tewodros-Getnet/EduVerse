@@ -215,7 +215,39 @@ const InstructorAssessments = () => {
         } finally { setSavingQuestions(false); }
     };
 
-    // ── Render helpers ─────────────────────────────────────────────────────
+    // ── Edit assessment ────────────────────────────────────────────────────
+    const [editingId,   setEditingId]   = useState(null);
+    const [editForm,    setEditForm]    = useState({});
+    const [savingEdit,  setSavingEdit]  = useState(false);
+
+    const openEdit = (assessment) => {
+        setEditingId(assessment.id);
+        setEditForm({
+            title:            assessment.title,
+            description:      assessment.description || '',
+            type:             assessment.type,
+            startDate:        assessment.scheduled_date
+                                  ? new Date(assessment.scheduled_date).toISOString().slice(0, 16)
+                                  : '',
+            duration:         assessment.duration_minutes || 60,
+        });
+    };
+
+    const handleSaveEdit = async () => {
+        setSavingEdit(true);
+        try {
+            const res = await api.put(`/assessments/${editingId}`, editForm);
+            setAssessments(prev => prev.map(a =>
+                a.id === editingId ? { ...a, ...(res.data.assessment || res.data) } : a
+            ));
+            setEditingId(null);
+            toast.success('Assessment updated');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Failed to update');
+        } finally { setSavingEdit(false); }
+    };
+
+
     const totalPoints = (qs) => qs.reduce((s, q) => s + (parseInt(q.points) || 1), 0);
 
     if (loading) return (
@@ -354,6 +386,13 @@ const InstructorAssessments = () => {
                                         {hasQ ? '✏️ Edit Questions' : '+ Add Questions'}
                                     </button>
                                 )}
+                                <button
+                                    onClick={() => openEdit(assessment)}
+                                    className="px-3 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition"
+                                    title="Edit assessment details"
+                                >
+                                    ✏️
+                                </button>
                                 <button
                                     onClick={() => handleViewResults(assessment)}
                                     className="flex-1 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-purple-400 text-sm hover:bg-purple-600/20 transition"
@@ -614,6 +653,64 @@ const InstructorAssessments = () => {
                                     )}
                                 </div>
                             )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Edit Assessment Modal ──────────────────────────────────── */}
+            {editingId && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-lg">
+                        <div className="flex items-center justify-between p-6 border-b border-purple-900/30">
+                            <h2 className="text-lg font-bold text-white">Edit Assessment</h2>
+                            <button onClick={() => setEditingId(null)} className="text-gray-400 hover:text-white text-xl">✕</button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-1">Title</label>
+                                <input value={editForm.title}
+                                    onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
+                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm text-gray-400 mb-1">Type</label>
+                                    <select value={editForm.type}
+                                        onChange={e => setEditForm(f => ({ ...f, type: e.target.value }))}
+                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500">
+                                        {ALL_TYPES.map(t => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-gray-400 mb-1">Duration (min)</label>
+                                    <input type="number" min="1" value={editForm.duration}
+                                        onChange={e => setEditForm(f => ({ ...f, duration: parseInt(e.target.value) || 60 }))}
+                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-1">Scheduled Date</label>
+                                <input type="datetime-local" value={editForm.startDate}
+                                    onChange={e => setEditForm(f => ({ ...f, startDate: e.target.value }))}
+                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                            </div>
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-1">Description</label>
+                                <textarea rows={3} value={editForm.description}
+                                    onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 resize-none" />
+                            </div>
+                            <div className="flex gap-3 pt-2">
+                                <button onClick={handleSaveEdit} disabled={savingEdit}
+                                    className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50">
+                                    {savingEdit ? '⏳ Saving...' : '✓ Save Changes'}
+                                </button>
+                                <button onClick={() => setEditingId(null)}
+                                    className="px-5 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition">
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

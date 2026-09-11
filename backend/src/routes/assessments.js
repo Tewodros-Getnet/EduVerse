@@ -4,23 +4,11 @@ const { authenticate, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
-// ============= ASSIGNMENTS =============
-
-// GET /api/assignments/course/:courseId
-router.get('/course/:courseId', authenticate, async (req, res, next) => {
-    try {
-        const result = await query(
-            `SELECT a.*, c.title as course_title, u.name as instructor_name 
-             FROM assignments a 
-             JOIN courses c ON a.course_id = c.id 
-             JOIN users u ON c.instructor_id = u.id 
-             WHERE a.course_id = $1 
-             ORDER BY a.due_date ASC`,
-            [req.params.courseId]
-        );
-        res.json({ assignments: result.rows });
-    } catch (err) { next(err); }
-});
+// ============= ASSIGNMENTS (legacy routes kept for backward compat) =============
+// NOTE: The primary assignments routes live in assignments.js
+// This duplicate is kept only because assessments.js and assignments.js
+// share the same router registration path (/api/assessments).
+// The GET /course/:courseId below is for ASSESSMENTS not assignments.
 
 // GET /api/assessments/student
 router.get('/student', authenticate, authorize('student'), async (req, res, next) => {
@@ -738,6 +726,50 @@ router.patch('/:id/attempts/:attemptId/grade', authenticate, authorize('instruct
         );
 
         res.json({ attempt: updated.rows[0] });
+    } catch (err) { next(err); }
+});
+
+// PUT /api/assessments/:id — instructor edits an existing assessment
+router.put('/:id', authenticate, authorize('instructor', 'admin'), async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { title, description, type, startDate, duration } = req.body;
+
+        // Verify ownership
+        const check = await query(
+            `SELECT c.instructor_id FROM assessments a
+             JOIN courses c ON a.course_id = c.id WHERE a.id = $1`,
+            [id]
+        );
+        if (!check.rows.length) return res.status(404).json({ error: 'Assessment not found' });
+        if (check.rows[0].instructor_id !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+
+        const validTypes = ['exam', 'midterm', 'final', 'project'];
+        const assessmentType = validTypes.includes(type) ? type : undefined;
+
+        const result = await query(
+            `UPDATE assessments
+             SET title           = COALESCE($1, title),
+                 description     = COALESCE($2, description),
+                 type            = COALESCE($3, type),
+                 scheduled_date  = COALESCE($4, scheduled_date),
+                 duration_minutes = COALESCE($5, duration_minutes),
+                 updated_at      = NOW()
+             WHERE id = $6
+             RETURNING *`,
+            [
+                title || null,
+                description !== undefined ? description : null,
+                assessmentType || null,
+                startDate ? new Date(startDate).toISOString() : null,
+                duration ? parseInt(duration) : null,
+                id,
+            ]
+        );
+
+        res.json({ assessment: result.rows[0] });
     } catch (err) { next(err); }
 });
 

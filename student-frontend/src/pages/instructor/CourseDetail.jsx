@@ -165,7 +165,50 @@ export default function InstructorCourseDetail() {
         } finally { setSavingAssignment(false); }
     };
 
-    const handleCreateAssessment = async (e) => {
+    const [editingAssessment, setEditingAssessment] = useState(null);
+    const [editAssessmentForm, setEditAssessmentForm] = useState({});
+    const [savingEditAssessment, setSavingEditAssessment] = useState(false);
+
+    const handleEditAssessment = (assessment) => {
+        setEditingAssessment(assessment.id);
+        setEditAssessmentForm({
+            title: assessment.title,
+            description: assessment.description || '',
+            type: assessment.type,
+            scheduled_date: assessment.scheduled_date
+                ? new Date(assessment.scheduled_date).toISOString().slice(0, 16)
+                : '',
+            duration_minutes: assessment.duration_minutes || 60,
+        });
+    };
+
+    const handleSaveAssessment = async (assessmentId) => {
+        setSavingEditAssessment(true);
+        try {
+            const res = await api.put(`/assessments/${assessmentId}`, {
+                ...editAssessmentForm,
+                startDate: editAssessmentForm.scheduled_date,
+                duration: editAssessmentForm.duration_minutes,
+            });
+            setAssessments(prev => prev.map(a =>
+                a.id === assessmentId ? { ...a, ...(res.data.assessment || res.data) } : a
+            ));
+            setEditingAssessment(null);
+            toast.success('Assessment updated');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Failed to update assessment');
+        } finally { setSavingEditAssessment(false); }
+    };
+
+    const handleDeleteAssessment = async (assessmentId) => {
+        if (!window.confirm('Delete this assessment?')) return;
+        try {
+            await api.delete(`/assessments/${assessmentId}`);
+            setAssessments(prev => prev.filter(a => a.id !== assessmentId));
+            toast.success('Assessment deleted');
+        } catch { toast.error('Failed to delete assessment'); }
+    };
+
         e.preventDefault();
         setSavingAssessment(true);
         try {
@@ -565,9 +608,9 @@ export default function InstructorCourseDetail() {
                                             onChange={e => setAssessmentForm(f => ({ ...f, type: e.target.value }))}
                                             className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
                                         >
+                                            <option value="exam">Exam</option>
                                             <option value="midterm">Midterm</option>
                                             <option value="final">Final</option>
-                                            <option value="practical">Practical</option>
                                             <option value="project">Project</option>
                                         </select>
                                     </div>
@@ -604,11 +647,63 @@ export default function InstructorCourseDetail() {
 
                         <div className="space-y-3">
                             {assessments.map(assessment => (
-                                <div key={assessment.id} className="flex items-center justify-between p-3 bg-[#1a1a35] rounded-xl">
-                                    <div>
-                                        <p className="font-medium text-white">{assessment.title}</p>
-                                        <p className="text-xs text-gray-400 capitalize">{assessment.type} · {assessment.duration_minutes} min · {new Date(assessment.scheduled_date).toLocaleDateString()}</p>
-                                    </div>
+                                <div key={assessment.id} className="bg-[#1a1a35] rounded-xl p-3">
+                                    {editingAssessment === assessment.id ? (
+                                        // Inline edit form
+                                        <div className="space-y-3">
+                                            <input value={editAssessmentForm.title}
+                                                onChange={e => setEditAssessmentForm(f => ({ ...f, title: e.target.value }))}
+                                                placeholder="Title"
+                                                className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                            <div className="grid grid-cols-3 gap-2">
+                                                <select value={editAssessmentForm.type}
+                                                    onChange={e => setEditAssessmentForm(f => ({ ...f, type: e.target.value }))}
+                                                    className="bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500">
+                                                    <option value="exam">Exam</option>
+                                                    <option value="midterm">Midterm</option>
+                                                    <option value="final">Final</option>
+                                                    <option value="project">Project</option>
+                                                </select>
+                                                <input type="datetime-local" value={editAssessmentForm.scheduled_date}
+                                                    onChange={e => setEditAssessmentForm(f => ({ ...f, scheduled_date: e.target.value }))}
+                                                    className="bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                                <input type="number" min="1" value={editAssessmentForm.duration_minutes}
+                                                    onChange={e => setEditAssessmentForm(f => ({ ...f, duration_minutes: parseInt(e.target.value) || 60 }))}
+                                                    placeholder="Duration (min)"
+                                                    className="bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => handleSaveAssessment(assessment.id)} disabled={savingEditAssessment}
+                                                    className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm hover:opacity-90 transition disabled:opacity-50">
+                                                    {savingEditAssessment ? 'Saving...' : '✓ Save'}
+                                                </button>
+                                                <button onClick={() => setEditingAssessment(null)}
+                                                    className="px-4 py-2 bg-[#12122a] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        // Display row
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium text-white">{assessment.title}</p>
+                                                <p className="text-xs text-gray-400 capitalize">
+                                                    {assessment.type} · {assessment.duration_minutes} min · {new Date(assessment.scheduled_date).toLocaleDateString()}
+                                                </p>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => handleEditAssessment(assessment)}
+                                                    className="px-3 py-1.5 bg-blue-600/20 border border-blue-500/30 rounded-lg text-blue-300 text-xs hover:bg-blue-600/30 transition">
+                                                    Edit
+                                                </button>
+                                                <button onClick={() => handleDeleteAssessment(assessment.id)}
+                                                    className="px-3 py-1.5 bg-red-600/20 border border-red-500/30 rounded-lg text-red-400 text-xs hover:bg-red-600/30 transition">
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                             {assessments.length === 0 && (
