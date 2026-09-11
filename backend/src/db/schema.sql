@@ -266,3 +266,53 @@ BEGIN
 EXCEPTION WHEN others THEN
     NULL; -- ignore if already updated
 END $$;
+
+-- ============================================================
+-- ONLINE EXAM FEATURE — Migration
+-- Run this block in Supabase SQL Editor to apply to existing DB
+-- ============================================================
+
+-- 1. Exam Questions (linked to assessments)
+CREATE TABLE IF NOT EXISTS exam_questions (
+  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  assessment_id UUID REFERENCES assessments(id) ON DELETE CASCADE,
+  question      TEXT NOT NULL,
+  question_type VARCHAR(20) DEFAULT 'mcq' CHECK (question_type IN ('mcq', 'true_false', 'short_answer')),
+  options       JSONB,          -- ["Option A","Option B","Option C","Option D"] for mcq
+  correct_answer TEXT,          -- NULL for short_answer (manually graded)
+  points        INTEGER DEFAULT 1,
+  order_index   INTEGER NOT NULL DEFAULT 0
+);
+
+-- 2. Exam Attempts (one per student per assessment)
+CREATE TABLE IF NOT EXISTS exam_attempts (
+  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  assessment_id UUID REFERENCES assessments(id) ON DELETE CASCADE,
+  student_id    UUID REFERENCES users(id) ON DELETE CASCADE,
+  answers       JSONB,          -- [{ question_id, answer, correct, points_earned }]
+  score         INTEGER,        -- percentage 0-100, NULL until auto-graded
+  passed        BOOLEAN,
+  auto_graded   BOOLEAN DEFAULT false,
+  started_at    TIMESTAMP DEFAULT NOW(),
+  submitted_at  TIMESTAMP,
+  UNIQUE(assessment_id, student_id)
+);
+
+-- 3. Add has_questions and passing_score to assessments
+ALTER TABLE assessments ADD COLUMN IF NOT EXISTS has_questions BOOLEAN DEFAULT false;
+ALTER TABLE assessments ADD COLUMN IF NOT EXISTS passing_score INTEGER DEFAULT 60;
+
+-- 4. Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_exam_questions_assessment ON exam_questions(assessment_id);
+CREATE INDEX IF NOT EXISTS idx_exam_attempts_assessment  ON exam_attempts(assessment_id);
+CREATE INDEX IF NOT EXISTS idx_exam_attempts_student     ON exam_attempts(student_id);
+
+-- 5. Narrow the type constraint to only meaningful online types
+DO $$
+BEGIN
+    ALTER TABLE assessments DROP CONSTRAINT IF EXISTS assessments_type_check;
+    ALTER TABLE assessments ADD CONSTRAINT assessments_type_check
+        CHECK (type IN ('exam', 'midterm', 'final', 'project'));
+EXCEPTION WHEN others THEN
+    NULL;
+END $$;

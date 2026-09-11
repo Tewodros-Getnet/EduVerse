@@ -23,6 +23,7 @@ import Assignments from './pages/student/Assignments';
 import Grades from './pages/student/Grades';
 import CourseNotes from './pages/student/CourseNotes';
 import Assessments from './pages/student/Assessments';
+import TakeExam from './pages/student/TakeExam';
 import InstructorDashboard from './pages/instructor/Dashboard';
 import InstructorCourses from './pages/instructor/Courses';
 import InstructorCourseDetail from './pages/instructor/CourseDetail';
@@ -73,6 +74,7 @@ function AppRoutes() {
                 <Route path="grades" element={<Grades />} />
                 <Route path="course-notes/:courseId" element={<CourseNotes />} />
                 <Route path="assessments" element={<Assessments />} />
+                <Route path="exam/:id" element={<TakeExam />} />
                 <Route path="profile" element={<StudentProfile />} />
             </Route>
 
