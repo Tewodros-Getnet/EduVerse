@@ -53,10 +53,20 @@ router.get('/student', authenticate, authorize('student'), async (req, res, next
 router.get('/instructor', authenticate, authorize('instructor', 'admin'), async (req, res, next) => {
     try {
         const result = await query(
-            `SELECT a.*, c.title as course_name
+            `SELECT a.*,
+                    c.title as course_title,
+                    COUNT(sub.id) as submission_count,
+                    COUNT(CASE WHEN sub.score IS NOT NULL THEN 1 END) as graded_count,
+                    CASE
+                        WHEN a.due_date < NOW() THEN 'overdue'
+                        WHEN a.due_date < NOW() + INTERVAL '3 days' THEN 'due_soon'
+                        ELSE 'active'
+                    END as status
              FROM assignments a
              JOIN courses c ON a.course_id = c.id
+             LEFT JOIN assignment_submissions sub ON a.id = sub.assignment_id
              WHERE c.instructor_id = $1
+             GROUP BY a.id, c.title
              ORDER BY a.created_at DESC`,
             [req.user.id]
         );
@@ -268,9 +278,11 @@ router.get('/:id/analytics', authenticate, authorize('instructor'), async (req, 
                     COUNT(CASE WHEN score IS NOT NULL THEN 1 END) as graded_submissions,
                     AVG(score) as avg_score,
                     MAX(score) as max_score,
-                    MIN(score) as min_score
-                 FROM assignment_submissions
-                 WHERE assignment_id = $1`,
+                    MIN(score) as min_score,
+                    COUNT(CASE WHEN sub.submitted_at <= a.due_date THEN 1 END) as on_time_submissions
+                 FROM assignment_submissions sub
+                 JOIN assignments a ON sub.assignment_id = a.id
+                 WHERE sub.assignment_id = $1`,
                 [id]
             ),
             query(
@@ -298,10 +310,17 @@ router.get('/:id/analytics', authenticate, authorize('instructor'), async (req, 
             ),
             query(
                 `SELECT 
-                    AVG(EXTRACT(EPOCH FROM submitted_at)/3600) as avg_hours_since_submission,
-                    COUNT(*) as total_submissions
-                 FROM assignment_submissions
-                 WHERE assignment_id = $1 AND submitted_at IS NOT NULL`,
+                    COUNT(CASE WHEN sub.submitted_at > a.due_date THEN 1 END) as late_submissions,
+                    ROUND(
+                        AVG(
+                            CASE WHEN sub.submitted_at > a.due_date
+                            THEN EXTRACT(EPOCH FROM (sub.submitted_at - a.due_date)) / 3600
+                            END
+                        )::numeric, 1
+                    ) as avg_hours_late
+                 FROM assignment_submissions sub
+                 JOIN assignments a ON sub.assignment_id = a.id
+                 WHERE sub.assignment_id = $1 AND sub.submitted_at IS NOT NULL`,
                 [id]
             ),
             query(

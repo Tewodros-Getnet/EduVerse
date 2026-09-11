@@ -10,7 +10,6 @@ export default function Assignments() {
     const [loading, setLoading] = useState(true);
     const [selectedAssignment, setSelectedAssignment] = useState(null);
     const [submissionText, setSubmissionText] = useState('');
-    const [submissionFiles, setSubmissionFiles] = useState([]);
     const [submitting, setSubmitting] = useState(false);
     const [showSubmissionModal, setShowSubmissionModal] = useState(false);
     const [viewingSubmission, setViewingSubmission] = useState(null);
@@ -33,28 +32,19 @@ export default function Assignments() {
     }, [courseId]);
 
     const handleSubmit = async () => {
-        if (!submissionText.trim() && submissionFiles.length === 0) {
-            toast.error('Please enter your submission or upload files');
+        if (!submissionText.trim()) {
+            toast.error('Please enter your submission');
             return;
         }
         setSubmitting(true);
         try {
-            const formData = new FormData();
-            formData.append('submission_text', submissionText);
-            formData.append('course_id', courseId);
-
-            // Add files if any
-            submissionFiles.forEach(file => {
-                formData.append('files', file);
-            });
-
-            const response = await api.post(`/assignments/${selectedAssignment.id}/submit`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+            await api.post(`/assignments/${selectedAssignment.id}/submit`, {
+                submission_text: submissionText,
+                course_id: courseId,
             });
 
             toast.success('Assignment submitted successfully!');
             setSubmissionText('');
-            setSubmissionFiles([]);
             setSelectedAssignment(null);
             setShowSubmissionModal(false);
 
@@ -72,38 +62,16 @@ export default function Assignments() {
         }
     };
 
-    const handleFileUpload = (e) => {
-        const files = Array.from(e.target.files);
-        if (files.length > 5) {
-            toast.error('Maximum 5 files allowed');
-            return;
-        }
-
-        const totalSize = files.reduce((acc, file) => acc + file.size, 0);
-        if (totalSize > 10 * 1024 * 1024) { // 10MB limit
-            toast.error('Total file size cannot exceed 10MB');
-            return;
-        }
-
-        setSubmissionFiles(prev => [...prev, ...files]);
-    };
-
-    const removeFile = (index) => {
-        setSubmissionFiles(prev => prev.filter((_, i) => i !== index));
-    };
-
     const openSubmissionModal = (assignment) => {
         setSelectedAssignment(assignment);
         setShowSubmissionModal(true);
         setSubmissionText('');
-        setSubmissionFiles([]);
     };
 
     const closeSubmissionModal = () => {
         setShowSubmissionModal(false);
         setSelectedAssignment(null);
         setSubmissionText('');
-        setSubmissionFiles([]);
     };
 
     const viewSubmissionDetails = (assignment, submission) => {
@@ -255,21 +223,8 @@ export default function Assignments() {
                                             <div>
                                                 <p className="text-gray-300 font-medium mb-2">Your Submission</p>
                                                 <p className="text-gray-400 text-sm line-clamp-3">
-                                                    {submission.submission_text || 'No text submission'}
+                                                    {submission.content || 'No text submission'}
                                                 </p>
-                                                {submission.files && submission.files.length > 0 && (
-                                                    <div className="mt-2">
-                                                        <p className="text-xs text-gray-400 mb-1">Attached Files:</p>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {submission.files.map((file, index) => (
-                                                                <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
-                                                                    className="text-xs text-blue-400 hover:text-blue-300">
-                                                                    📎 {file.name}
-                                                                </a>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
                                             </div>
                                             <button
                                                 onClick={() => viewSubmissionDetails(assignment, submission)}
@@ -361,32 +316,6 @@ export default function Assignments() {
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm text-gray-400 mb-2">Attach Files (Optional)</label>
-                                <input
-                                    type="file"
-                                    multiple
-                                    onChange={handleFileUpload}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700"
-                                />
-                                <p className="text-xs text-gray-500 mt-1">Maximum 5 files, 10MB total</p>
-
-                                {submissionFiles.length > 0 && (
-                                    <div className="mt-3 space-y-2">
-                                        {submissionFiles.map((file, index) => (
-                                            <div key={index} className="flex items-center justify-between bg-[#1a1a35] rounded-lg px-3 py-2">
-                                                <span className="text-sm text-gray-300">{file.name}</span>
-                                                <button
-                                                    onClick={() => removeFile(index)}
-                                                    className="text-red-400 hover:text-red-300 text-sm"
-                                                >
-                                                    Remove
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
                         </div>
 
                         <div className="flex gap-3 mt-6">
@@ -435,21 +364,7 @@ export default function Assignments() {
 
                             <div className="bg-[#1a1a35] rounded-xl p-4">
                                 <h4 className="text-white font-medium mb-2">Your Submission</h4>
-                                <p className="text-gray-300">{viewingSubmission.submission.submission_text || 'No text submission'}</p>
-
-                                {viewingSubmission.submission.files && viewingSubmission.submission.files.length > 0 && (
-                                    <div className="mt-3">
-                                        <h5 className="text-white font-medium mb-2">Attached Files:</h5>
-                                        <div className="space-y-2">
-                                            {viewingSubmission.submission.files.map((file, index) => (
-                                                <a key={index} href={file.url} target="_blank" rel="noopener noreferrer"
-                                                    className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm">
-                                                    📎 {file.name}
-                                                </a>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
+                                <p className="text-gray-300">{viewingSubmission.submission.content || 'No text submission'}</p>
                             </div>
 
                             {viewingSubmission.submission.feedback && (

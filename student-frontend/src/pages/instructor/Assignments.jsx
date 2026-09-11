@@ -36,7 +36,6 @@ const InstructorAssignments = () => {
         courseId: '',
         dueDate: '',
         maxPoints: 100,
-        instructions: ''
     });
 
     useEffect(() => {
@@ -76,7 +75,6 @@ const InstructorAssignments = () => {
                 courseId: '',
                 dueDate: '',
                 maxPoints: 100,
-                instructions: ''
             });
             fetchAssignments();
         } catch (error) {
@@ -271,15 +269,6 @@ const InstructorAssignments = () => {
                                 />
                             </div>
                         </div>
-                        <div>
-                            <label className="block text-sm text-gray-400 mb-1">Instructions</label>
-                            <textarea
-                                value={formData.instructions}
-                                onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
-                                rows={4}
-                                className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm resize-none"
-                            />
-                        </div>
                         <div className="flex gap-3">
                             <button
                                 type="submit"
@@ -307,16 +296,20 @@ const InstructorAssignments = () => {
                                 <h3 className="font-semibold text-white">{assignment.title}</h3>
                                 <p className="text-sm text-gray-400 mt-1">{assignment.course_title}</p>
                             </div>
-                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${assignment.status === 'active' ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-300'
-                                } `}>
-                                {assignment.status}
+                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                assignment.status === 'active' ? 'bg-green-500/20 text-green-300' :
+                                assignment.status === 'due_soon' ? 'bg-yellow-500/20 text-yellow-300' :
+                                'bg-red-500/20 text-red-300'
+                            }`}>
+                                {assignment.status === 'active' ? 'Active' :
+                                 assignment.status === 'due_soon' ? 'Due Soon' : 'Overdue'}
                             </span>
                         </div>
                         <p className="text-sm text-gray-300 mb-4 line-clamp-2">{assignment.description}</p>
                         <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
                             <span>📅 Due: {new Date(assignment.due_date).toLocaleDateString()}</span>
                             <span>🎯 {assignment.max_points} points</span>
-                            <span>📝 {assignment.submitted_count || 0}/{assignment.submission_count || 0} submitted</span>
+                            <span>📝 {assignment.submission_count || 0} submitted ({assignment.graded_count || 0} graded)</span>
                         </div>
                         <div className="flex flex-wrap gap-2">
                             <button
@@ -496,9 +489,12 @@ const InstructorAssignments = () => {
                                 </div>
                             ))}
                         </div>
+                    </div>
+                </div>
+            )}
 
-                        {/* Analytics Modal */}
-                        {showAnalytics && analytics && (
+            {/* Analytics Modal — independent, not nested inside Submissions Modal */}
+            {showAnalytics && analytics && (
                             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                                 <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                                     <div className="flex justify-between items-center mb-4">
@@ -536,7 +532,7 @@ const InstructorAssignments = () => {
                                                 </div>
                                                 <div>
                                                     <p className="text-gray-400 text-sm">Average Score</p>
-                                                    <p className="text-white text-xl font-bold">{Math.round(analytics.submission_stats.avg_score || 0)}%</p>
+                                                    <p className="text-white text-lg font-bold">{Math.round(analytics.submission_stats.avg_score || 0)}%</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-gray-400 text-sm">On-Time Submissions</p>
@@ -592,9 +588,6 @@ const InstructorAssignments = () => {
                                 </div>
                             </div>
                         )}
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
