@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../../api/axios';
 import ConfirmModal from '../../components/ConfirmModal';
@@ -11,7 +11,10 @@ const InstructorAssignments = () => {
     const [selectedAssignment, setSelectedAssignment] = useState(null);
     const [showSubmissions, setShowSubmissions] = useState(null);
     const [showAnalytics, setShowAnalytics] = useState(null);
-    const [submissions, setSubmissions] = useState([]);
+    const [submissions,    setSubmissions]    = useState([]);
+    const [notSubmitted,   setNotSubmitted]   = useState([]);
+    const [currentAssignment, setCurrentAssignment] = useState(null);
+    const [gradeInputs,    setGradeInputs]    = useState({}); // { [submissionId]: { score, feedback } }
     const [analytics, setAnalytics] = useState(null);
     const [gradingMode, setGradingMode] = useState(false);
     const [bulkGrades, setBulkGrades] = useState({});
@@ -33,10 +36,17 @@ const InstructorAssignments = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
+        instructions: '',
         courseId: '',
         dueDate: '',
         maxPoints: 100,
+        attachment_url:  '',
+        attachment_name: '',
     });
+
+    // Brief file upload
+    const [uploadingBrief, setUploadingBrief] = useState(false);
+    const briefInputRef = useRef(null);
 
     useEffect(() => {
         fetchAssignments();
@@ -63,6 +73,27 @@ const InstructorAssignments = () => {
         }
     };
 
+    const handleBriefUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.size > 20 * 1024 * 1024) { toast.error('File must be under 20 MB'); return; }
+        setUploadingBrief(true);
+        try {
+            const fd = new FormData();
+            fd.append('file', file);
+            const res = await api.post('/assignments/upload-brief', fd, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            setFormData(f => ({ ...f, attachment_url: res.data.url, attachment_name: res.data.name || file.name }));
+            toast.success('Brief uploaded');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Upload failed');
+        } finally {
+            setUploadingBrief(false);
+            if (briefInputRef.current) briefInputRef.current.value = '';
+        }
+    };
+
     const handleCreateAssignment = async (e) => {
         e.preventDefault();
         try {
@@ -72,9 +103,12 @@ const InstructorAssignments = () => {
             setFormData({
                 title: '',
                 description: '',
+                instructions: '',
                 courseId: '',
                 dueDate: '',
                 maxPoints: 100,
+                attachment_url:  '',
+                attachment_name: '',
             });
             fetchAssignments();
         } catch (error) {
@@ -105,7 +139,19 @@ const InstructorAssignments = () => {
     const fetchSubmissions = async (assignmentId) => {
         try {
             const response = await api.get(`/assignments/${assignmentId}/submissions`);
-            setSubmissions(response.data.submissions);
+            const subs = response.data.submissions || [];
+            setSubmissions(subs);
+            setNotSubmitted(response.data.not_submitted || []);
+            setCurrentAssignment(response.data.assignment || null);
+            // Pre-fill grade inputs with existing scores so instructor can edit them
+            const inputs = {};
+            subs.forEach(s => {
+                inputs[s.id] = {
+                    score: s.score !== null && s.score !== undefined ? String(s.score) : '',
+                    feedback: s.feedback || '',
+                };
+            });
+            setGradeInputs(inputs);
             setShowSubmissions(assignmentId);
         } catch (error) {
             toast.error('Failed to fetch submissions');
@@ -238,13 +284,58 @@ const InstructorAssignments = () => {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-400 mb-1">Description</label>
+                            <label className="block text-sm text-gray-400 mb-1">Description <span className="text-gray-600">(short summary shown on card)</span></label>
                             <textarea
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                rows={3}
+                                rows={2}
                                 className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm resize-none"
                             />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-gray-400 mb-1">
+                                Instructions <span className="text-gray-600">(full assignment brief — students read this before submitting)</span>
+                            </label>
+                            <textarea
+                                value={formData.instructions}
+                                onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
+                                rows={5}
+                                placeholder="Write the full assignment instructions here — what students must do, requirements, evaluation criteria..."
+                                className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 text-sm resize-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-gray-400 mb-1">
+                                Assignment Brief File <span className="text-gray-600">(optional — PDF or Word doc)</span>
+                            </label>
+                            {formData.attachment_url ? (
+                                <div className="flex items-center justify-between bg-[#1a1a35] border border-green-500/30 rounded-xl px-4 py-3">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <span className="text-green-400 text-lg">📎</span>
+                                        <div className="min-w-0">
+                                            <p className="text-sm text-white truncate">{formData.attachment_name}</p>
+                                            <a href={formData.attachment_url} target="_blank" rel="noopener noreferrer"
+                                                className="text-xs text-blue-400 hover:text-blue-300 transition">Preview ↗</a>
+                                        </div>
+                                    </div>
+                                    <button type="button"
+                                        onClick={() => setFormData(f => ({ ...f, attachment_url: '', attachment_name: '' }))}
+                                        className="text-red-400 hover:text-red-300 text-sm ml-3 transition">
+                                        Remove
+                                    </button>
+                                </div>
+                            ) : (
+                                <button type="button"
+                                    onClick={() => briefInputRef.current?.click()}
+                                    disabled={uploadingBrief}
+                                    className="w-full py-3 border border-dashed border-purple-700/50 rounded-xl text-purple-400 text-sm hover:bg-purple-600/10 disabled:opacity-50 transition flex items-center justify-center gap-2">
+                                    {uploadingBrief
+                                        ? <><div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" /> Uploading...</>
+                                        : <>📤 Upload brief file (PDF / Word)</>}
+                                </button>
+                            )}
+                            <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx"
+                                onChange={handleBriefUpload} className="hidden" />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
@@ -306,6 +397,12 @@ const InstructorAssignments = () => {
                             </span>
                         </div>
                         <p className="text-sm text-gray-300 mb-4 line-clamp-2">{assignment.description}</p>
+                        {assignment.attachment_url && (
+                            <a href={assignment.attachment_url} target="_blank" rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 mb-3 text-xs text-blue-400 hover:text-blue-300 transition bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-1.5">
+                                📎 {assignment.attachment_name || 'Assignment Brief'} ↗
+                            </a>
+                        )}
                         <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
                             <span>📅 Due: {new Date(assignment.due_date).toLocaleDateString()}</span>
                             <span>🎯 {assignment.max_points} points</span>
@@ -365,129 +462,185 @@ const InstructorAssignments = () => {
 
             {/* Submissions Modal */}
             {showSubmissions && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold text-white">Assignment Submissions</h3>
-                            <div className="flex gap-2">
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+                        {/* Header */}
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-purple-900/30 flex-shrink-0">
+                            <div>
+                                <h3 className="text-lg font-semibold text-white">
+                                    {currentAssignment?.title || 'Submissions'}
+                                </h3>
+                                <p className="text-xs text-gray-400 mt-0.5">
+                                    {submissions.length} submitted · {notSubmitted.length} not submitted · max {currentAssignment?.max_points || 100} pts
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => setGradingMode(!gradingMode)}
-                                    className={`px-3 py-1 rounded-lg text-sm ${gradingMode ? 'bg-purple-600 text-white' : 'bg-[#1a1a35] text-gray-400'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${gradingMode ? 'bg-purple-600 text-white' : 'bg-[#1a1a35] text-gray-400 hover:text-white'}`}
                                 >
                                     {gradingMode ? 'Exit Bulk Grade' : 'Bulk Grade'}
                                 </button>
                                 <button
-                                    onClick={() => { setShowSubmissions(null); setGradingMode(false); setBulkGrades({}); }}
-                                    className="text-gray-400 hover:text-white"
+                                    onClick={() => { setShowSubmissions(null); setGradingMode(false); setBulkGrades({}); setGradeInputs({}); }}
+                                    className="text-gray-400 hover:text-white text-xl transition"
                                 >
-                                    ←
+                                    ✕
                                 </button>
                             </div>
                         </div>
 
-                        {gradingMode && (
-                            <div className="mb-4 p-3 bg-purple-600/20 rounded-lg">
-                                <p className="text-purple-300 text-sm mb-2">Bulk grading mode - Enter scores and feedback for all submissions</p>
-                                <button
-                                    onClick={handleBulkGrade}
-                                    className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700"
-                                >
-                                    Submit All Grades
-                                </button>
-                            </div>
-                        )}
-
-                        <div className="space-y-4">
-                            {submissions.map(submission => (
-                                <div key={submission.id} className="bg-[#1a1a35] rounded-xl p-4">
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div>
-                                            <h4 className="font-medium text-white">{submission.student_name}</h4>
-                                            <p className="text-sm text-gray-400">{submission.student_email}</p>
-                                            <p className="text-xs text-gray-500">Submitted: {new Date(submission.submitted_at).toLocaleString()}</p>
-                                        </div>
-                                        <div className="text-right">
-                                            {submission.score !== null ? (
-                                                <div>
-                                                    <span className="text-lg font-bold text-green-400">{submission.score}</span>
-                                                    <span className="text-sm text-gray-400">/{submissions.find(s => s.id === submission.id)?.assignment?.max_points || 100}</span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-sm text-yellow-400">Not graded</span>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {submission.content && (
-                                        <div className="mb-3 p-2 bg-[#12122a] rounded text-sm text-gray-300">
-                                            {submission.content}
-                                        </div>
-                                    )}
-
-                                    {gradingMode ? (
-                                        <div className="space-y-2">
-                                            <input
-                                                type="number"
-                                                placeholder="Score"
-                                                max="100"
-                                                value={bulkGrades[submission.id]?.score || ''}
-                                                onChange={(e) => setBulkGrades(prev => ({
-                                                    ...prev,
-                                                    [submission.id]: { ...prev[submission.id], score: parseInt(e.target.value) || '' }
-                                                }))}
-                                                className="w-full px-3 py-2 bg-[#12122a] border border-purple-900/40 rounded-lg text-white text-sm"
-                                            />
-                                            <textarea
-                                                placeholder="Feedback"
-                                                value={bulkGrades[submission.id]?.feedback || ''}
-                                                onChange={(e) => setBulkGrades(prev => ({
-                                                    ...prev,
-                                                    [submission.id]: { ...prev[submission.id], feedback: e.target.value }
-                                                }))}
-                                                className="w-full px-3 py-2 bg-[#12122a] border border-purple-900/40 rounded-lg text-white text-sm resize-none"
-                                                rows={2}
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-2">
-                                            {submission.feedback && (
-                                                <div className="p-2 bg-[#12122a] rounded text-sm text-gray-300">
-                                                    <strong>Feedback:</strong> {submission.feedback}
-                                                </div>
-                                            )}
-                                            {submission.score === null && (
-                                                <div className="flex gap-2">
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Score"
-                                                        max="100"
-                                                        id={`grade-${submission.id}`}
-                                                        className="flex-1 px-3 py-2 bg-[#12122a] border border-purple-900/40 rounded-lg text-white text-sm"
-                                                    />
-                                                    <textarea
-                                                        placeholder="Feedback"
-                                                        id={`feedback-${submission.id}`}
-                                                        className="flex-1 px-3 py-2 bg-[#12122a] border border-purple-900/40 rounded-lg text-white text-sm resize-none"
-                                                        rows={2}
-                                                    />
-                                                    <button
-                                                        onClick={() => {
-                                                            const score = document.getElementById(`grade-${submission.id}`).value;
-                                                            const feedback = document.getElementById(`feedback-${submission.id}`).value;
-                                                            if (score) {
-                                                                handleGradeSubmission(submission.id, parseInt(score), feedback);
-                                                            }
-                                                        }}
-                                                        className="px-3 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700"
-                                                    >
-                                                        Grade
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
+                        <div className="overflow-y-auto flex-1 p-6 space-y-6">
+                            {/* Bulk grade banner */}
+                            {gradingMode && (
+                                <div className="bg-purple-600/20 border border-purple-500/30 rounded-xl p-4 flex items-center justify-between">
+                                    <p className="text-purple-300 text-sm">Fill scores below and submit all at once</p>
+                                    <button onClick={handleBulkGrade}
+                                        className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition">
+                                        Submit All Grades
+                                    </button>
                                 </div>
-                            ))}
+                            )}
+
+                            {/* ── Submitted students ── */}
+                            {submissions.length > 0 && (
+                                <div>
+                                    <h4 className="text-sm font-semibold text-green-400 mb-3 flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-green-400 rounded-full" />
+                                        Submitted ({submissions.length})
+                                    </h4>
+                                    <div className="space-y-4">
+                                        {submissions.map(submission => (
+                                            <div key={submission.id} className="bg-[#1a1a35] border border-purple-900/20 rounded-xl p-4">
+                                                {/* Student header */}
+                                                <div className="flex items-start justify-between mb-3">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+                                                            {submission.student_name?.[0]?.toUpperCase() || '?'}
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-medium text-white">{submission.student_name}</p>
+                                                            <p className="text-xs text-gray-400">{submission.student_email}</p>
+                                                            <p className="text-xs text-gray-500">
+                                                                Submitted {new Date(submission.submitted_at).toLocaleString()}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right flex-shrink-0">
+                                                        {submission.score !== null ? (
+                                                            <span className={`text-lg font-bold ${
+                                                                (submission.score / (currentAssignment?.max_points || 100)) * 100 >= 80 ? 'text-green-400' :
+                                                                (submission.score / (currentAssignment?.max_points || 100)) * 100 >= 60 ? 'text-yellow-400' : 'text-red-400'
+                                                            }`}>
+                                                                {submission.score}/{currentAssignment?.max_points || 100}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-xs px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded-full">Not graded</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Student answer */}
+                                                {(submission.content || submission.file_url) && (
+                                                    <div className="mb-3 bg-[#0d0d1a] rounded-xl p-3 border border-purple-900/20">
+                                                        <p className="text-xs text-purple-300 font-medium mb-2">Student's Answer</p>
+                                                        {submission.content && (
+                                                            <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                                                                {submission.content}
+                                                            </p>
+                                                        )}
+                                                        {submission.file_url && (
+                                                            <a href={submission.file_url} target="_blank" rel="noopener noreferrer"
+                                                                className="inline-flex items-center gap-2 mt-2 text-xs text-blue-400 hover:text-blue-300 transition">
+                                                                📎 View attached file
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {/* Existing feedback display */}
+                                                {submission.feedback && !gradingMode && (
+                                                    <div className="mb-3 bg-blue-500/10 rounded-xl p-3 border border-blue-500/20">
+                                                        <p className="text-xs text-blue-300 font-medium mb-1">Your Feedback</p>
+                                                        <p className="text-sm text-gray-300">{submission.feedback}</p>
+                                                    </div>
+                                                )}
+
+                                                {/* Grade inputs */}
+                                                {gradingMode ? (
+                                                    // Bulk grade mode
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <input type="number" placeholder={`Score (/${currentAssignment?.max_points || 100})`}
+                                                            min="0" max={currentAssignment?.max_points || 100}
+                                                            value={bulkGrades[submission.id]?.score || ''}
+                                                            onChange={e => setBulkGrades(prev => ({ ...prev, [submission.id]: { ...prev[submission.id], score: parseInt(e.target.value) || '' } }))}
+                                                            className="px-3 py-2 bg-[#0d0d1a] border border-purple-900/40 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500" />
+                                                        <textarea placeholder="Feedback (optional)"
+                                                            value={bulkGrades[submission.id]?.feedback || ''}
+                                                            onChange={e => setBulkGrades(prev => ({ ...prev, [submission.id]: { ...prev[submission.id], feedback: e.target.value } }))}
+                                                            className="px-3 py-2 bg-[#0d0d1a] border border-purple-900/40 rounded-lg text-white text-sm resize-none focus:outline-none focus:border-purple-500"
+                                                            rows={2} />
+                                                    </div>
+                                                ) : (
+                                                    // Individual grade mode — always visible (allow editing existing grades too)
+                                                    <div className="flex gap-2 items-start">
+                                                        <input type="number"
+                                                            placeholder={`Score (/${currentAssignment?.max_points || 100})`}
+                                                            min="0" max={currentAssignment?.max_points || 100}
+                                                            value={gradeInputs[submission.id]?.score ?? ''}
+                                                            onChange={e => setGradeInputs(prev => ({ ...prev, [submission.id]: { ...prev[submission.id], score: e.target.value } }))}
+                                                            className="w-36 px-3 py-2 bg-[#0d0d1a] border border-purple-900/40 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500" />
+                                                        <textarea
+                                                            placeholder="Feedback (optional)"
+                                                            value={gradeInputs[submission.id]?.feedback ?? ''}
+                                                            onChange={e => setGradeInputs(prev => ({ ...prev, [submission.id]: { ...prev[submission.id], feedback: e.target.value } }))}
+                                                            className="flex-1 px-3 py-2 bg-[#0d0d1a] border border-purple-900/40 rounded-lg text-white text-sm resize-none focus:outline-none focus:border-purple-500"
+                                                            rows={2} />
+                                                        <button
+                                                            onClick={() => {
+                                                                const input = gradeInputs[submission.id];
+                                                                const score = parseInt(input?.score);
+                                                                if (!input?.score || isNaN(score)) { toast.error('Enter a valid score'); return; }
+                                                                handleGradeSubmission(submission.id, score, input?.feedback || '');
+                                                            }}
+                                                            className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition self-start">
+                                                            {submission.score !== null ? 'Update' : 'Grade'}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* ── Not submitted students ── */}
+                            {notSubmitted.length > 0 && (
+                                <div>
+                                    <h4 className="text-sm font-semibold text-red-400 mb-3 flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-red-400 rounded-full" />
+                                        Not Submitted ({notSubmitted.length})
+                                    </h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        {notSubmitted.map(student => (
+                                            <div key={student.id} className="flex items-center gap-3 bg-[#1a1a35] border border-red-900/20 rounded-xl px-3 py-2.5">
+                                                <div className="w-8 h-8 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                                                    {student.name?.[0]?.toUpperCase() || '?'}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <p className="text-sm text-white font-medium truncate">{student.name}</p>
+                                                    <p className="text-xs text-gray-400 truncate">{student.email}</p>
+                                                </div>
+                                                <span className="text-xs text-red-400 flex-shrink-0 ml-auto">Missing</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {submissions.length === 0 && notSubmitted.length === 0 && (
+                                <p className="text-center text-gray-400 py-12">No students enrolled in this course yet.</p>
+                            )}
                         </div>
                     </div>
                 </div>

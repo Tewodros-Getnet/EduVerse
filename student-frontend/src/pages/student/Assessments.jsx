@@ -38,12 +38,12 @@ const Assessments = () => {
 
     const getStatusBadge = (status) => {
         const map = {
-            completed: 'bg-green-500/20  text-green-400  Completed',
-            upcoming:  'bg-blue-500/20   text-blue-400   Upcoming',
-            available: 'bg-purple-500/20 text-purple-400 Available',
-            closed:    'bg-gray-500/20   text-gray-400   Closed',
+            completed: { bg: 'bg-green-500/20',  text: 'text-green-400',  label: 'Completed' },
+            upcoming:  { bg: 'bg-blue-500/20',   text: 'text-blue-400',   label: 'Upcoming'  },
+            available: { bg: 'bg-purple-500/20', text: 'text-purple-400', label: 'Available' },
+            closed:    { bg: 'bg-gray-500/20',   text: 'text-gray-400',   label: 'Closed'    },
         };
-        const [bg, text, label] = (map[status] || map.upcoming).split(' ');
+        const { bg, text, label } = map[status] || map.upcoming;
         return <span className={`px-2 py-1 ${bg} ${text} rounded-full text-xs font-medium`}>{label}</span>;
     };
 

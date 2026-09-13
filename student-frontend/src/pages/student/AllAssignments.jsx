@@ -4,54 +4,109 @@ import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
 export default function AllAssignments() {
-    const [assignments, setAssignments] = useState([]);
-    const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [assignments,  setAssignments]  = useState([]);
+    const [submissions,  setSubmissions]  = useState({}); // { [assignment_id]: submission }
+    const [loading,      setLoading]      = useState(true);
+    const [filter,       setFilter]       = useState('all'); // all | pending | submitted | graded | overdue
+    const [sortBy,       setSortBy]       = useState('due_date');
 
     useEffect(() => {
-        fetchCoursesAndAssignments();
+        const fetchAll = async () => {
+            try {
+                // Fetch enrolled courses, all submissions in parallel
+                const [coursesRes, subRes] = await Promise.all([
+                    api.get('/courses/my/enrolled'),
+                    api.get('/assignments/student/submissions'),
+                ]);
+
+                const coursesData = coursesRes.data.courses || [];
+
+                // Build submission map keyed by assignment_id
+                const subMap = {};
+                (subRes.data.submissions || []).forEach(s => { subMap[s.assignment_id] = s; });
+                setSubmissions(subMap);
+
+                // Fetch assignments for each enrolled course
+                const results = await Promise.all(
+                    coursesData.map(c =>
+                        api.get(`/assignments/course/${c.id}`)
+                            .then(r => ({ data: r.data, course: c }))
+                            .catch(() => ({ data: [], course: c }))
+                    )
+                );
+
+                const all = results.flatMap(({ data, course }) =>
+                    (Array.isArray(data) ? data : data.assignments || []).map(a => ({
+                        ...a,
+                        course_title: course.title,
+                        course_id:    course.id,
+                    }))
+                );
+
+                setAssignments(all);
+            } catch {
+                toast.error('Failed to load assignments');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAll();
     }, []);
 
-    const fetchCoursesAndAssignments = async () => {
-        try {
-            // Get enrolled courses
-            const coursesRes = await api.get('/courses/my/enrolled');
-            const coursesData = coursesRes.data.courses || [];
-            setCourses(coursesData);
-
-            // Get assignments for each course
-            const assignmentsPromises = coursesData.map(course =>
-                api.get(`/assignments/course/${course.id}`).catch(() => ({ data: { assignments: [] } }))
-            );
-            
-            const assignmentsResults = await Promise.all(assignmentsPromises);
-            const allAssignments = assignmentsResults.flatMap((result, index) => 
-                ((Array.isArray(result.data) ? result.data : result.data.assignments) || []).map(assignment => ({
-                    ...assignment,
-                    course_title: coursesData[index].title,
-                    course_id: coursesData[index].id
-                }))
-            );
-            
-            setAssignments(allAssignments);
-        } catch (error) {
-            toast.error('Failed to load assignments');
-        } finally {
-            setLoading(false);
+    // ── Status helpers ─────────────────────────────────────────────────────
+    const getStatus = (assignment) => {
+        const sub = submissions[assignment.id];
+        if (!sub) {
+            return new Date(assignment.due_date) < new Date() ? 'overdue' : 'pending';
         }
+        if (sub.score !== null) return 'graded';
+        return 'submitted';
     };
 
-    if (loading) {
-        return <div className="text-center py-20 text-gray-400">Loading assignments...</div>;
-    }
+    const STATUS_CONFIG = {
+        pending:   { label: 'Pending',   classes: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' },
+        overdue:   { label: 'Overdue',   classes: 'bg-red-500/20    text-red-300    border-red-500/30'    },
+        submitted: { label: 'Submitted', classes: 'bg-blue-500/20   text-blue-300   border-blue-500/30'   },
+        graded:    { label: 'Graded',    classes: 'bg-green-500/20  text-green-300  border-green-500/30'  },
+    };
 
-    if (courses.length === 0) {
+    const getDaysUntilDue = (dueDate) => {
+        const diffDays = Math.ceil((new Date(dueDate) - new Date()) / (1000 * 60 * 60 * 24));
+        if (diffDays < 0)  return `Overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) !== 1 ? 's' : ''}`;
+        if (diffDays === 0) return 'Due today';
+        if (diffDays === 1) return 'Due tomorrow';
+        return `Due in ${diffDays} days`;
+    };
+
+    // ── Filter + sort ──────────────────────────────────────────────────────
+    const filtered = assignments
+        .filter(a => filter === 'all' || getStatus(a) === filter)
+        .sort((a, b) => {
+            if (sortBy === 'title')  return a.title.localeCompare(b.title);
+            if (sortBy === 'points') return b.max_points - a.max_points;
+            if (sortBy === 'course') return (a.course_title || '').localeCompare(b.course_title || '');
+            return new Date(a.due_date) - new Date(b.due_date); // due_date default
+        });
+
+    // Summary counts
+    const counts = assignments.reduce((acc, a) => {
+        acc[getStatus(a)] = (acc[getStatus(a)] || 0) + 1;
+        return acc;
+    }, {});
+
+    // ── Render ─────────────────────────────────────────────────────────────
+    if (loading) return <div className="text-center py-20 text-gray-400">Loading assignments...</div>;
+
+    if (assignments.length === 0) {
         return (
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold text-white mb-6">Assignments</h1>
+                <h1 className="text-2xl font-bold text-white mb-6">All Assignments</h1>
                 <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center text-gray-400">
-                    <p className="mb-4">No courses enrolled yet</p>
-                    <Link to="/student/courses" className="px-4 py-2 bg-purple-600 rounded-xl text-white hover:bg-purple-700 transition">
+                    <div className="text-4xl mb-3">📋</div>
+                    <p className="text-white font-medium mb-2">No assignments yet</p>
+                    <p className="text-sm mb-4">Enroll in a course to start receiving assignments</p>
+                    <Link to="/student/courses"
+                        className="px-4 py-2 bg-purple-600 rounded-xl text-white text-sm hover:bg-purple-700 transition">
                         Browse Courses
                     </Link>
                 </div>
@@ -61,39 +116,131 @@ export default function AllAssignments() {
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
-            <h1 className="text-2xl font-bold text-white">All Assignments</h1>
+            <div className="flex items-center justify-between flex-wrap gap-3">
+                <h1 className="text-2xl font-bold text-white">All Assignments</h1>
+                <p className="text-sm text-gray-400">{assignments.length} total</p>
+            </div>
 
-            {assignments.length === 0 ? (
+            {/* Summary stat pills */}
+            <div className="flex gap-3 flex-wrap">
+                {Object.entries(STATUS_CONFIG).map(([key, cfg]) => (
+                    counts[key] ? (
+                        <button key={key}
+                            onClick={() => setFilter(filter === key ? 'all' : key)}
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                                filter === key
+                                    ? cfg.classes + ' ring-2 ring-offset-1 ring-offset-[#0d0d1a]'
+                                    : cfg.classes
+                            }`}>
+                            {cfg.label}: {counts[key]}
+                        </button>
+                    ) : null
+                ))}
+                {filter !== 'all' && (
+                    <button onClick={() => setFilter('all')}
+                        className="px-3 py-1.5 rounded-full text-xs font-medium border bg-[#12122a] text-gray-400 border-purple-900/30 hover:text-white transition">
+                        Show All
+                    </button>
+                )}
+            </div>
+
+            {/* Sort bar */}
+            <div className="flex gap-3 flex-wrap">
+                <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+                    className="px-4 py-2 bg-[#12122a] border border-purple-900/40 rounded-xl text-white text-sm">
+                    <option value="due_date">Sort by Due Date</option>
+                    <option value="title">Sort by Title</option>
+                    <option value="course">Sort by Course</option>
+                    <option value="points">Sort by Points</option>
+                </select>
+            </div>
+
+            {filtered.length === 0 ? (
                 <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center text-gray-400">
-                    No assignments available in your enrolled courses
+                    No assignments match this filter
                 </div>
             ) : (
-                <div className="space-y-4">
-                    {assignments.map(assignment => (
-                        <div key={assignment.id} className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-5">
-                            <div className="flex items-start justify-between mb-3">
-                                <div>
-                                    <h3 className="font-semibold text-white">{assignment.title}</h3>
-                                    <p className="text-xs text-gray-400 mt-1">{assignment.description}</p>
-                                    <p className="text-xs text-purple-400 mt-2">Course: {assignment.course_title}</p>
+                <div className="space-y-3">
+                    {filtered.map(assignment => {
+                        const status = getStatus(assignment);
+                        const sub    = submissions[assignment.id];
+                        const cfg    = STATUS_CONFIG[status];
+
+                        return (
+                            <div key={assignment.id}
+                                className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-5">
+                                <div className="flex items-start justify-between gap-3">
+                                    <div className="flex-1 min-w-0">
+                                        {/* Title + badge */}
+                                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                                            <h3 className="font-semibold text-white">{assignment.title}</h3>
+                                            <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${cfg.classes}`}>
+                                                {cfg.label}
+                                                {status === 'graded' && sub?.score !== null &&
+                                                    ` — ${sub.score}/${assignment.max_points}`}
+                                            </span>
+                                        </div>
+
+                                        {/* Course */}
+                                        <p className="text-xs text-purple-400 mb-2">📚 {assignment.course_title}</p>
+
+                                        {/* Description snippet */}
+                                        {assignment.description && (
+                                            <p className="text-xs text-gray-400 mb-2 line-clamp-2">{assignment.description}</p>
+                                        )}
+
+                                        {/* Meta row */}
+                                        <div className="flex items-center gap-4 text-xs text-gray-400 flex-wrap">
+                                            <span className={new Date(assignment.due_date) < new Date() && !sub ? 'text-red-400' : ''}>
+                                                📅 {getDaysUntilDue(assignment.due_date)}
+                                            </span>
+                                            <span>⭐ {assignment.max_points} pts</span>
+                                            {sub && (
+                                                <span>📝 Submitted {new Date(sub.submitted_at).toLocaleDateString()}</span>
+                                            )}
+                                        </div>
+
+                                        {/* Feedback preview */}
+                                        {sub?.feedback && (
+                                            <div className="mt-2 text-xs text-blue-300">
+                                                💬 <span className="text-gray-400 line-clamp-1">{sub.feedback}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Grade display */}
+                                    {status === 'graded' && sub?.score !== null && (
+                                        <div className="text-right flex-shrink-0">
+                                            <div className={`text-2xl font-bold ${
+                                                (sub.score / assignment.max_points) >= 0.8 ? 'text-green-400' :
+                                                (sub.score / assignment.max_points) >= 0.6 ? 'text-yellow-400' : 'text-red-400'
+                                            }`}>
+                                                {Math.round((sub.score / assignment.max_points) * 100)}%
+                                            </div>
+                                            <div className="text-xs text-gray-400">{sub.score}/{assignment.max_points}</div>
+                                        </div>
+                                    )}
                                 </div>
-                                <span className="text-xs px-2 py-1 rounded-full font-medium bg-yellow-500/20 text-yellow-300">
-                                    Pending
-                                </span>
-                            </div>
 
-                            <div className="flex items-center gap-4 text-xs text-gray-400 mb-4">
-                                <span>📅 Due: {new Date(assignment.due_date).toLocaleDateString()}</span>
-                                <span>⭐ {assignment.max_points} points</span>
+                                {/* Action button */}
+                                <div className="mt-4">
+                                    <Link to={`/student/assignments/${assignment.course_id}`}
+                                        className={`inline-block w-full text-center py-2.5 rounded-xl text-sm font-medium transition ${
+                                            status === 'pending' || status === 'overdue'
+                                                ? status === 'overdue'
+                                                    ? 'bg-red-600/30 border border-red-500/30 text-red-300 hover:bg-red-600/40'
+                                                    : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90'
+                                                : 'bg-[#1a1a35] border border-purple-900/40 text-purple-400 hover:bg-purple-600/20'
+                                        }`}>
+                                        {status === 'pending'   && 'Submit Assignment →'}
+                                        {status === 'overdue'   && 'Submit (Late) →'}
+                                        {status === 'submitted' && 'View Submission →'}
+                                        {status === 'graded'    && 'View Feedback →'}
+                                    </Link>
+                                </div>
                             </div>
-
-                            <Link 
-                                to={`/student/assignments/${assignment.course_id}`}
-                                className="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition inline-block text-center">
-                                View Assignment
-                            </Link>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
         </div>

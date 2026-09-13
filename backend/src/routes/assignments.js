@@ -1,7 +1,45 @@
 const express = require('express');
 const { query } = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
+const { createUploader } = require('../lib/cloudinary');
 const router = express.Router();
+
+// Cloudinary uploader for assignment file attachments (PDF, doc, images — 20 MB max)
+const assignmentUpload = createUploader({
+    folder: 'eduverse/assignments/submissions',
+    allowedFormats: ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg', 'txt'],
+    resourceType: 'raw',
+    fileSizeMb: 20,
+});
+
+// Cloudinary uploader for instructor assignment briefs (PDF/doc only — 20 MB max)
+const briefUpload = createUploader({
+    folder: 'eduverse/assignments/briefs',
+    allowedFormats: ['pdf', 'doc', 'docx'],
+    resourceType: 'raw',
+    fileSizeMb: 20,
+});
+
+// POST /api/assignments/upload — student uploads a file attachment
+router.post('/upload', authenticate, authorize('student'), assignmentUpload.single('file'), async (req, res, next) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+        const rawName = req.file.originalname || req.file.path.split('/').pop();
+        res.json({ url: req.file.path, name: rawName });
+    } catch (err) { next(err); }
+});
+
+// POST /api/assignments/upload-brief — instructor uploads assignment brief file
+router.post('/upload-brief', authenticate, authorize('instructor', 'admin'), briefUpload.single('file'), async (req, res, next) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+        // Strip timestamp prefix for clean display name
+        const rawName = req.file.originalname
+            ? req.file.originalname
+            : req.file.path.split('/').pop().replace(/^\d+-/, '');
+        res.json({ url: req.file.path, name: rawName });
+    } catch (err) { next(err); }
+});
 
 // GET /api/assignments/course/:courseId
 router.get('/course/:courseId', authenticate, async (req, res, next) => {
@@ -96,60 +134,52 @@ router.get('/student/submissions', authenticate, authorize('student'), async (re
 // POST /api/assignments
 router.post('/', authenticate, authorize('instructor'), async (req, res, next) => {
     try {
-        const { title, description, courseId, dueDate, maxPoints } = req.body;
+        const { title, description, instructions, courseId, dueDate, maxPoints, attachment_url, attachment_name } = req.body;
 
-        console.log('Received courseId:', courseId);
-        console.log('Request body:', req.body);
+        if (!courseId) return res.status(400).json({ error: 'Course ID is required' });
 
-        // Validate courseId
-        if (!courseId) {
-            return res.status(400).json({ error: 'Course ID is required' });
-        }
-
-        // Verify instructor owns the course
         const course = await query('SELECT instructor_id FROM courses WHERE id = $1', [courseId]);
-        if (!course.rows.length) {
-            return res.status(404).json({ error: 'Course not found' });
-        }
+        if (!course.rows.length) return res.status(404).json({ error: 'Course not found' });
         if (course.rows[0].instructor_id !== req.user.id) {
             return res.status(403).json({ error: 'Unauthorized: You do not own this course' });
         }
 
         const result = await query(
-            `INSERT INTO assignments (title, description, course_id, due_date, max_points)
-             VALUES ($1, $2, $3, $4, $5)
+            `INSERT INTO assignments
+                (title, description, instructions, course_id, due_date, max_points, attachment_url, attachment_name)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
              RETURNING *`,
-            [title, description, courseId, dueDate, maxPoints]
+            [title, description || null, instructions || null, courseId, dueDate, maxPoints, attachment_url || null, attachment_name || null]
         );
 
         res.status(201).json(result.rows[0]);
-    } catch (err) {
-        next(err);
-    }
+    } catch (err) { next(err); }
 });
 
 // PUT /api/assignments/:id
 router.put('/:id', authenticate, authorize('instructor'), async (req, res, next) => {
     try {
-        const { title, description, due_date, max_points } = req.body;
+        const { title, description, instructions, due_date, max_points, attachment_url, attachment_name } = req.body;
         const { id } = req.params;
 
         const result = await query(
-            `UPDATE assignments 
-             SET title = $1, description = $2, due_date = $3, max_points = $4
-             WHERE id = $5
+            `UPDATE assignments
+             SET title           = $1,
+                 description     = $2,
+                 instructions    = $3,
+                 due_date        = $4,
+                 max_points      = $5,
+                 attachment_url  = $6,
+                 attachment_name = $7,
+                 updated_at      = NOW()
+             WHERE id = $8
              RETURNING *`,
-            [title, description, due_date, max_points, id]
+            [title, description || null, instructions || null, due_date, max_points, attachment_url || null, attachment_name || null, id]
         );
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Assignment not found' });
-        }
-
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Assignment not found' });
         res.json(result.rows[0]);
-    } catch (err) {
-        next(err);
-    }
+    } catch (err) { next(err); }
 });
 
 // DELETE /api/assignments/:id
@@ -176,7 +206,7 @@ router.delete('/:id', authenticate, authorize('instructor'), async (req, res, ne
 router.post('/:id/submit', authenticate, authorize('student'), async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { submission_text, course_id } = req.body;
+        const { submission_text, file_url, file_name } = req.body;
 
         // Verify assignment exists
         const assignment = await query('SELECT * FROM assignments WHERE id = $1', [id]);
@@ -186,12 +216,12 @@ router.post('/:id/submit', authenticate, authorize('student'), async (req, res, 
 
         // Upsert submission (allow resubmission)
         const result = await query(
-            `INSERT INTO assignment_submissions (assignment_id, user_id, content, submitted_at)
-             VALUES ($1, $2, $3, NOW())
+            `INSERT INTO assignment_submissions (assignment_id, user_id, content, file_url, submitted_at)
+             VALUES ($1, $2, $3, $4, NOW())
              ON CONFLICT (assignment_id, user_id)
-             DO UPDATE SET content = $3, submitted_at = NOW()
+             DO UPDATE SET content = $3, file_url = $4, submitted_at = NOW()
              RETURNING *`,
-            [id, req.user.id, submission_text]
+            [id, req.user.id, submission_text || null, file_url || null]
         );
 
         res.status(201).json({ submission: result.rows[0] });
@@ -199,12 +229,30 @@ router.post('/:id/submit', authenticate, authorize('student'), async (req, res, 
 });
 
 // GET /api/assignments/:id/submissions
+// Returns submitted students WITH their content + file, AND a list of not-yet-submitted enrolled students
 router.get('/:id/submissions', authenticate, authorize('instructor'), async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const result = await query(
-            `SELECT sub.*, u.name as student_name, u.email as student_email, a.title as assignment_title
+        // Verify instructor owns this assignment through the course
+        const assignmentCheck = await query(
+            `SELECT a.*, c.instructor_id, c.id as course_id
+             FROM assignments a
+             JOIN courses c ON a.course_id = c.id
+             WHERE a.id = $1`,
+            [id]
+        );
+        if (!assignmentCheck.rows.length) return res.status(404).json({ error: 'Assignment not found' });
+        if (assignmentCheck.rows[0].instructor_id !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+
+        const courseId = assignmentCheck.rows[0].course_id;
+
+        // Fetch submitted students
+        const submitted = await query(
+            `SELECT sub.*, u.name as student_name, u.email as student_email,
+                    a.title as assignment_title, a.max_points
              FROM assignment_submissions sub
              JOIN users u ON sub.user_id = u.id
              JOIN assignments a ON sub.assignment_id = a.id
@@ -213,10 +261,25 @@ router.get('/:id/submissions', authenticate, authorize('instructor'), async (req
             [id]
         );
 
-        res.json({ submissions: result.rows });
-    } catch (err) {
-        next(err);
-    }
+        // Fetch enrolled students who have NOT submitted
+        const notSubmitted = await query(
+            `SELECT u.id, u.name, u.email, u.avatar_url
+             FROM enrollments e
+             JOIN users u ON e.student_id = u.id
+             WHERE e.course_id = $1
+             AND u.id NOT IN (
+                 SELECT user_id FROM assignment_submissions WHERE assignment_id = $2
+             )
+             ORDER BY u.name ASC`,
+            [courseId, id]
+        );
+
+        res.json({
+            submissions: submitted.rows,
+            not_submitted: notSubmitted.rows,
+            assignment: assignmentCheck.rows[0],
+        });
+    } catch (err) { next(err); }
 });
 
 // POST /api/assignments/:id/grade - Grade a submission

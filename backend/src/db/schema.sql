@@ -316,3 +316,11 @@ BEGIN
 EXCEPTION WHEN others THEN
     NULL;
 END $$;
+
+-- ============================================================
+-- ASSIGNMENT BRIEF FEATURE — Migration
+-- Run this block in Supabase SQL Editor
+-- ============================================================
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS instructions    TEXT;
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS attachment_url  TEXT;
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS attachment_name TEXT;
