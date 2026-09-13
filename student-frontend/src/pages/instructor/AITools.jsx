@@ -895,41 +895,95 @@ function StudentInsightsResults({ data }) {
                 <p className="text-sm text-gray-400">Time Period: {data.time_period}</p>
                 <p className="text-xs text-gray-500">Generated: {new Date(data.generated_at).toLocaleString()}</p>
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Performance Trends */}
                 <div className="bg-[#1a1a35] rounded-xl p-4">
-                    <h5 className="font-medium text-white mb-3">Performance Trends</h5>
+                    <h5 className="font-medium text-white mb-3">📈 Performance Trends</h5>
                     <ul className="space-y-2">
                         {data.insights.performance_trends.map((trend, index) => (
-                            <li key={index} className="text-sm text-gray-300 flex items-start">
-                                <span className="text-blue-400 mr-2"></span>
+                            <li key={index} className="text-sm text-gray-300 flex items-start gap-2">
+                                <span className="text-blue-400 flex-shrink-0">•</span>
                                 {trend}
                             </li>
                         ))}
                     </ul>
                 </div>
+
+                {/* Common Challenges */}
                 <div className="bg-[#1a1a35] rounded-xl p-4">
-                    <h5 className="font-medium text-white mb-3">Common Challenges</h5>
+                    <h5 className="font-medium text-white mb-3">⚠️ Common Challenges</h5>
                     <ul className="space-y-2">
                         {data.insights.common_challenges.map((challenge, index) => (
-                            <li key={index} className="text-sm text-gray-300 flex items-start">
-                                <span className="text-yellow-400 mr-2"></span>
+                            <li key={index} className="text-sm text-gray-300 flex items-start gap-2">
+                                <span className="text-yellow-400 flex-shrink-0">•</span>
                                 {challenge}
                             </li>
                         ))}
                     </ul>
                 </div>
+
+                {/* Recommended Actions */}
                 <div className="bg-[#1a1a35] rounded-xl p-4">
-                    <h5 className="font-medium text-white mb-3">Recommended Actions</h5>
+                    <h5 className="font-medium text-white mb-3">✅ Recommended Actions</h5>
                     <ul className="space-y-2">
                         {data.insights.recommended_actions.map((action, index) => (
-                            <li key={index} className="text-sm text-gray-300 flex items-start">
-                                <span className="text-green-400 mr-2">✓</span>
+                            <li key={index} className="text-sm text-gray-300 flex items-start gap-2">
+                                <span className="text-green-400 flex-shrink-0">✓</span>
                                 {action}
                             </li>
                         ))}
                     </ul>
                 </div>
+
+                {/* At-Risk Students — only shown when AI identifies any */}
+                {data.insights.at_risk_students?.length > 0 && (
+                    <div className="bg-[#1a1a35] rounded-xl p-4">
+                        <h5 className="font-medium text-red-400 mb-3">🚨 Students Needing Attention ({data.insights.at_risk_students.length})</h5>
+                        <div className="space-y-3">
+                            {data.insights.at_risk_students.map((student, index) => (
+                                <div key={index} className="bg-[#0d0d1a] rounded-lg p-3">
+                                    <p className="text-sm font-medium text-white mb-1">{student.name}</p>
+                                    {student.risk_factors?.length > 0 && (
+                                        <p className="text-xs text-red-300 mb-1">
+                                            Risk: {student.risk_factors.join(', ')}
+                                        </p>
+                                    )}
+                                    {student.recommended_actions?.length > 0 && (
+                                        <p className="text-xs text-gray-400">
+                                            Action: {student.recommended_actions[0]}
+                                        </p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
+
+            {/* High Performers — only shown when AI identifies any */}
+            {data.insights.high_performers?.length > 0 && (
+                <div className="bg-[#1a1a35] rounded-xl p-4">
+                    <h5 className="font-medium text-green-400 mb-3">⭐ High Performers ({data.insights.high_performers.length})</h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {data.insights.high_performers.map((student, index) => (
+                            <div key={index} className="bg-[#0d0d1a] rounded-lg p-3">
+                                <p className="text-sm font-medium text-white mb-1">{student.name}</p>
+                                {student.strengths?.length > 0 && (
+                                    <p className="text-xs text-green-300 mb-1">
+                                        Strengths: {student.strengths.join(', ')}
+                                    </p>
+                                )}
+                                {student.enrichment_suggestions?.length > 0 && (
+                                    <p className="text-xs text-gray-400">
+                                        Suggest: {student.enrichment_suggestions[0]}
+                                    </p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

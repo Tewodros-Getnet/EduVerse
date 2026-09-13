@@ -8,12 +8,12 @@ const router = express.Router();
 router.get('/instructor/all', authenticate, authorize('instructor'), async (req, res, next) => {
     try {
         const result = await query(
-            `SELECT DISTINCT u.id, u.name, u.email, u.created_at,
-                    COUNT(e.id) as course_count,
+            `SELECT u.id, u.name, u.email, u.avatar_url, u.created_at,
+                    COUNT(DISTINCT e.id)   as course_count,
                     AVG(e.progress_percent) as avg_progress,
-                    COUNT(lp.id) as lesson_count,
-                    COUNT(qa.id) as quiz_attempts,
-                    COUNT(sub.id) as assignment_submissions
+                    COUNT(DISTINCT lp.id)  as lesson_count,
+                    COUNT(DISTINCT qa.id)  as quiz_attempts,
+                    COUNT(DISTINCT sub.id) as assignment_submissions
              FROM users u
              JOIN enrollments e ON u.id = e.student_id
              JOIN courses c ON e.course_id = c.id
@@ -21,7 +21,7 @@ router.get('/instructor/all', authenticate, authorize('instructor'), async (req,
              LEFT JOIN quiz_attempts qa ON u.id = qa.student_id
              LEFT JOIN assignment_submissions sub ON u.id = sub.user_id
              WHERE c.instructor_id = $1 AND u.role = 'student'
-             GROUP BY u.id, u.name, u.email, u.created_at
+             GROUP BY u.id, u.name, u.email, u.avatar_url, u.created_at
              ORDER BY u.name`,
             [req.user.id]
         );
@@ -33,26 +33,26 @@ router.get('/instructor/all', authenticate, authorize('instructor'), async (req,
 router.get('/instructor/course/:courseId', authenticate, authorize('instructor'), async (req, res, next) => {
     try {
         const { courseId } = req.params;
-        
-        // Verify instructor owns this course
+
         const course = await query('SELECT instructor_id FROM courses WHERE id = $1', [courseId]);
         if (!course.rows.length || course.rows[0].instructor_id !== req.user.id) {
             return res.status(403).json({ error: 'Unauthorized' });
         }
 
         const result = await query(
-            `SELECT u.id, u.name, u.email, u.created_at,
-                    e.enrolled_at, e.progress_percent,
-                    COUNT(lp.id) as lesson_count,
-                    COUNT(qa.id) as quiz_attempts,
-                    COUNT(sub.id) as assignment_submissions
+            `SELECT u.id, u.name, u.email, u.avatar_url, u.created_at,
+                    e.enrolled_at,
+                    e.progress_percent         as avg_progress,
+                    COUNT(DISTINCT lp.id)      as lesson_count,
+                    COUNT(DISTINCT qa.id)      as quiz_attempts,
+                    COUNT(DISTINCT sub.id)     as assignment_submissions
              FROM users u
              JOIN enrollments e ON u.id = e.student_id
              LEFT JOIN lesson_progress lp ON u.id = lp.student_id AND lp.completed = true
              LEFT JOIN quiz_attempts qa ON u.id = qa.student_id
              LEFT JOIN assignment_submissions sub ON u.id = sub.user_id
              WHERE e.course_id = $1 AND u.role = 'student'
-             GROUP BY u.id, u.name, u.email, u.created_at, e.enrolled_at, e.progress_percent
+             GROUP BY u.id, u.name, u.email, u.avatar_url, u.created_at, e.enrolled_at, e.progress_percent
              ORDER BY u.name`,
             [courseId]
         );
@@ -80,8 +80,8 @@ router.get('/instructor/:studentId', authenticate, authorize('instructor'), asyn
 
         const [student, courses, activity, recentActivity] = await Promise.all([
             query(
-                `SELECT id, name, email, created_at, last_login_at
-                 FROM users 
+                `SELECT id, name, email, avatar_url, created_at
+                 FROM users
                  WHERE id = $1 AND role = 'student'`,
                 [studentId]
             ),

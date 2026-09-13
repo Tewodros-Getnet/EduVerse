@@ -44,9 +44,16 @@ const InstructorAssignments = () => {
         attachment_name: '',
     });
 
-    // Brief file upload
-    const [uploadingBrief, setUploadingBrief] = useState(false);
+    // Brief file upload (create form)
+    const [uploadingBrief,     setUploadingBrief]     = useState(false);
     const briefInputRef = useRef(null);
+
+    // Edit assignment
+    const [editingId,          setEditingId]          = useState(null);
+    const [editForm,           setEditForm]           = useState({});
+    const [savingEdit,         setSavingEdit]         = useState(false);
+    const [uploadingEditBrief, setUploadingEditBrief] = useState(false);
+    const editBriefInputRef = useRef(null);
 
     useEffect(() => {
         fetchAssignments();
@@ -233,6 +240,59 @@ const InstructorAssignments = () => {
         }
     };
 
+    const openEdit = (assignment) => {
+        setEditingId(assignment.id);
+        setEditForm({
+            title:           assignment.title,
+            description:     assignment.description     || '',
+            instructions:    assignment.instructions    || '',
+            due_date:        assignment.due_date
+                                 ? new Date(assignment.due_date).toISOString().slice(0, 16)
+                                 : '',
+            max_points:      assignment.max_points      || 100,
+            attachment_url:  assignment.attachment_url  || '',
+            attachment_name: assignment.attachment_name || '',
+        });
+    };
+
+    const handleEditBriefUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.size > 20 * 1024 * 1024) { toast.error('File must be under 20 MB'); return; }
+        setUploadingEditBrief(true);
+        try {
+            const fd = new FormData();
+            fd.append('file', file);
+            const res = await api.post('/assignments/upload-brief', fd, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            setEditForm(f => ({ ...f, attachment_url: res.data.url, attachment_name: res.data.name || file.name }));
+            toast.success('Brief uploaded');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Upload failed');
+        } finally {
+            setUploadingEditBrief(false);
+            if (editBriefInputRef.current) editBriefInputRef.current.value = '';
+        }
+    };
+
+    const handleSaveEdit = async () => {
+        if (!editForm.title?.trim()) { toast.error('Title is required'); return; }
+        setSavingEdit(true);
+        try {
+            const res = await api.put(`/assignments/${editingId}`, editForm);
+            setAssignments(prev => prev.map(a =>
+                a.id === editingId ? { ...a, ...res.data } : a
+            ));
+            setEditingId(null);
+            toast.success('Assignment updated successfully');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Failed to update assignment');
+        } finally {
+            setSavingEdit(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
@@ -414,6 +474,12 @@ const InstructorAssignments = () => {
                                 className="flex-1 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-purple-400 text-sm hover:bg-purple-600/20 transition"
                             >
                                 View Submissions
+                            </button>
+                            <button
+                                onClick={() => openEdit(assignment)}
+                                className="px-3 py-2 bg-blue-600/20 border border-blue-500/30 rounded-xl text-blue-300 text-sm hover:bg-blue-600/30 transition"
+                            >
+                                ✏️ Edit
                             </button>
                             <button
                                 onClick={() => fetchAnalytics(assignment.id)}
@@ -741,6 +807,106 @@ const InstructorAssignments = () => {
                                 </div>
                             </div>
                         )}
+            {/* ── Edit Assignment Modal ──────────────────────────────────── */}
+            {editingId && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                        {/* Header */}
+                        <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
+                            <h2 className="text-lg font-bold text-white">Edit Assignment</h2>
+                            <button onClick={() => setEditingId(null)} className="text-gray-400 hover:text-white text-xl transition">✕</button>
+                        </div>
+
+                        <div className="p-5 space-y-4">
+                            {/* Title */}
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-1">Title</label>
+                                <input type="text" value={editForm.title || ''}
+                                    onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
+                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm" />
+                            </div>
+
+                            {/* Description */}
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-1">Description <span className="text-gray-600">(short summary on card)</span></label>
+                                <textarea value={editForm.description || ''} rows={2}
+                                    onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm resize-none" />
+                            </div>
+
+                            {/* Instructions */}
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-1">Instructions <span className="text-gray-600">(students read before submitting)</span></label>
+                                <textarea value={editForm.instructions || ''} rows={5}
+                                    onChange={e => setEditForm(f => ({ ...f, instructions: e.target.value }))}
+                                    placeholder="Full assignment instructions, requirements, evaluation criteria..."
+                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 text-sm resize-none" />
+                            </div>
+
+                            {/* Brief file */}
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-1">Assignment Brief File <span className="text-gray-600">(optional — PDF or Word)</span></label>
+                                {editForm.attachment_url ? (
+                                    <div className="flex items-center justify-between bg-[#1a1a35] border border-green-500/30 rounded-xl px-4 py-3">
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <span className="text-green-400 text-lg">📎</span>
+                                            <div className="min-w-0">
+                                                <p className="text-sm text-white truncate">{editForm.attachment_name}</p>
+                                                <a href={editForm.attachment_url} target="_blank" rel="noopener noreferrer"
+                                                    className="text-xs text-blue-400 hover:text-blue-300 transition">Preview ↗</a>
+                                            </div>
+                                        </div>
+                                        <button type="button"
+                                            onClick={() => setEditForm(f => ({ ...f, attachment_url: '', attachment_name: '' }))}
+                                            className="text-red-400 hover:text-red-300 text-sm ml-3 transition">
+                                            Remove
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button type="button"
+                                        onClick={() => editBriefInputRef.current?.click()}
+                                        disabled={uploadingEditBrief}
+                                        className="w-full py-3 border border-dashed border-purple-700/50 rounded-xl text-purple-400 text-sm hover:bg-purple-600/10 disabled:opacity-50 transition flex items-center justify-center gap-2">
+                                        {uploadingEditBrief
+                                            ? <><div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" /> Uploading...</>
+                                            : <>📤 Upload brief file (PDF / Word)</>}
+                                    </button>
+                                )}
+                                <input ref={editBriefInputRef} type="file" accept=".pdf,.doc,.docx"
+                                    onChange={handleEditBriefUpload} className="hidden" />
+                            </div>
+
+                            {/* Due date + Max points */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm text-gray-400 mb-1">Due Date</label>
+                                    <input type="datetime-local" value={editForm.due_date || ''}
+                                        onChange={e => setEditForm(f => ({ ...f, due_date: e.target.value }))}
+                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-gray-400 mb-1">Max Points</label>
+                                    <input type="number" min="1" value={editForm.max_points || 100}
+                                        onChange={e => setEditForm(f => ({ ...f, max_points: parseInt(e.target.value) || 100 }))}
+                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm" />
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-3 pt-2">
+                                <button onClick={handleSaveEdit} disabled={savingEdit}
+                                    className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50">
+                                    {savingEdit ? '⏳ Saving...' : '✓ Save Changes'}
+                                </button>
+                                <button onClick={() => setEditingId(null)}
+                                    className="px-5 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

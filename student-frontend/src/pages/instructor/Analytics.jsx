@@ -19,7 +19,6 @@ export default function InstructorAnalytics() {
                 fetchCourses(),
                 fetchPerformanceData(),
                 fetchCompletionData(),
-                fetchStudentData(),
                 fetchContentData(),
             ]);
             setLoading(false);
@@ -29,11 +28,7 @@ export default function InstructorAnalytics() {
     }, []);
 
     useEffect(() => {
-        if (selectedCourse !== 'all') {
-            fetchStudentData();
-        } else {
-            fetchStudentData();
-        }
+        fetchStudentData();
     }, [selectedCourse]);
 
     const fetchCourses = async () => {
@@ -84,7 +79,19 @@ export default function InstructorAnalytics() {
         }
     };
 
-    const formatNumber = (num) => {
+    // ── Derived computed values ────────────────────────────────────────────────
+    // Overview card sub-labels — computed from real data, not hardcoded
+    const engagementLabel = (pct) => {
+        if (pct >= 70) return { text: 'High engagement',     color: 'text-green-400' };
+        if (pct >= 40) return { text: 'Moderate engagement', color: 'text-yellow-400' };
+        return              { text: 'Low engagement',        color: 'text-red-400' };
+    };
+
+    const completionLabel = (pct) => {
+        if (pct >= 70) return { text: 'Above average',  color: 'text-blue-400' };
+        if (pct >= 40) return { text: 'Average',        color: 'text-yellow-400' };
+        return              { text: 'Below average',   color: 'text-red-400' };
+    };
         return new Intl.NumberFormat('en-US').format(Math.round(num || 0));
     };
 
@@ -141,25 +148,43 @@ export default function InstructorAnalytics() {
                 <div className="space-y-6">
                     {/* Key Metrics */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {/* Total Students */}
                         <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-4">
                             <h3 className="text-sm text-gray-400 mb-2">Total Students</h3>
                             <p className="text-2xl font-bold text-white">{formatNumber(performanceData.student_engagement.total_students)}</p>
-                            <p className="text-xs text-green-400 mt-1">+12% from last month</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                                {formatNumber(performanceData.student_engagement.active_learners || 0)} active learners
+                            </p>
                         </div>
+                        {/* Avg Progress */}
                         <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-4">
                             <h3 className="text-sm text-gray-400 mb-2">Avg Progress</h3>
                             <p className="text-2xl font-bold text-white">{formatPercentage(performanceData.student_engagement.avg_student_progress)}</p>
-                            <p className="text-xs text-yellow-400 mt-1">Moderate engagement</p>
+                            {(() => {
+                                const e = engagementLabel(performanceData.student_engagement.avg_student_progress);
+                                return <p className={`text-xs mt-1 ${e.color}`}>{e.text}</p>;
+                            })()}
                         </div>
+                        {/* Total Revenue */}
                         <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-4">
                             <h3 className="text-sm text-gray-400 mb-2">Total Revenue</h3>
                             <p className="text-2xl font-bold text-white">{formatCurrency(performanceData.revenue_analytics.total_revenue)}</p>
-                            <p className="text-xs text-green-400 mt-1">+8% from last month</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                                {formatNumber(performanceData.revenue_analytics.total_enrollments || 0)} enrollments
+                            </p>
                         </div>
+                        {/* Course Completion — use completionData when available, otherwise avg quiz score */}
                         <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-4">
                             <h3 className="text-sm text-gray-400 mb-2">Course Completion</h3>
-                            <p className="text-2xl font-bold text-white">{formatPercentage(performanceData.content_effectiveness.avg_quiz_performance)}</p>
-                            <p className="text-xs text-blue-400 mt-1">Above average</p>
+                            <p className="text-2xl font-bold text-white">
+                                {completionData
+                                    ? formatPercentage(completionData.overall_completion?.overall_completion_rate)
+                                    : formatPercentage(performanceData.content_effectiveness.avg_quiz_performance)}
+                            </p>
+                            {completionData && (() => {
+                                const c = completionLabel(completionData.overall_completion?.overall_completion_rate);
+                                return <p className={`text-xs mt-1 ${c.color}`}>{c.text}</p>;
+                            })()}
                         </div>
                     </div>
 
