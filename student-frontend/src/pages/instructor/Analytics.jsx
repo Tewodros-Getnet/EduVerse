@@ -92,6 +92,8 @@ export default function InstructorAnalytics() {
         if (pct >= 40) return { text: 'Average',        color: 'text-yellow-400' };
         return              { text: 'Below average',   color: 'text-red-400' };
     };
+
+    const formatNumber = (num) => {
         return new Intl.NumberFormat('en-US').format(Math.round(num || 0));
     };
 
