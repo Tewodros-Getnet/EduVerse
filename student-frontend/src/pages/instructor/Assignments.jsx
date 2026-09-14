@@ -581,8 +581,11 @@ const InstructorAssignments = () => {
                                                 {/* Student header */}
                                                 <div className="flex items-start justify-between mb-3">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
-                                                            {submission.student_name?.[0]?.toUpperCase() || '?'}
+                                                        <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                            {submission.student_avatar
+                                                                ? <img src={submission.student_avatar} alt={submission.student_name} className="w-full h-full object-cover" />
+                                                                : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold text-white">{submission.student_name?.[0]?.toUpperCase() || '?'}</div>
+                                                            }
                                                         </div>
                                                         <div>
                                                             <p className="font-medium text-white">{submission.student_name}</p>
@@ -690,8 +693,11 @@ const InstructorAssignments = () => {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         {notSubmitted.map(student => (
                                             <div key={student.id} className="flex items-center gap-3 bg-[#1a1a35] border border-red-900/20 rounded-xl px-3 py-2.5">
-                                                <div className="w-8 h-8 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
-                                                    {student.name?.[0]?.toUpperCase() || '?'}
+                                                <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                    {student.avatar_url
+                                                        ? <img src={student.avatar_url} alt={student.name} className="w-full h-full object-cover" />
+                                                        : <div className="w-full h-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center text-xs font-bold text-white">{student.name?.[0]?.toUpperCase() || '?'}</div>
+                                                    }
                                                 </div>
                                                 <div className="min-w-0">
                                                     <p className="text-sm text-white font-medium truncate">{student.name}</p>

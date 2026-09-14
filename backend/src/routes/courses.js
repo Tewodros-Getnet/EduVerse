@@ -330,7 +330,7 @@ router.get('/:id/students', authenticate, authorize('instructor'), async (req, r
         }
 
         const result = await query(
-            `SELECT u.id, u.name, u.email, e.enrolled_at, e.progress_percent
+            `SELECT u.id, u.name, u.email, u.avatar_url, e.enrolled_at, e.progress_percent
              FROM users u
              JOIN enrollments e ON u.id = e.student_id
              WHERE e.course_id = $1

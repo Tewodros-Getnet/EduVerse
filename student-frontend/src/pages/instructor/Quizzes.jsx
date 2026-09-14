@@ -24,12 +24,14 @@ export default function InstructorQuizzes() {
 
     const [showDuplicateModal, setShowDuplicateModal] = useState(null); // quiz object
     const [duplicateTitle,     setDuplicateTitle]     = useState('');
+
+    const openConfirm = ({ title, message, confirmLabel = 'Confirm', cancelLabel = 'Cancel', onConfirm }) => {
         setConfirmDialog({ open: true, title, message, confirmLabel, cancelLabel, onConfirm });
     };
 
-    const [formData, setFormData] = useState({
+    const closeConfirm = () => setConfirmDialog(prev => ({ ...prev, open: false, onConfirm: null }));
 
-    const openConfirm = ({ title, message, confirmLabel = 'Confirm', cancelLabel = 'Cancel', onConfirm }) => {
+    const [formData, setFormData] = useState({
         title: '',
         courseId: '',
         lesson_id: '',
@@ -576,8 +578,11 @@ export default function InstructorQuizzes() {
                                         {/* Student header */}
                                         <div className="flex items-start justify-between mb-3">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
-                                                    {attempt.name?.[0]?.toUpperCase() || '?'}
+                                                <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                    {attempt.avatar_url
+                                                        ? <img src={attempt.avatar_url} alt={attempt.name} className="w-full h-full object-cover" />
+                                                        : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold text-white">{attempt.name?.[0]?.toUpperCase() || '?'}</div>
+                                                    }
                                                 </div>
                                                 <div>
                                                     <p className="font-medium text-white">{attempt.name}</p>

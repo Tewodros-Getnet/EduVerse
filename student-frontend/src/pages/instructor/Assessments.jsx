@@ -620,8 +620,11 @@ const InstructorAssessments = () => {
                                                     return (
                                                         <div key={student.id} className="px-4 py-4 flex items-center justify-between gap-4">
                                                             <div className="flex items-center gap-3 min-w-0">
-                                                                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs text-white font-bold flex-shrink-0">
-                                                                    {student.name[0].toUpperCase()}
+                                                                <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                                    {student.avatar_url
+                                                                        ? <img src={student.avatar_url} alt={student.name} className="w-full h-full object-cover" />
+                                                                        : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs text-white font-bold">{student.name[0].toUpperCase()}</div>
+                                                                    }
                                                                 </div>
                                                                 <div className="min-w-0">
                                                                     <p className="text-white font-medium truncate">{student.name}</p>

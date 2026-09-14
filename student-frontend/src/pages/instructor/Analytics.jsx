@@ -372,8 +372,16 @@ export default function InstructorAnalytics() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {studentData.top_performers.map((student, index) => (
                                 <div key={student.id} className="flex items-center gap-4 p-3 bg-[#1a1a35] rounded-lg">
-                                    <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
-                                        <span className="text-green-400 font-bold">{index + 1}</span>
+                                    <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden relative">
+                                        {student.avatar_url
+                                            ? <img src={student.avatar_url} alt={student.name} className="w-full h-full object-cover" />
+                                            : <div className="w-full h-full bg-green-500/20 flex items-center justify-center">
+                                                <span className="text-green-400 font-bold text-sm">{index + 1}</span>
+                                              </div>
+                                        }
+                                        {student.avatar_url && (
+                                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">{index + 1}</div>
+                                        )}
                                     </div>
                                     <div className="flex-1">
                                         <h4 className="font-medium text-white">{student.name}</h4>
@@ -394,8 +402,16 @@ export default function InstructorAnalytics() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {studentData.struggling_students.map((student, index) => (
                                 <div key={student.id} className="flex items-center gap-4 p-3 bg-[#1a1a35] rounded-lg">
-                                    <div className="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
-                                        <span className="text-red-400 font-bold">!</span>
+                                    <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden relative">
+                                        {student.avatar_url
+                                            ? <img src={student.avatar_url} alt={student.name} className="w-full h-full object-cover" />
+                                            : <div className="w-full h-full bg-red-500/20 flex items-center justify-center">
+                                                <span className="text-red-400 font-bold">!</span>
+                                              </div>
+                                        }
+                                        {student.avatar_url && (
+                                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">!</div>
+                                        )}
                                     </div>
                                     <div className="flex-1">
                                         <h4 className="font-medium text-white">{student.name}</h4>

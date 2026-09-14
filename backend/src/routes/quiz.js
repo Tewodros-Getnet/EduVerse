@@ -184,7 +184,7 @@ router.get('/:id/attempts', authenticate, authorize('instructor'), async (req, r
         }
 
         const attempts = await query(
-            `SELECT qa.*, u.name, u.email,
+            `SELECT qa.*, u.name, u.email, u.avatar_url,
                     e.enrolled_at, e.progress_percent
              FROM quiz_attempts qa
              JOIN users u ON qa.student_id = u.id
@@ -450,7 +450,7 @@ router.get('/:id/export', authenticate, authorize('instructor'), async (req, res
         }
 
         const attempts = await query(
-            `SELECT qa.*, u.name, u.email,
+            `SELECT qa.*, u.name, u.email, u.avatar_url,
                     e.enrolled_at, e.progress_percent
              FROM quiz_attempts qa
              JOIN users u ON qa.student_id = u.id

@@ -252,6 +252,7 @@ router.get('/:id/submissions', authenticate, authorize('instructor'), async (req
         // Fetch submitted students
         const submitted = await query(
             `SELECT sub.*, u.name as student_name, u.email as student_email,
+                    u.avatar_url as student_avatar,
                     a.title as assignment_title, a.max_points
              FROM assignment_submissions sub
              JOIN users u ON sub.user_id = u.id
