@@ -22,13 +22,14 @@ export default function InstructorQuizzes() {
         onConfirm: null
     });
 
-    const openConfirm = ({ title, message, confirmLabel = 'Confirm', cancelLabel = 'Cancel', onConfirm }) => {
+    const [showDuplicateModal, setShowDuplicateModal] = useState(null); // quiz object
+    const [duplicateTitle,     setDuplicateTitle]     = useState('');
         setConfirmDialog({ open: true, title, message, confirmLabel, cancelLabel, onConfirm });
     };
 
-    const closeConfirm = () => setConfirmDialog(prev => ({ ...prev, open: false, onConfirm: null }));
-
     const [formData, setFormData] = useState({
+
+    const openConfirm = ({ title, message, confirmLabel = 'Confirm', cancelLabel = 'Cancel', onConfirm }) => {
         title: '',
         courseId: '',
         lesson_id: '',
@@ -513,8 +514,8 @@ export default function InstructorQuizzes() {
                             )}
                             <button
                                 onClick={() => {
-                                    const newTitle = prompt('Enter title for duplicated quiz:', `${quiz.title} (Copy)`);
-                                    if (newTitle) handleDuplicateQuiz(quiz.id, newTitle);
+                                    setDuplicateTitle(`${quiz.title} (Copy)`);
+                                    setShowDuplicateModal(quiz);
                                 }}
                                 className="px-3 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition"
                             >
@@ -555,42 +556,109 @@ export default function InstructorQuizzes() {
 
             {/* Attempts Modal */}
             {showAttempts && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-purple-900/30 flex-shrink-0">
                             <h3 className="text-lg font-semibold text-white">Quiz Attempts</h3>
-                            <button
-                                onClick={() => setShowAttempts(null)}
-                                className="text-gray-400 hover:text-white"
-                            >
-                                ←
-                            </button>
+                            <button onClick={() => setShowAttempts(null)} className="text-gray-400 hover:text-white text-xl transition">✕</button>
                         </div>
+                        <div className="overflow-y-auto flex-1 p-6 space-y-4">
+                            {attempts.length === 0 ? (
+                                <p className="text-center text-gray-400 py-12">No attempts yet.</p>
+                            ) : attempts.map(attempt => {
+                                const passingScore = quizzes.find(q => q.id === showAttempts)?.passing_score || 70;
+                                const passed = attempt.passed !== undefined ? attempt.passed : attempt.score >= passingScore;
+                                const gradedAnswers = attempt.answers
+                                    ? (typeof attempt.answers === 'string' ? JSON.parse(attempt.answers) : attempt.answers)
+                                    : [];
+                                return (
+                                    <div key={attempt.id} className="bg-[#1a1a35] border border-purple-900/20 rounded-xl p-4">
+                                        {/* Student header */}
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+                                                    {attempt.name?.[0]?.toUpperCase() || '?'}
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-white">{attempt.name}</p>
+                                                    <p className="text-xs text-gray-400">{attempt.email}</p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {new Date(attempt.completed_at).toLocaleString()}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className={`text-xl font-bold ${attempt.score >= passingScore ? 'text-green-400' : 'text-red-400'}`}>
+                                                    {attempt.score}%
+                                                </span>
+                                                <p className={`text-xs font-medium ${passed ? 'text-green-400' : 'text-red-400'}`}>
+                                                    {passed ? 'Passed' : 'Failed'}
+                                                </p>
+                                            </div>
+                                        </div>
 
-                        <div className="space-y-4">
-                            {attempts.map(attempt => (
-                                <div key={attempt.id} className="bg-[#1a1a35] rounded-xl p-4">
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div>
-                                            <h4 className="font-medium text-white">{attempt.name}</h4>
-                                            <p className="text-sm text-gray-400">{attempt.email}</p>
-                                            <p className="text-xs text-gray-500">Completed: {new Date(attempt.completed_at).toLocaleString()}</p>
-                                        </div>
-                                        <div className="text-right">
-                                            <span className={`text-lg font-bold ${attempt.score >= 70 ? 'text-green-400' : 'text-red-400'}`}>
-                                                {attempt.score}%
-                                            </span>
-                                            <p className="text-sm text-gray-400">{attempt.passed ? 'Passed' : 'Failed'}</p>
-                                        </div>
+                                        {/* Per-question breakdown */}
+                                        {gradedAnswers.length > 0 && (
+                                            <div className="space-y-2 mt-3 pt-3 border-t border-purple-900/20">
+                                                <p className="text-xs text-gray-400 font-medium mb-2">Answer Breakdown</p>
+                                                {gradedAnswers.map((ga, i) => (
+                                                    <div key={i} className={`flex items-center justify-between text-xs px-3 py-2 rounded-lg ${ga.correct ? 'bg-green-500/10 text-green-300' : 'bg-red-500/10 text-red-300'}`}>
+                                                        <span className="flex items-center gap-2">
+                                                            <span>{ga.correct ? '✓' : '✗'}</span>
+                                                            <span className="text-gray-300">Q{i + 1}:</span>
+                                                            <span>{ga.user_answer || 'No answer'}</span>
+                                                        </span>
+                                                        {!ga.correct && (
+                                                            <span className="text-gray-400 ml-2">
+                                                                Correct: {ga.correct_answer}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
 
-                                    {attempt.answers && (
-                                        <div className="p-2 bg-[#12122a] rounded text-sm text-gray-300">
-                                            <strong>Answers:</strong> {JSON.stringify(attempt.answers)}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+            {/* Duplicate Quiz Modal */}
+            {showDuplicateModal && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-md">
+                        <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
+                            <h3 className="font-semibold text-white">Duplicate Quiz</h3>
+                            <button onClick={() => setShowDuplicateModal(null)} className="text-gray-400 hover:text-white text-xl transition">✕</button>
+                        </div>
+                        <div className="p-5 space-y-4">
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-1">New Title</label>
+                                <input type="text" value={duplicateTitle}
+                                    onChange={e => setDuplicateTitle(e.target.value)}
+                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                    autoFocus />
+                            </div>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => {
+                                        if (duplicateTitle.trim()) {
+                                            handleDuplicateQuiz(showDuplicateModal.id, duplicateTitle.trim());
+                                            setShowDuplicateModal(null);
+                                        } else {
+                                            toast.error('Please enter a title');
+                                        }
+                                    }}
+                                    className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition">
+                                    Duplicate
+                                </button>
+                                <button onClick={() => setShowDuplicateModal(null)}
+                                    className="px-5 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition">
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

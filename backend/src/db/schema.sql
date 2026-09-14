@@ -324,3 +324,13 @@ END $$;
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS instructions    TEXT;
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS attachment_url  TEXT;
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS attachment_name TEXT;
+
+-- ============================================================
+-- QUIZ FEATURE — Migration
+-- Run this block in Supabase SQL Editor
+-- ============================================================
+ALTER TABLE quiz_attempts  ADD COLUMN IF NOT EXISTS passed     BOOLEAN;
+ALTER TABLE quiz_attempts  ADD COLUMN IF NOT EXISTS started_at TIMESTAMP;
+ALTER TABLE quizzes        ADD COLUMN IF NOT EXISTS is_published  BOOLEAN DEFAULT false;
+ALTER TABLE quizzes        ADD COLUMN IF NOT EXISTS published_at  TIMESTAMP;
+ALTER TABLE quizzes        ADD COLUMN IF NOT EXISTS updated_at    TIMESTAMP DEFAULT NOW();

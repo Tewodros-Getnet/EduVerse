@@ -8,7 +8,6 @@ export default function Quiz() {
     const navigate = useNavigate();
     const [quiz, setQuiz] = useState(null);
     const [questions, setQuestions] = useState([]);
-    const [answers, setAnswers] = useState({});
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -102,6 +101,9 @@ export default function Quiz() {
             setResult(res.data);
             setShowResults(true);
             setQuizStarted(false);
+            // Re-fetch attempt history so retry button shows correct state
+            const attemptsRes = await api.get(`/quiz/${id}/results`);
+            setAttemptHistory(attemptsRes.data.attempts || []);
             toast.success('Quiz submitted successfully!');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Submission failed');
@@ -251,7 +253,7 @@ export default function Quiz() {
                         >
                             Review Answers
                         </button>
-                        {attemptHistory.length < quiz.max_attempts - 1 && (
+                        {attemptHistory.length < quiz.max_attempts && (
                             <button
                                 onClick={retryQuiz}
                                 className="flex-1 py-3 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white font-medium hover:opacity-90 transition"
@@ -282,7 +284,7 @@ export default function Quiz() {
                         </div>
                         <div className="space-y-3">
                             {result.graded_answers?.map((answer, index) => {
-                                const question = questions[index];
+                                const question = questions.find(q => q.id === answer.question_id) || questions[index];
                                 return (
                                     <div key={index} className={`p-4 rounded-xl text-sm ${answer.correct
                                         ? 'bg-green-500/10 border border-green-500/20'

@@ -9,11 +9,14 @@ const router = express.Router();
 router.get('/instructor', authenticate, authorize('instructor', 'admin'), async (req, res, next) => {
     try {
         const result = await query(
-            `SELECT q.*, c.title as course_name, l.title as lesson_name
+            `SELECT q.*, c.title as course_title, l.title as lesson_name,
+                    COUNT(qa.id) as attempt_count
              FROM quizzes q
              JOIN courses c ON q.course_id = c.id
              LEFT JOIN lessons l ON q.lesson_id = l.id
+             LEFT JOIN quiz_attempts qa ON q.id = qa.quiz_id
              WHERE c.instructor_id = $1
+             GROUP BY q.id, c.title, l.title
              ORDER BY q.created_at DESC`,
             [req.user.id]
         );
@@ -24,8 +27,29 @@ router.get('/instructor', authenticate, authorize('instructor', 'admin'), async 
 // GET /api/quiz/course/:courseId (must come BEFORE /:id route)
 router.get('/course/:courseId', authenticate, async (req, res, next) => {
     try {
-        const result = await query('SELECT * FROM quizzes WHERE course_id = $1', [req.params.courseId]);
+        // Students only see published quizzes; instructors/admins see all
+        const isInstructor = req.user.role === 'instructor' || req.user.role === 'admin';
+        const sql = isInstructor
+            ? 'SELECT * FROM quizzes WHERE course_id = $1 ORDER BY created_at ASC'
+            : 'SELECT * FROM quizzes WHERE course_id = $1 AND is_published = true ORDER BY created_at ASC';
+        const result = await query(sql, [req.params.courseId]);
         res.json({ quizzes: result.rows });
+    } catch (err) { next(err); }
+});
+
+// GET /api/quiz/student/results — MUST come before /:id route
+router.get('/student/results', authenticate, authorize('student'), async (req, res, next) => {
+    try {
+        const result = await query(
+            `SELECT qa.*, q.title as quiz_title, c.title as course_title
+             FROM quiz_attempts qa
+             JOIN quizzes q ON qa.quiz_id = q.id
+             JOIN courses c ON q.course_id = c.id
+             WHERE qa.student_id = $1
+             ORDER BY qa.completed_at DESC`,
+            [req.user.id]
+        );
+        res.json({ attempts: result.rows });
     } catch (err) { next(err); }
 });
 
@@ -111,8 +135,8 @@ router.post('/submit', authenticate, authorize('student'), async (req, res, next
             const incorrectCount = gradedAnswers.length - correctCount;
 
             await query(
-                'INSERT INTO quiz_attempts (student_id, quiz_id, score, answers) VALUES ($1,$2,$3,$4)',
-                [req.user.id, quiz_id, percentScore, JSON.stringify(gradedAnswers)]
+                'INSERT INTO quiz_attempts (student_id, quiz_id, score, passed, answers, started_at) VALUES ($1,$2,$3,$4,$5,NOW())',
+                [req.user.id, quiz_id, percentScore, passed, JSON.stringify(gradedAnswers)]
             );
 
             res.json({
@@ -130,23 +154,7 @@ router.post('/submit', authenticate, authorize('student'), async (req, res, next
     } catch (err) { next(err); }
 });
 
-// GET /api/quiz/student/results
-router.get('/student/results', authenticate, authorize('student'), async (req, res, next) => {
-    try {
-        const result = await query(
-            `SELECT qa.*, q.title as quiz_title, c.title as course_title
-             FROM quiz_attempts qa
-             JOIN quizzes q ON qa.quiz_id = q.id
-             JOIN courses c ON q.course_id = c.id
-             WHERE qa.student_id = $1
-             ORDER BY qa.completed_at DESC`,
-            [req.user.id]
-        );
-        res.json({ attempts: result.rows });
-    } catch (err) { next(err); }
-});
-
-// GET /api/quiz/:id/results
+// GET /api/quiz/:id/results — student's own attempts on a specific quiz
 router.get('/:id/results', authenticate, async (req, res, next) => {
     try {
         const result = await query(
