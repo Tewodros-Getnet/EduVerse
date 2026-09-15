@@ -8,10 +8,10 @@ const EXAM_TYPES = ['exam', 'midterm', 'final'];
 const ALL_TYPES  = ['exam', 'midterm', 'final', 'project'];
 
 const TYPE_LABELS = {
-    exam:    '📝 Exam',
-    midterm: '📋 Midterm',
-    final:   '🎓 Final',
-    project: '🗂️ Project',
+    exam:    'Exam',
+    midterm: 'Midterm',
+    final:   'Final',
+    project: 'Project',
 };
 
 const TYPE_COLORS = {
@@ -365,10 +365,10 @@ const InstructorAssessments = () => {
 
                             <p className="text-sm text-gray-300 mb-3 line-clamp-2">{assessment.description}</p>
 
-                            <div className="flex items-center gap-4 text-xs text-gray-400 mb-4">
-                                <span>📅 {new Date(assessment.scheduled_date).toLocaleString()}</span>
-                                <span>⏱️ {assessment.duration_minutes} min</span>
-                                {isExamType && <span>🎯 Pass: {assessment.passing_score || 60}%</span>}
+                            <div className="flex items-center gap-4 text-xs text-[var(--muted)] mb-4">
+                                <span>{new Date(assessment.scheduled_date).toLocaleString()}</span>
+                                <span>{assessment.duration_minutes} min</span>
+                                {isExamType && <span>Pass: {assessment.passing_score || 60}%</span>}
                             </div>
 
                             {/* Actions */}
@@ -403,7 +403,7 @@ const InstructorAssessments = () => {
                                     onClick={() => handleDeleteAssessment(assessment.id)}
                                     className="px-3 py-2 bg-red-600/20 border border-red-600/40 rounded-xl text-red-400 text-sm hover:bg-red-600/30 transition"
                                 >
-                                    🗑️
+                                    Delete
                                 </button>
                             </div>
                         </div>
@@ -413,9 +413,8 @@ const InstructorAssessments = () => {
 
             {assessments.length === 0 && (
                 <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center">
-                    <p className="text-4xl mb-3">📋</p>
                     <p className="text-white font-medium mb-2">No assessments yet</p>
-                    <p className="text-gray-400 text-sm mb-4">Create your first exam or midterm for your students</p>
+                    <p className="text-[var(--muted)] text-sm mb-4">Create your first exam or midterm for your students</p>
                     <button onClick={() => setShowCreateForm(true)}
                         className="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition">
                         Create Your First Assessment
@@ -439,7 +438,7 @@ const InstructorAssessments = () => {
                                 <h2 className="text-xl font-bold text-white">Exam Questions</h2>
                                 <p className="text-sm text-gray-400 mt-0.5">{editingAssessment.title}</p>
                             </div>
-                            <button onClick={() => setShowQuestionsModal(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
+                            <button onClick={() => setShowQuestionsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
                         </div>
 
                         <div className="p-6 space-y-6">
@@ -528,7 +527,7 @@ const InstructorAssessments = () => {
                                                                 className={`px-6 py-2 rounded-lg text-sm font-medium transition ${
                                                                     q.correct_answer === val
                                                                         ? 'bg-purple-600 text-white'
-                                                                        : 'bg-[#0d0d1a] border border-purple-900/40 text-gray-400 hover:text-white'
+                                                                        : 'bg-[#0d0d1a] border border-purple-900/40 text-[var(--muted)] hover:text-[var(--text)]'
                                                                 }`}>
                                                                 {val}
                                                             </button>
@@ -558,10 +557,10 @@ const InstructorAssessments = () => {
                             <div className="flex gap-3 pt-2 border-t border-purple-900/30">
                                 <button onClick={handleSaveQuestions} disabled={savingQuestions}
                                     className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:opacity-90 transition disabled:opacity-50">
-                                    {savingQuestions ? '⏳ Saving...' : `💾 Save ${questions.length} Question${questions.length > 1 ? 's' : ''}`}
+                                    {savingQuestions ? 'Saving...' : `Save ${questions.length} Question${questions.length > 1 ? 's' : ''}`}
                                 </button>
                                 <button onClick={() => setShowQuestionsModal(false)}
-                                    className="px-6 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 hover:text-white transition">
+                                    className="px-6 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-[var(--muted)] hover:text-[var(--text)] transition">
                                     Cancel
                                 </button>
                             </div>
@@ -579,7 +578,7 @@ const InstructorAssessments = () => {
                                 <h2 className="text-xl font-bold text-white">Assessment Results</h2>
                                 {selectedAssessment && <p className="text-sm text-gray-400 mt-0.5">{selectedAssessment.title}</p>}
                             </div>
-                            <button onClick={() => setShowResultsModal(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
+                            <button onClick={() => setShowResultsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
                         </div>
 
                         <div className="p-6 overflow-y-auto max-h-[60vh]">
@@ -667,7 +666,7 @@ const InstructorAssessments = () => {
                     <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-lg">
                         <div className="flex items-center justify-between p-6 border-b border-purple-900/30">
                             <h2 className="text-lg font-bold text-white">Edit Assessment</h2>
-                            <button onClick={() => setEditingId(null)} className="text-gray-400 hover:text-white text-xl">✕</button>
+                            <button onClick={() => setEditingId(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>

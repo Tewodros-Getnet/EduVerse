@@ -2,27 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Light theme ─────────────────────────────────────────────────────────── */
 :root {
     color-scheme: light;
-    --bg: #f8fafc;
-    --surface: #ffffff;
-    --surface-2: #f1f5f9;
-    --text: #0f172a;
-    --muted: #64748b;
-    --border: #e2e8f0;
-    --scrollbar-track: #e2e8f0;
+
+    /* Backgrounds */
+    --bg:        #f4f4f8;        /* slightly cool gray — avoids harsh pure white */
+    --surface:   #ffffff;
+    --surface-2: #f0f0f6;
+
+    /* Typography */
+    --text:   #0f0f1a;           /* near-black with a purple tint */
+    --muted:  #6b7280;
+
+    /* Borders */
+    --border: #e0dff0;           /* subtle purple-tinted border */
+
+    /* Scrollbar */
+    --scrollbar-track: #e0dff0;
     --scrollbar-thumb: #7c3aed;
 }
 
+/* ── Dark theme ──────────────────────────────────────────────────────────── */
 :root.dark {
     color-scheme: dark;
-    --bg: #0d0d1a;
-    --surface: #12122a;
-    --surface-2: #1a1a35;
-    --text: #f8fafc;
-    --muted: #9ca3af;
-    --border: #2e2b5a;
-    --scrollbar-track: #12122a;
+
+    /* Backgrounds — slightly lifted from pure black for depth */
+    --bg:        #0a0a18;
+    --surface:   #10102a;
+    --surface-2: #18183a;
+
+    /* Typography */
+    --text:   #f1f0ff;           /* slightly warm white */
+    --muted:  #8b8bab;
+
+    /* Borders */
+    --border: #2a2860;
+
+    /* Scrollbar */
+    --scrollbar-track: #10102a;
     --scrollbar-thumb: #7c3aed;
 }
 
@@ -36,7 +54,8 @@ body {
     margin: 0;
     background-color: var(--bg);
     color: var(--text);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 ::-webkit-scrollbar {

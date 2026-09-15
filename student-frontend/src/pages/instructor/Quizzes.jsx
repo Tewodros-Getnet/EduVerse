@@ -241,13 +241,13 @@ export default function InstructorQuizzes() {
             {showCreateForm && (
                 <div className="bg-gradient-to-br from-[#1a1a35] to-[#12122a] border border-purple-900/30 rounded-2xl p-6 shadow-xl">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">📝 Create New Quiz</h2>
+                        <h2 className="text-xl font-bold text-[var(--text)]">Create New Quiz</h2>
                         <button
                             type="button"
                             onClick={() => setShowCreateForm(false)}
-                            className="text-gray-400 hover:text-white transition"
+                            className="text-[var(--muted)] hover:text-[var(--text)] transition text-lg leading-none"
                         >
-                            ←
+                            ✕
                         </button>
                     </div>
                     <form onSubmit={handleCreateQuiz} className="space-y-5">
@@ -280,7 +280,7 @@ export default function InstructorQuizzes() {
                         </div>
                         <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-2">⏱️ Time Limit (min)</label>
+                                <label className="block text-sm font-semibold text-[var(--text)] mb-2">Time Limit (min)</label>
                                 <input
                                     type="number"
                                     min="1"
@@ -291,7 +291,7 @@ export default function InstructorQuizzes() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-2">🔄 Max Attempts</label>
+                                <label className="block text-sm font-semibold text-[var(--text)] mb-2">Max Attempts</label>
                                 <input
                                     type="number"
                                     min="1"
@@ -302,7 +302,7 @@ export default function InstructorQuizzes() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-2">🎯 Passing Score (%)</label>
+                                <label className="block text-sm font-semibold text-[var(--text)] mb-2">Passing Score (%)</label>
                                 <input
                                     type="number"
                                     min="0"
@@ -343,7 +343,7 @@ export default function InstructorQuizzes() {
                                             onClick={() => removeQuestion(index)}
                                             className="text-red-400 hover:text-red-300 text-sm font-medium"
                                         >
-                                            🗑️ Remove
+                                            Remove
                                         </button>
                                     </div>
 
@@ -362,9 +362,9 @@ export default function InstructorQuizzes() {
                                             onChange={(e) => updateQuestion(index, 'question_type', e.target.value)}
                                             className="px-4 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition"
                                         >
-                                            <option value="mcq">📝 Multiple Choice</option>
-                                            <option value="true_false">✅ True/False</option>
-                                            <option value="short_answer">💬 Short Answer</option>
+                                            <option value="mcq">Multiple Choice</option>
+                                            <option value="true_false">True / False</option>
+                                            <option value="short_answer">Short Answer</option>
                                         </select>
 
                                         <input
@@ -452,14 +452,14 @@ export default function InstructorQuizzes() {
                                 type="submit"
                                 className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
                             >
-                                ✨ Create Quiz
+                                Create Quiz
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setShowCreateForm(false)}
                                 className="flex-1 py-3 bg-[#0d0d1a] border border-gray-600/40 rounded-xl text-gray-300 font-semibold hover:bg-gray-800/50 hover:text-white transition"
                             >
-                                ← Cancel
+                                Cancel
                             </button>
                         </div>
                     </form>
@@ -480,10 +480,10 @@ export default function InstructorQuizzes() {
                             </span>
                         </div>
 
-                        <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-                            <span>⏱️ {quiz.time_limit_minutes} min</span>
-                            <span>🎯 {quiz.passing_score}% passing</span>
-                            <span>📝 {quiz.attempt_count || 0} attempts</span>
+                        <div className="flex items-center justify-between text-xs text-[var(--muted)] mb-4">
+                            <span>{quiz.time_limit_minutes} min</span>
+                            <span>{quiz.passing_score}% passing</span>
+                            <span>{quiz.attempt_count || 0} attempts</span>
                         </div>
 
                         <div className="flex flex-wrap gap-2">
@@ -562,7 +562,7 @@ export default function InstructorQuizzes() {
                     <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
                         <div className="flex items-center justify-between px-6 py-4 border-b border-purple-900/30 flex-shrink-0">
                             <h3 className="text-lg font-semibold text-white">Quiz Attempts</h3>
-                            <button onClick={() => setShowAttempts(null)} className="text-gray-400 hover:text-white text-xl transition">✕</button>
+                            <button onClick={() => setShowAttempts(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
                         </div>
                         <div className="overflow-y-auto flex-1 p-6 space-y-4">
                             {attempts.length === 0 ? (
@@ -636,7 +636,7 @@ export default function InstructorQuizzes() {
                     <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-md">
                         <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
                             <h3 className="font-semibold text-white">Duplicate Quiz</h3>
-                            <button onClick={() => setShowDuplicateModal(null)} className="text-gray-400 hover:text-white text-xl transition">✕</button>
+                            <button onClick={() => setShowDuplicateModal(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
                         </div>
                         <div className="p-5 space-y-4">
                             <div>
@@ -677,9 +677,9 @@ export default function InstructorQuizzes() {
                             <h3 className="text-lg font-semibold text-white">Quiz Analytics</h3>
                             <button
                                 onClick={() => setShowAnalytics(null)}
-                                className="text-gray-400 hover:text-white"
+                                className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition"
                             >
-                                ←
+                                ✕
                             </button>
                         </div>
 

@@ -287,9 +287,9 @@ export default function InstructorCourseDetail() {
                     <h1 className="text-2xl font-bold text-white">{course.title}</h1>
                     <p className="text-gray-400 mt-1">{course.description}</p>
                     <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
-                        <span>📚 {course.category}</span>
-                        <span>🎯 {course.difficulty_level}</span>
-                        <span>👥 {students.length} students</span>
+                        <span>{course.category}</span>
+                        <span>{course.difficulty_level}</span>
+                        <span>{students.length} students</span>
                     </div>
                 </div>
                 <div className="flex gap-3">
@@ -316,7 +316,7 @@ export default function InstructorCourseDetail() {
                         onClick={() => setActiveTab(tab)}
                         className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition capitalize ${activeTab === tab
                             ? 'bg-purple-600 text-white'
-                            : 'text-gray-400 hover:text-white'
+                            : 'text-[var(--muted)] hover:text-[var(--text)]'
                             }`}
                     >
                         {tab}
@@ -546,7 +546,7 @@ export default function InstructorCourseDetail() {
                             <div className="mt-4 bg-[#1a1a35] rounded-xl p-4">
                                 <div className="flex justify-between items-center mb-3">
                                     <h4 className="font-semibold text-white">Submissions ({submissions.length})</h4>
-                                    <button onClick={() => setViewingSubmissions(null)} className="text-gray-400 hover:text-white text-sm">Close</button>
+                                    <button onClick={() => setViewingSubmissions(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-sm">Close</button>
                                 </div>
                                 {submissions.length === 0 ? (
                                     <p className="text-gray-400 text-sm">No submissions yet</p>

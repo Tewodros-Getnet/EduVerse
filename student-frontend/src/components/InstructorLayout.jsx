@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
-import { UserCircle } from 'lucide-react';
+import { UserCircle, Menu, LogOut, Sun, Moon, GraduationCap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -44,16 +44,24 @@ export default function InstructorLayout() {
         <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
             <header className="bg-[var(--surface)] border-b border-[var(--border)] px-4 md:px-6 py-3 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
-                    <button onClick={() => setMobileNavOpen(prev => !prev)} className="text-gray-400 hover:text-white transition lg:hidden flex-shrink-0 text-2xl">☰</button>
+                    <button onClick={() => setMobileNavOpen(prev => !prev)} className="text-[var(--muted)] hover:text-[var(--text)] transition lg:hidden flex-shrink-0">
+                        <Menu className="w-5 h-5" />
+                    </button>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-xl">🎓</span>
+                        <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
+                            <GraduationCap className="w-4 h-4 text-white" />
+                        </div>
                         <span className="font-bold text-[var(--text)] hidden sm:block">EduVerse Instructor</span>
                     </div>
                     <nav className="hidden lg:flex gap-1 flex-1 overflow-x-auto">
                         {navItems.map(item => (
                             <NavLink key={item.path} to={item.path} end={item.end}
                                 className={({ isActive }) =>
-                                    `px-3 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap ${isActive ? 'bg-purple-600/30 text-purple-300' : 'text-gray-400 hover:text-white'}`
+                                    `px-3 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap ${
+                                        isActive
+                                            ? 'bg-purple-600/20 text-purple-400 dark:text-purple-300'
+                                            : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
+                                    }`
                                 }>
                                 {item.label}
                             </NavLink>
@@ -61,8 +69,10 @@ export default function InstructorLayout() {
                     </nav>
                 </div>
                 <div className="flex items-center gap-2 md:gap-3 relative flex-shrink-0">
-                    <button onClick={toggleTheme} className="px-2 md:px-3 py-2 rounded-xl bg-[var(--surface-2)] text-xs md:text-sm text-[var(--text)] border border-[var(--border)] hover:bg-[var(--surface)] transition">
-                        {theme === 'dark' ? '☀️' : '🌙'}
+                    <button onClick={toggleTheme}
+                        className="p-2 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-purple-500/40 transition"
+                        title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}>
+                        {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
                     <button onClick={() => setMenuOpen(!menuOpen)}
                         className="flex items-center gap-2 cursor-pointer">
@@ -88,8 +98,8 @@ export default function InstructorLayout() {
                                 <UserCircle className="w-4 h-4" /> My Profile
                             </Link>
                             <button onClick={handleLogout}
-                                className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-purple-600/20 hover:text-white transition">
-                                🚪 Logout
+                                className="w-full text-left px-4 py-2.5 text-sm text-[var(--muted)] hover:bg-purple-600/20 hover:text-[var(--text)] transition flex items-center gap-2">
+                                <LogOut className="w-4 h-4" /> Logout
                             </button>
                         </div>
                     )}
@@ -97,12 +107,16 @@ export default function InstructorLayout() {
             </header>
             {mobileNavOpen && (
                 <div ref={mobileNavRef} className="lg:hidden bg-[var(--surface)] border-b border-[var(--border)] px-4 py-3">
-                    <nav className="space-y-2">
+                    <nav className="space-y-1">
                         {navItems.map(item => (
                             <NavLink key={item.path} to={item.path} end={item.end}
                                 onClick={() => setMobileNavOpen(false)}
                                 className={({ isActive }) =>
-                                    `block px-4 py-2 rounded-xl text-sm font-medium transition ${isActive ? 'bg-purple-600/30 text-purple-300' : 'text-gray-400 hover:text-white'}`
+                                    `block px-4 py-2.5 rounded-xl text-sm font-medium transition ${
+                                        isActive
+                                            ? 'bg-purple-600/20 text-purple-400'
+                                            : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
+                                    }`
                                 }>
                                 {item.label}
                             </NavLink>

@@ -391,7 +391,7 @@ const InstructorAssignments = () => {
                                     className="w-full py-3 border border-dashed border-purple-700/50 rounded-xl text-purple-400 text-sm hover:bg-purple-600/10 disabled:opacity-50 transition flex items-center justify-center gap-2">
                                     {uploadingBrief
                                         ? <><div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" /> Uploading...</>
-                                        : <>📤 Upload brief file (PDF / Word)</>}
+                                        : <>Upload brief file (PDF / Word)</>}
                                 </button>
                             )}
                             <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx"
@@ -463,10 +463,10 @@ const InstructorAssignments = () => {
                                 📎 {assignment.attachment_name || 'Assignment Brief'} ↗
                             </a>
                         )}
-                        <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-                            <span>📅 Due: {new Date(assignment.due_date).toLocaleDateString()}</span>
-                            <span>🎯 {assignment.max_points} points</span>
-                            <span>📝 {assignment.submission_count || 0} submitted ({assignment.graded_count || 0} graded)</span>
+                        <div className="flex items-center justify-between text-xs text-[var(--muted)] mb-4">
+                            <span>Due: {new Date(assignment.due_date).toLocaleDateString()}</span>
+                            <span>{assignment.max_points} pts</span>
+                            <span>{assignment.submission_count || 0} submitted ({assignment.graded_count || 0} graded)</span>
                         </div>
                         <div className="flex flex-wrap gap-2">
                             <button
@@ -543,13 +543,13 @@ const InstructorAssignments = () => {
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => setGradingMode(!gradingMode)}
-                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${gradingMode ? 'bg-purple-600 text-white' : 'bg-[#1a1a35] text-gray-400 hover:text-white'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${gradingMode ? 'bg-purple-600 text-white' : 'bg-[#1a1a35] text-[var(--muted)] hover:text-[var(--text)]'}`}
                                 >
                                     {gradingMode ? 'Exit Bulk Grade' : 'Bulk Grade'}
                                 </button>
                                 <button
                                     onClick={() => { setShowSubmissions(null); setGradingMode(false); setBulkGrades({}); setGradeInputs({}); }}
-                                    className="text-gray-400 hover:text-white text-xl transition"
+                                    className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition"
                                 >
                                     ✕
                                 </button>
@@ -726,9 +726,9 @@ const InstructorAssignments = () => {
                                         <h3 className="text-lg font-semibold text-white">Assignment Analytics</h3>
                                         <button
                                             onClick={() => setShowAnalytics(null)}
-                                            className="text-gray-400 hover:text-white"
+                                            className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition"
                                         >
-                                            ←
+                                            ✕
                                         </button>
                                     </div>
 
@@ -820,7 +820,7 @@ const InstructorAssignments = () => {
                         {/* Header */}
                         <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
                             <h2 className="text-lg font-bold text-white">Edit Assignment</h2>
-                            <button onClick={() => setEditingId(null)} className="text-gray-400 hover:text-white text-xl transition">✕</button>
+                            <button onClick={() => setEditingId(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
                         </div>
 
                         <div className="p-5 space-y-4">
@@ -875,7 +875,7 @@ const InstructorAssignments = () => {
                                         className="w-full py-3 border border-dashed border-purple-700/50 rounded-xl text-purple-400 text-sm hover:bg-purple-600/10 disabled:opacity-50 transition flex items-center justify-center gap-2">
                                         {uploadingEditBrief
                                             ? <><div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" /> Uploading...</>
-                                            : <>📤 Upload brief file (PDF / Word)</>}
+                                            : <>Upload brief file (PDF / Word)</>}
                                     </button>
                                 )}
                                 <input ref={editBriefInputRef} type="file" accept=".pdf,.doc,.docx"
@@ -902,7 +902,7 @@ const InstructorAssignments = () => {
                             <div className="flex gap-3 pt-2">
                                 <button onClick={handleSaveEdit} disabled={savingEdit}
                                     className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50">
-                                    {savingEdit ? '⏳ Saving...' : '✓ Save Changes'}
+                                    {savingEdit ? 'Saving...' : 'Save Changes'}
                                 </button>
                                 <button onClick={() => setEditingId(null)}
                                     className="px-5 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition">

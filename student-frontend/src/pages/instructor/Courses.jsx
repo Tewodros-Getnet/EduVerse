@@ -176,7 +176,7 @@ export default function InstructorCourses() {
                             onClick={() => setFilter(f)}
                             className={`px-4 py-2 rounded-lg font-medium text-sm capitalize transition ${filter === f
                                     ? 'bg-purple-600 text-white'
-                                    : 'text-gray-400 hover:text-white'
+                                    : 'text-[var(--muted)] hover:text-[var(--text)]'
                                 }`}>
                             {f}
                         </button>
@@ -260,7 +260,7 @@ export default function InstructorCourses() {
                                 <button
                                     type="button"
                                     onClick={() => { setShowForm(false); setEditingId(null); setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' }); }}
-                                    className="px-6 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 hover:text-white font-medium transition">
+                                    className="px-6 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-[var(--muted)] hover:text-[var(--text)] font-medium transition">
                                     Cancel
                                 </button>
                             </div>
@@ -280,7 +280,7 @@ export default function InstructorCourses() {
                                         course.status === 'archived' ? 'bg-gray-500/20 text-gray-300 border border-gray-500/30' :
                                             'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
                                     }`}>
-                                    {course.status === 'published' ? '📢 Published' : course.status === 'archived' ? '📦 Archived' : '📝 Draft'}
+                                    {course.status === 'published' ? 'Published' : course.status === 'archived' ? 'Archived' : 'Draft'}
                                 </div>
 
                                 {/* Content */}
@@ -345,7 +345,7 @@ export default function InstructorCourses() {
                                                 onClick={() => publishCourse(course.id)}
                                                 disabled={publishingCourse === course.id}
                                                 className="px-3 py-2 bg-green-600/20 hover:bg-green-600/30 border border-green-600/40 rounded-lg text-green-300 text-sm font-medium transition disabled:opacity-50">
-                                                {publishingCourse === course.id ? '⏳' : '📤'}
+                                                {publishingCourse === course.id ? 'Publishing...' : 'Publish'}
                                             </button>
                                         )}
                                         <button
@@ -387,8 +387,8 @@ export default function InstructorCourses() {
                                 <h3 className="text-2xl font-bold text-white">📊 Course Analytics</h3>
                                 <button
                                     onClick={() => setShowAnalytics(null)}
-                                    className="text-gray-400 hover:text-white text-2xl transition">
-                                    ←
+                                    className="text-[var(--muted)] hover:text-[var(--text)] text-2xl transition">
+                                    ✕
                                 </button>
                             </div>
 

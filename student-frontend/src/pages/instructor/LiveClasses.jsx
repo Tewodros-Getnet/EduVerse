@@ -209,13 +209,13 @@ export default function InstructorLiveClasses() {
             {showCreateForm && (
                 <div className="bg-gradient-to-br from-[#1a1a35] to-[#12122a] border border-purple-900/30 rounded-2xl p-6 shadow-xl">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">📅 Schedule New Live Class</h2>
+                        <h2 className="text-xl font-bold text-[var(--text)]">Schedule New Live Class</h2>
                         <button
                             type="button"
                             onClick={() => setShowCreateForm(false)}
-                            className="text-gray-400 hover:text-white transition"
+                            className="text-[var(--muted)] hover:text-[var(--text)] transition text-xl leading-none"
                         >
-                            ←
+                            ✕
                         </button>
                     </div>
                     <form onSubmit={handleCreateSession} className="space-y-5">
@@ -258,7 +258,7 @@ export default function InstructorLiveClasses() {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-2">📅 Date & Time *</label>
+                                <label className="block text-sm font-semibold text-[var(--text)] mb-2">Date & Time *</label>
                                 <input
                                     type="datetime-local"
                                     value={formData.scheduled_at}
@@ -268,7 +268,7 @@ export default function InstructorLiveClasses() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-2">⏱️ Duration (min) *</label>
+                                <label className="block text-sm font-semibold text-[var(--text)] mb-2">Duration (min) *</label>
                                 <input
                                     type="number"
                                     min="15"
@@ -295,14 +295,14 @@ export default function InstructorLiveClasses() {
                                 type="submit"
                                 className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
                             >
-                                ✨ Schedule Live Class
+                                Schedule Live Class
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setShowCreateForm(false)}
                                 className="flex-1 py-3 bg-[#0d0d1a] border border-gray-600/40 rounded-xl text-gray-300 font-semibold hover:bg-gray-800/50 hover:text-white transition"
                             >
-                                ← Cancel
+                                Cancel
                             </button>
                         </div>
                     </form>
@@ -318,22 +318,22 @@ export default function InstructorLiveClasses() {
                                 <p className="text-sm text-gray-400">{session.course_title}</p>
                             </div>
                             <span className={`text-xs px-3 py-1.5 rounded-full font-semibold uppercase tracking-wide ${getStatusColor(session.status)} shadow-lg`}>
-                                {session.status === 'live' && '🔴 Live'}
-                                {session.status === 'scheduled' && '⏰ Scheduled'}
-                                {session.status === 'ended' && '✓ Ended'}
+                                {session.status === 'live' && 'Live'}
+                                {session.status === 'scheduled' && 'Scheduled'}
+                                {session.status === 'ended' && 'Ended'}
                             </span>
                         </div>
 
                         <p className="text-sm text-gray-300 mb-4 line-clamp-2 min-h-[2.5rem]">{session.description}</p>
 
                         <div className="space-y-2 mb-4 bg-[#0d0d1a] rounded-xl p-3">
-                            <div className="flex items-center justify-between text-xs text-gray-400">
-                                <span className="flex items-center gap-1">📅 {formatDateTime(session.scheduled_at)}</span>
-                                <span className="flex items-center gap-1">⏱️ {session.duration_minutes} min</span>
+                            <div className="flex flex-wrap gap-4 text-sm text-[var(--muted)]">
+                                <span>{formatDateTime(session.scheduled_at)}</span>
+                                <span>{session.duration_minutes} min</span>
                             </div>
-                            <div className="flex items-center justify-between text-xs text-gray-400">
-                                <span className="flex items-center gap-1">👥 {session.attendance_count || 0} attendees</span>
-                                {session.meeting_url && <span className="flex items-center gap-1">🔗 Meeting ready</span>}
+                            <div className="flex items-center justify-between text-xs text-[var(--muted)]">
+                                <span>{session.attendance_count || 0} attendees</span>
+                                {session.meeting_url && <span>Meeting ready</span>}
                             </div>
                         </div>
 
@@ -348,7 +348,7 @@ export default function InstructorLiveClasses() {
                                 onClick={() => fetchAnalytics(session.id)}
                                 className="px-3 py-2.5 bg-[#0d0d1a] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition"
                             >
-                                📊 Analytics
+                                Analytics
                             </button>
                             {session.status === 'scheduled' && (
                                 <button
@@ -356,7 +356,7 @@ export default function InstructorLiveClasses() {
                                     disabled={startingSession === session.id}
                                     className="px-3 py-2.5 bg-green-600/20 border border-green-500/30 rounded-xl text-green-300 text-sm font-medium hover:bg-green-600/30 transition disabled:opacity-50"
                                 >
-                                    {startingSession === session.id ? '⏳' : '▶️ Start'}
+                                    {startingSession === session.id ? 'Starting...' : 'Start'}
                                 </button>
                             )}
                             {session.status === 'live' && (
@@ -372,7 +372,7 @@ export default function InstructorLiveClasses() {
                                         disabled={endingSession === session.id}
                                         className="px-3 py-2.5 bg-red-600/20 border border-red-500/30 rounded-xl text-red-300 text-sm font-medium hover:bg-red-600/30 transition disabled:opacity-50"
                                     >
-                                        {endingSession === session.id ? '⏳' : '⏹️ End'}
+                                        {endingSession === session.id ? 'Ending...' : 'End'}
                                     </button>
                                 </>
                             )}
@@ -383,13 +383,13 @@ export default function InstructorLiveClasses() {
                                 }}
                                 className="px-3 py-2.5 bg-[#0d0d1a] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition"
                             >
-                                📋
+                                Duplicate
                             </button>
                             <button
                                 onClick={() => handleDeleteSession(session.id)}
                                 className="px-3 py-2.5 bg-red-600/20 border border-red-500/30 rounded-xl text-red-300 text-sm hover:bg-red-600/30 transition"
                             >
-                                🗑️
+                                Delete
                             </button>
                         </div>
                     </div>
@@ -405,7 +405,7 @@ export default function InstructorLiveClasses() {
                         onClick={() => setShowCreateForm(true)}
                         className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
                     >
-                        ✨ Schedule Your First Live Class
+                        Schedule Your First Live Class
                     </button>
                 </div>
             )}
@@ -425,12 +425,12 @@ export default function InstructorLiveClasses() {
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="bg-gradient-to-br from-[#1a1a35] to-[#12122a] border border-purple-900/30 rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">📋 Live Class Details</h3>
+                            <h3 className="text-xl font-bold text-[var(--text)]">Live Class Details</h3>
                             <button
                                 onClick={() => setShowSessionDetails(null)}
-                                className="text-gray-400 hover:text-white transition text-2xl"
+                                className="text-[var(--muted)] hover:text-[var(--text)] transition text-2xl"
                             >
-                                ←
+                                ✕
                             </button>
                         </div>
 
@@ -440,9 +440,9 @@ export default function InstructorLiveClasses() {
                                 <h4 className="font-bold text-white text-lg mb-2">{sessionDetails.title}</h4>
                                 <p className="text-sm text-gray-400 mb-3">{sessionDetails.course_title}</p>
                                 <p className="text-sm text-gray-300 mb-4">{sessionDetails.description}</p>
-                                <div className="flex flex-wrap gap-4 text-sm text-gray-400">
-                                    <span className="flex items-center gap-1">📅 {formatDateTime(sessionDetails.scheduled_at)}</span>
-                                    <span className="flex items-center gap-1">⏱️ {sessionDetails.duration_minutes} min</span>
+                                <div className="flex flex-wrap gap-4 text-sm text-[var(--muted)]">
+                                    <span>{formatDateTime(sessionDetails.scheduled_at)}</span>
+                                    <span>{sessionDetails.duration_minutes} min</span>
                                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(sessionDetails.status)}`}>{sessionDetails.status}</span>
                                 </div>
                                 {sessionDetails.status === 'live' && (
@@ -459,7 +459,7 @@ export default function InstructorLiveClasses() {
 
                             {/* Attendance */}
                             <div className="bg-[#0d0d1a] rounded-xl p-5 border border-purple-900/30">
-                                <h4 className="font-bold text-white mb-3">👥 Attendance</h4>
+                                <h4 className="font-bold text-white mb-3">Attendance</h4>
                                 <div className="text-center text-gray-400 py-4">
                                     <p>Attendance details will be available after the session starts</p>
                                 </div>
@@ -474,12 +474,12 @@ export default function InstructorLiveClasses() {
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="bg-gradient-to-br from-[#1a1a35] to-[#12122a] border border-purple-900/30 rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">📊 Live Class Analytics</h3>
+                            <h3 className="text-xl font-bold text-[var(--text)]">Live Class Analytics</h3>
                             <button
                                 onClick={() => setShowAnalytics(null)}
-                                className="text-gray-400 hover:text-white transition text-2xl"
+                                className="text-[var(--muted)] hover:text-[var(--text)] transition text-2xl"
                             >
-                                ←
+                                ✕
                             </button>
                         </div>
 
@@ -488,16 +488,16 @@ export default function InstructorLiveClasses() {
                             <div className="bg-[#0d0d1a] rounded-xl p-5 border border-purple-900/30">
                                 <h4 className="font-bold text-white text-lg mb-2">{analytics.session_details.title}</h4>
                                 <p className="text-sm text-gray-400 mb-3">{analytics.session_details.course_title}</p>
-                                <div className="flex flex-wrap gap-4 text-sm text-gray-400">
-                                    <span className="flex items-center gap-1">📅 {formatDateTime(analytics.session_details.scheduled_at)}</span>
-                                    <span className="flex items-center gap-1">⏱️ {analytics.session_details.duration_minutes} min</span>
+                                <div className="flex flex-wrap gap-4 text-sm text-[var(--muted)]">
+                                    <span>{formatDateTime(analytics.session_details.scheduled_at)}</span>
+                                    <span>{analytics.session_details.duration_minutes} min</span>
                                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(analytics.session_details.status)}`}>{analytics.session_details.status}</span>
                                 </div>
                             </div>
 
                             {/* Attendance Stats */}
                             <div className="bg-[#0d0d1a] rounded-xl p-5 border border-purple-900/30">
-                                <h4 className="font-bold text-white mb-4">👥 Attendance Statistics</h4>
+                                <h4 className="font-bold text-white mb-4">Attendance Statistics</h4>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     <div className="bg-gradient-to-br from-purple-600/20 to-purple-900/20 rounded-xl p-4 border border-purple-500/30">
                                         <p className="text-gray-400 text-sm mb-1">Total Attendees</p>

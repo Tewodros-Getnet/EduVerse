@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../../api/axios';
+import {
+    HelpCircle,
+    Lightbulb,
+    MessageSquare,
+    Zap,
+    Users,
+    MapPin,
+} from 'lucide-react';
 
 export default function InstructorAITools() {
     const [loading, setLoading] = useState(false);
@@ -132,22 +140,22 @@ export default function InstructorAITools() {
                 {/* Tab Navigation */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
                     {[
-                        { id: 'quiz-generator', label: 'Quiz Generator', icon: '📝' },
-                        { id: 'content-suggestions', label: 'Content Suggestions', icon: '💡' },
-                        { id: 'feedback-generator', label: 'Feedback Generator', icon: '✍️' },
-                        { id: 'course-optimizer', label: 'Course Optimizer', icon: '⚡' },
-                        { id: 'student-insights', label: 'Student Insights', icon: '👥' },
-                        { id: 'learning-path', label: 'Learning Path', icon: '🛤️' }
+                        { id: 'quiz-generator',      label: 'Quiz Generator',      Icon: HelpCircle    },
+                        { id: 'content-suggestions', label: 'Content Suggestions', Icon: Lightbulb     },
+                        { id: 'feedback-generator',  label: 'Feedback Generator',  Icon: MessageSquare },
+                        { id: 'course-optimizer',    label: 'Course Optimizer',    Icon: Zap           },
+                        { id: 'student-insights',    label: 'Student Insights',    Icon: Users         },
+                        { id: 'learning-path',       label: 'Learning Path',       Icon: MapPin        },
                     ].map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`p-3 rounded-xl text-sm font-medium transition flex flex-col items-center gap-2 ${activeTab === tab.id
                                 ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/20'
-                                : 'bg-[#12122a] text-gray-300 hover:text-white hover:border-purple-500/50 border border-purple-900/40'
+                                : 'bg-[#12122a] text-[var(--muted)] hover:text-[var(--text)] hover:border-purple-500/50 border border-purple-900/40'
                                 }`}
                         >
-                            <span className="text-xl">{tab.icon}</span>
+                            <tab.Icon className="w-5 h-5" />
                             <span className="text-xs">{tab.label}</span>
                         </button>
                     ))}

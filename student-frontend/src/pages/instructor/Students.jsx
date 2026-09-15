@@ -275,7 +275,7 @@ export default function InstructorStudents() {
                     <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
                             <h3 className="text-lg font-semibold text-white">Student Details</h3>
-                            <button onClick={() => setShowStudentDetails(null)} className="text-gray-400 hover:text-white text-xl transition">✕</button>
+                            <button onClick={() => setShowStudentDetails(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
                         </div>
 
                         <div className="p-5 space-y-5">
@@ -376,7 +376,7 @@ export default function InstructorStudents() {
                     <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-md">
                         <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
                             <h3 className="text-lg font-semibold text-white">Send Message</h3>
-                            <button onClick={() => setShowMessageModal(null)} className="text-gray-400 hover:text-white text-xl transition">✕</button>
+                            <button onClick={() => setShowMessageModal(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
                         </div>
 
                         <div className="p-5 space-y-4">

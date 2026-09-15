@@ -137,7 +137,7 @@ export default function InstructorAnalytics() {
                         onClick={() => setActiveTab(tab)}
                         className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition ${activeTab === tab
                                 ? 'bg-purple-600 text-white'
-                                : 'text-gray-400 hover:text-white'
+                                : 'text-[var(--muted)] hover:text-[var(--text)]'
                             }`}
                     >
                         {tab.charAt(0).toUpperCase() + tab.slice(1)}
