@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { LayoutGrid, Users, BookOpen, BarChart3, Bell, Shield, Brain, ClipboardList, Settings, LogOut, Menu, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import AdminNotificationButton from './AdminNotificationButton';
 
 const navItems = [
-    { path: '/', label: 'Dashboard', icon: '⊞' },
-    { path: '/users', label: 'Users', icon: '👥' },
-    { path: '/courses', label: 'Courses', icon: '📚' },
-    { path: '/analytics', label: 'Analytics', icon: '📊' },
-    { path: '/notifications', label: 'Notifications', icon: '🔔' },
-    { path: '/security', label: 'Security', icon: '🔐' },
-    { path: '/ai', label: 'AI', icon: '🤖' },
-    { path: '/audit-logs', label: 'Audit logs', icon: '📋' },
-    { path: '/settings', label: 'Settings', icon: '⚙️' },
+    { path: '/', label: 'Dashboard', Icon: LayoutGrid },
+    { path: '/users', label: 'Users', Icon: Users },
+    { path: '/courses', label: 'Courses', Icon: BookOpen },
+    { path: '/analytics', label: 'Analytics', Icon: BarChart3 },
+    { path: '/notifications', label: 'Notifications', Icon: Bell },
+    { path: '/security', label: 'Security', Icon: Shield },
+    { path: '/ai', label: 'AI', Icon: Brain },
+    { path: '/audit-logs', label: 'Audit logs', Icon: ClipboardList },
+    { path: '/settings', label: 'Settings', Icon: Settings },
 ];
 
 export default function Layout() {
@@ -46,14 +47,14 @@ export default function Layout() {
                                 }`
                             }
                         >
-                            <span className="text-lg flex-shrink-0">{item.icon}</span>
+                            <item.Icon className="w-5 h-5 flex-shrink-0" />
                             {sidebarOpen && <span>{item.label}</span>}
                         </NavLink>
                     ))}
                 </nav>
                 <div className="p-3 border-t border-[var(--border)]">
-                    <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-900/20 transition w-full text-sm">
-                        <span className="text-lg">🚪</span>
+                    <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--muted)] hover:text-red-400 hover:bg-red-900/20 transition w-full text-sm">
+                        <LogOut className="w-5 h-5" />
                         {sidebarOpen && <span>Logout</span>}
                     </button>
                 </div>
@@ -64,12 +65,14 @@ export default function Layout() {
                 {/* Topbar */}
                 <header className="bg-[var(--surface)] border-b border-[var(--border)] px-6 py-3 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-gray-400 hover:text-white transition">☰</button>
+                        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-[var(--muted)] hover:text-[var(--text)] transition" aria-label="Toggle sidebar">
+                            <Menu className="w-5 h-5" />
+                        </button>
                         <span className="font-semibold text-[var(--text)]">Admin Panel</span>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button onClick={toggleTheme} className="px-3 py-2 rounded-xl bg-[var(--surface-2)] text-sm text-[var(--text)] border border-[var(--border)] hover:bg-[var(--surface)] transition">
-                            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                        <button onClick={toggleTheme} className="p-2 rounded-xl bg-[var(--surface-2)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--surface)] transition flex items-center gap-1.5" aria-label="Toggle theme">
+                            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                         </button>
                         <AdminNotificationButton />
                         <div className="flex items-center gap-2">

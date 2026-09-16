@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bell, BellRing, Check, Settings, X, Shield, AlertTriangle } from 'lucide-react';
+import { Bell, BellRing, Check, Settings, X, Shield, AlertTriangle, AlertCircle, Megaphone, Radio, Users, BookOpen, Lock } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -80,19 +80,19 @@ export default function AdminNotificationButton() {
     const getNotificationIcon = (type) => {
         switch (type) {
             case 'system_alert':
-                return '⚠️';
+                return <AlertTriangle className="w-5 h-5" />;
             case 'announcement':
-                return '📢';
+                return <Megaphone className="w-5 h-5" />;
             case 'broadcast':
-                return '📡';
+                return <Radio className="w-5 h-5" />;
             case 'user_report':
-                return '👥';
+                return <Users className="w-5 h-5" />;
             case 'course_review':
-                return '📚';
+                return <BookOpen className="w-5 h-5" />;
             case 'security':
-                return '🔒';
+                return <Lock className="w-5 h-5" />;
             default:
-                return '🔔';
+                return <Bell className="w-5 h-5" />;
         }
     };
 

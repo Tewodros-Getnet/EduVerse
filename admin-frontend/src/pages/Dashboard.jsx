@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { BookOpen, TrendingUp, DollarSign, Users, BarChart3 } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -46,7 +47,7 @@ export default function Dashboard() {
             title: 'Total Users',
             value: overview?.total_users?.toLocaleString() || '0',
             change: `${overview?.active_users || 0} active`,
-            icon: '',
+            icon: <Users className="w-6 h-6" />,
             gradient: 'from-blue-500 to-cyan-400',
             subtitle: 'Active users'
         },
@@ -55,7 +56,7 @@ export default function Dashboard() {
             title: 'Courses',
             value: overview?.total_courses?.toLocaleString() || '0',
             change: `${overview?.published_courses || 0} published`,
-            icon: '📚',
+            icon: <BookOpen className="w-6 h-6" />,
             gradient: 'from-green-500 to-emerald-400',
             subtitle: 'Published courses'
         },
@@ -63,7 +64,7 @@ export default function Dashboard() {
             title: 'Enrollments',
             value: overview?.total_enrollments?.toLocaleString() || '0',
             change: `${Math.round(overview?.avg_progress || 0)}% avg progress`,
-            icon: '📈',
+            icon: <TrendingUp className="w-6 h-6" />,
             gradient: 'from-purple-500 to-pink-500',
             subtitle: 'Average progress'
         },
@@ -71,7 +72,7 @@ export default function Dashboard() {
             title: 'Revenue',
             value: `$${(overview?.total_revenue || 0).toLocaleString()}`,
             change: `${overview?.recent_activity || 0} recent activities`,
-            icon: '💰',
+            icon: <DollarSign className="w-6 h-6" />,
             gradient: 'from-orange-500 to-yellow-400',
             subtitle: 'Recent activity'
         },
@@ -182,7 +183,7 @@ export default function Dashboard() {
                     to="/users"
                     className="bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl p-5 cursor-pointer hover:opacity-90 transition block text-white shadow-lg"
                 >
-                    <div className="text-3xl mb-3">👥</div>
+                    <div className="text-3xl mb-3"><Users className="w-8 h-8" /></div>
                     <h3 className="text-lg font-bold">User management</h3>
                     <p className="text-sm text-white/70 mt-1">Manage students and instructors</p>
                 </Link>
@@ -190,7 +191,7 @@ export default function Dashboard() {
                     to="/courses"
                     className="bg-gradient-to-br from-green-500 to-emerald-400 rounded-2xl p-5 cursor-pointer hover:opacity-90 transition block text-white shadow-lg"
                 >
-                    <div className="text-3xl mb-3">📚</div>
+                    <div className="text-3xl mb-3"><BookOpen className="w-8 h-8" /></div>
                     <h3 className="text-lg font-bold">Course management</h3>
                     <p className="text-sm text-white/70 mt-1">Approve and monitor courses</p>
                 </Link>
@@ -198,7 +199,7 @@ export default function Dashboard() {
                     to="/analytics"
                     className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-5 cursor-pointer hover:opacity-90 transition block text-white shadow-lg"
                 >
-                    <div className="text-3xl mb-3">📊</div>
+                    <div className="text-3xl mb-3"><BarChart3 className="w-8 h-8" /></div>
                     <h3 className="text-lg font-bold">Analytics</h3>
                     <p className="text-sm text-white/70 mt-1">View detailed reports</p>
                 </Link>

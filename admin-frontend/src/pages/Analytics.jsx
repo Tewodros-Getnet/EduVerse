@@ -14,6 +14,7 @@ import {
     Legend,
     ResponsiveContainer,
 } from 'recharts';
+import { Users, Target, Brain, Trophy } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -97,21 +98,21 @@ export default function Analytics() {
                 label: 'Total users',
                 value: overview?.total_users != null ? overview.total_users.toLocaleString() : '—',
                 gradient: 'from-blue-500 to-cyan-400',
-                icon: '👥',
+                icon: <Users className="w-6 h-6" />,
                 hint: `${overview?.active_users ?? 0} active`,
             },
             {
                 label: 'Avg. completion',
                 value: overview?.avg_progress != null ? `${Math.round(overview.avg_progress)}%` : '—',
                 gradient: 'from-emerald-500 to-teal-400',
-                icon: '🎯',
+                icon: <Target className="w-6 h-6" />,
                 hint: 'Mean enrollment progress',
             },
             {
                 label: 'AI chat (window)',
                 value: aiQueryTotal.toLocaleString(),
                 gradient: 'from-indigo-500 to-purple-500',
-                icon: '🧠',
+                icon: <Brain className="w-6 h-6" />,
                 hint: 'Messages in sampled days',
             },
             {
@@ -121,7 +122,7 @@ export default function Analytics() {
                         ? `${Math.round(parseFloat(analytics.quiz_stats.avg_score))}%`
                         : '—',
                 gradient: 'from-orange-500 to-amber-400',
-                icon: '🏆',
+                icon: <Trophy className="w-6 h-6" />,
                 hint: `${analytics?.quiz_stats?.total ?? 0} attempts`,
             },
         ],

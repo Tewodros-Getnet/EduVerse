@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import toast from 'react-hot-toast';
@@ -44,7 +45,7 @@ export default function Login() {
                         <div>
                             <label className="block text-sm font-medium text-[var(--muted)] mb-2">Email Address</label>
                             <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm">✉</span>
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] w-5 h-5" />
                                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                                     placeholder="admin@eduverse.com" required
                                     className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-purple-500 transition" />
@@ -53,14 +54,14 @@ export default function Login() {
                         <div>
                             <label className="block text-sm font-medium text-[var(--muted)] mb-2">Password</label>
                             <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm">🔒</span>
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] w-5 h-5" />
                                 <input type={showPw ? 'text' : 'password'} value={password}
                                     onChange={e => setPassword(e.target.value)}
                                     placeholder="••••••••" required
                                     className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-12 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-purple-500 transition" />
                                 <button type="button" onClick={() => setShowPw(!showPw)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--text)] transition text-sm">
-                                    {showPw ? '🙈' : '👁️'}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--text)] transition">
+                                    {showPw ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
                             </div>
                         </div>

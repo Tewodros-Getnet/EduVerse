@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Lock, LogOut, Zap, Shield } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -192,36 +193,36 @@ export default function SecurityManager() {
             {/* Stats Cards */}
             {stats && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Active Sessions</h3>
-                        <p className="text-2xl font-bold text-gray-900">{stats.active_sessions}</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Active Sessions</h3>
+                        <p className="text-2xl font-bold text-[var(--text)] mt-2">{stats.active_sessions}</p>
                     </div>
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Recent Logins</h3>
-                        <p className="text-2xl font-bold text-green-600">{stats.recent_logins}</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Recent Logins</h3>
+                        <p className="text-2xl font-bold text-green-500 mt-2">{stats.recent_logins}</p>
                     </div>
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Failed Logins</h3>
-                        <p className="text-2xl font-bold text-red-600">{stats.failed_logins}</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Failed Logins</h3>
+                        <p className="text-2xl font-bold text-red-500 mt-2">{stats.failed_logins}</p>
                     </div>
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Security Events</h3>
-                        <p className="text-2xl font-bold text-yellow-600">{stats.security_events}</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Security Events</h3>
+                        <p className="text-2xl font-bold text-yellow-500 mt-2">{stats.security_events}</p>
                     </div>
                 </div>
             )}
 
             {/* Tabs */}
-            <div className="bg-white rounded-lg shadow">
-                <div className="border-b border-gray-200">
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-sm overflow-hidden">
+                <div className="border-b border-[var(--border)]">
                     <nav className="flex space-x-8 px-6">
                         {['sessions', 'logs', 'events', 'permissions'].map(tab => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === tab
-                                        ? 'border-blue-500 text-blue-600'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                className={`py-4 px-1 border-b-2 font-medium text-sm transition ${activeTab === tab
+                                        ? 'border-blue-500 text-blue-400'
+                                        : 'border-transparent text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--border)]'
                                     }`}
                             >
                                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -235,19 +236,19 @@ export default function SecurityManager() {
                     {activeTab === 'sessions' && (
                         <div>
                             <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-gray-900">Active Sessions</h3>
+                                <h3 className="text-lg font-semibold text-[var(--text)]">Active Sessions</h3>
                                 <div className="flex space-x-2">
                                     <input
                                         type="text"
                                         placeholder="User ID"
                                         value={sessionFilters.user_id}
                                         onChange={(e) => setSessionFilters({ ...sessionFilters, user_id: e.target.value })}
-                                        className="px-3 py-1 border border-gray-300 rounded text-sm"
+                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] placeholder:text-[var(--muted)]"
                                     />
                                     <select
                                         value={sessionFilters.role}
                                         onChange={(e) => setSessionFilters({ ...sessionFilters, role: e.target.value })}
-                                        className="px-3 py-1 border border-gray-300 rounded text-sm"
+                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)]"
                                     >
                                         <option value="">All Roles</option>
                                         <option value="student">Student</option>
@@ -256,7 +257,7 @@ export default function SecurityManager() {
                                     </select>
                                     <button
                                         onClick={fetchSessions}
-                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 font-medium"
                                     >
                                         Filter
                                     </button>
@@ -264,50 +265,53 @@ export default function SecurityManager() {
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
+                                <table className="min-w-full divide-y divide-[var(--border)]">
+                                    <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">IP Address</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Last Activity</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">IP Address</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Last Activity</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
+                                    <tbody className="divide-y divide-[var(--border)]">
                                         {sessions.map((session) => (
-                                            <tr key={session.id}>
+                                            <tr key={session.id} className="hover:bg-[var(--surface-2)] transition">
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div>
-                                                        <div className="text-sm font-medium text-gray-900">{session.name}</div>
-                                                        <div className="text-sm text-gray-500">{session.email}</div>
-                                                        <div className="text-xs text-gray-400">{session.role}</div>
+                                                        <div className="text-sm font-medium text-[var(--text)]">{session.name}</div>
+                                                        <div className="text-sm text-[var(--muted)]">{session.email}</div>
+                                                        <div className="text-xs text-[var(--muted)]">{session.role}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                     {session.ip_address}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                     {new Date(session.last_activity).toLocaleString()}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                     <div className="flex space-x-2">
                                                         <button
                                                             onClick={() => handleTerminateSession(session.id)}
-                                                            className="text-red-600 hover:text-red-900"
+                                                            className="p-1.5 text-red-400 hover:bg-red-500/20 rounded transition"
+                                                            title="Terminate session"
                                                         >
-                                                            Terminate
+                                                            <LogOut className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => handleTerminateUserSessions(session.user_id)}
-                                                            className="text-yellow-600 hover:text-yellow-900"
+                                                            className="p-1.5 text-yellow-400 hover:bg-yellow-500/20 rounded transition"
+                                                            title="Terminate all user sessions"
                                                         >
-                                                            All Sessions
+                                                            <Zap className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => handleForceLogout(session.user_id)}
-                                                            className="text-orange-600 hover:text-orange-900"
+                                                            className="p-1.5 text-orange-400 hover:bg-orange-500/20 rounded transition"
+                                                            title="Force logout"
                                                         >
-                                                            Force Logout
+                                                            <Lock className="w-4 h-4" />
                                                         </button>
                                                     </div>
                                                 </td>
@@ -323,25 +327,25 @@ export default function SecurityManager() {
                     {activeTab === 'logs' && (
                         <div>
                             <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-gray-900">Activity Logs</h3>
+                                <h3 className="text-lg font-semibold text-[var(--text)]">Activity Logs</h3>
                                 <div className="flex space-x-2">
                                     <input
                                         type="text"
                                         placeholder="User ID"
                                         value={logFilters.user_id}
                                         onChange={(e) => setLogFilters({ ...logFilters, user_id: e.target.value })}
-                                        className="px-3 py-1 border border-gray-300 rounded text-sm"
+                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] placeholder:text-[var(--muted)]"
                                     />
                                     <input
                                         type="text"
                                         placeholder="Action"
                                         value={logFilters.action}
                                         onChange={(e) => setLogFilters({ ...logFilters, action: e.target.value })}
-                                        className="px-3 py-1 border border-gray-300 rounded text-sm"
+                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] placeholder:text-[var(--muted)]"
                                     />
                                     <button
                                         onClick={fetchActivityLogs}
-                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 font-medium"
                                     >
                                         Filter
                                     </button>
@@ -349,41 +353,41 @@ export default function SecurityManager() {
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
+                                <table className="min-w-full divide-y divide-[var(--border)]">
+                                    <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Details</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Level</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Action</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Details</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Level</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Time</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
+                                    <tbody className="divide-y divide-[var(--border)]">
                                         {activityLogs.map((log) => (
-                                            <tr key={log.id}>
+                                            <tr key={log.id} className="hover:bg-[var(--surface-2)] transition">
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div>
-                                                        <div className="text-sm font-medium text-gray-900">{log.name || 'System'}</div>
-                                                        <div className="text-sm text-gray-500">{log.email || 'N/A'}</div>
+                                                        <div className="text-sm font-medium text-[var(--text)]">{log.name || 'System'}</div>
+                                                        <div className="text-sm text-[var(--muted)]">{log.email || 'N/A'}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                     {log.action}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)] max-w-xs truncate">
                                                     {log.details}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${log.level === 'security' ? 'bg-red-100 text-red-800' :
-                                                            log.level === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                                                                log.level === 'info' ? 'bg-blue-100 text-blue-800' :
-                                                                    'bg-gray-100 text-gray-800'
+                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${log.level === 'security' ? 'bg-red-500/20 text-red-400' :
+                                                            log.level === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                                log.level === 'info' ? 'bg-blue-500/20 text-blue-400' :
+                                                                    'bg-gray-500/20 text-gray-400'
                                                         }`}>
                                                         {log.level}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                     {new Date(log.created_at).toLocaleString()}
                                                 </td>
                                             </tr>
@@ -398,12 +402,12 @@ export default function SecurityManager() {
                     {activeTab === 'events' && (
                         <div>
                             <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-gray-900">Security Events</h3>
+                                <h3 className="text-lg font-semibold text-[var(--text)]">Security Events</h3>
                                 <div className="flex space-x-2">
                                     <select
                                         value={eventFilters.severity}
                                         onChange={(e) => setEventFilters({ ...eventFilters, severity: e.target.value })}
-                                        className="px-3 py-1 border border-gray-300 rounded text-sm"
+                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)]"
                                     >
                                         <option value="">All Severities</option>
                                         <option value="low">Low</option>
@@ -413,7 +417,7 @@ export default function SecurityManager() {
                                     </select>
                                     <button
                                         onClick={fetchSecurityEvents}
-                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 font-medium"
                                     >
                                         Filter
                                     </button>
@@ -421,41 +425,41 @@ export default function SecurityManager() {
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
+                                <table className="min-w-full divide-y divide-[var(--border)]">
+                                    <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Event</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Severity</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Event</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Description</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Severity</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Time</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
+                                    <tbody className="divide-y divide-[var(--border)]">
                                         {securityEvents.map((event) => (
-                                            <tr key={event.id}>
+                                            <tr key={event.id} className="hover:bg-[var(--surface-2)] transition">
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div>
-                                                        <div className="text-sm font-medium text-gray-900">{event.name || 'System'}</div>
-                                                        <div className="text-sm text-gray-500">{event.email || 'N/A'}</div>
+                                                        <div className="text-sm font-medium text-[var(--text)]">{event.name || 'System'}</div>
+                                                        <div className="text-sm text-[var(--muted)]">{event.email || 'N/A'}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                     {event.event_type}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)] max-w-xs truncate">
                                                     {event.description}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${event.severity === 'critical' ? 'bg-red-100 text-red-800' :
-                                                            event.severity === 'high' ? 'bg-orange-100 text-orange-800' :
-                                                                event.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                                                                    'bg-blue-100 text-blue-800'
+                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${event.severity === 'critical' ? 'bg-red-500/20 text-red-400' :
+                                                            event.severity === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                                                                event.severity === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                                    'bg-blue-500/20 text-blue-400'
                                                         }`}>
                                                         {event.severity}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                     {new Date(event.created_at).toLocaleString()}
                                                 </td>
                                             </tr>
@@ -469,23 +473,23 @@ export default function SecurityManager() {
                     {/* Permissions Tab */}
                     {activeTab === 'permissions' && (
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Role-Based Permissions</h3>
+                            <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Role-Based Permissions</h3>
                             <div className="space-y-6">
                                 {Object.entries(permissions).map(([roleName, rolePermissions]) => (
-                                    <div key={roleName} className="border border-gray-200 rounded-lg p-4">
-                                        <h4 className="font-medium text-gray-900 mb-3 capitalize">{roleName} Permissions</h4>
+                                    <div key={roleName} className="border border-[var(--border)] rounded-lg p-4 bg-[var(--surface-2)]">
+                                        <h4 className="font-medium text-[var(--text)] mb-3 capitalize">{roleName} Permissions</h4>
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                             {rolePermissions.map((permission, index) => (
-                                                <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                                <div key={index} className="flex items-center justify-between p-2 bg-[var(--surface)] rounded border border-[var(--border)]">
                                                     <div>
-                                                        <span className="text-sm font-medium text-gray-700">{permission.resource}</span>
-                                                        <span className="text-xs text-gray-500 ml-2">({permission.action})</span>
+                                                        <span className="text-sm font-medium text-[var(--text)]">{permission.resource}</span>
+                                                        <span className="text-xs text-[var(--muted)] ml-2">({permission.action})</span>
                                                     </div>
                                                     <button
                                                         onClick={() => handleUpdatePermission(roleName, permission.resource, permission.action, !permission.granted)}
-                                                        className={`px-2 py-1 text-xs rounded ${permission.granted
-                                                                ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                                                                : 'bg-red-100 text-red-800 hover:bg-red-200'
+                                                        className={`px-2 py-1 text-xs rounded font-medium transition ${permission.granted
+                                                                ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                                                                : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
                                                             }`}
                                                     >
                                                         {permission.granted ? 'Granted' : 'Denied'}
@@ -503,8 +507,29 @@ export default function SecurityManager() {
 
             {/* Pagination */}
             {totalItems > 20 && (
-                <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-700">
+                <div className="flex items-center justify-between bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4">
+                    <div className="text-sm text-[var(--muted)]">
+                        Showing page {currentPage}
+                    </div>
+                    <div className="flex space-x-2">
+                        <button
+                            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] hover:bg-[var(--surface-3)] disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                        >
+                            Previous
+                        </button>
+                        <button
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                            className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] hover:bg-[var(--surface-3)] font-medium"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );        <div className="text-sm text-gray-700">
                         Showing {((currentPage - 1) * 20) + 1} to {Math.min(currentPage * 20, totalItems)} of {totalItems} results
                     </div>
                     <div className="flex space-x-2">

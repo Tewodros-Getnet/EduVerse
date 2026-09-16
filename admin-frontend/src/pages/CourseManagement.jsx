@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Eye, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -123,29 +124,29 @@ export default function CourseManagement() {
             {/* Stats Cards */}
             {stats && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Total Courses</h3>
-                        <p className="text-2xl font-bold text-gray-900">{stats.total_courses}</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Total Courses</h3>
+                        <p className="text-2xl font-bold text-[var(--text)] mt-2">{stats.total_courses}</p>
                     </div>
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Published</h3>
-                        <p className="text-2xl font-bold text-green-600">{stats.published_courses}</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Published</h3>
+                        <p className="text-2xl font-bold text-green-500 mt-2">{stats.published_courses}</p>
                     </div>
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Pending Approval</h3>
-                        <p className="text-2xl font-bold text-yellow-600">{stats.pending_courses}</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Pending Approval</h3>
+                        <p className="text-2xl font-bold text-yellow-500 mt-2">{stats.pending_courses}</p>
                     </div>
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Total Enrollments</h3>
-                        <p className="text-2xl font-bold text-blue-600">{stats.total_enrollments}</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Total Enrollments</h3>
+                        <p className="text-2xl font-bold text-blue-500 mt-2">{stats.total_enrollments}</p>
                     </div>
                 </div>
             )}
 
             {/* Header and Controls */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900">Course Management</h2>
+                    <h2 className="text-xl font-semibold text-[var(--text)]">Course Management</h2>
                 </div>
 
                 {/* Filters */}
@@ -155,12 +156,12 @@ export default function CourseManagement() {
                         placeholder="Search courses..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 min-w-[200px] px-4 py-2 bg-[var(--surface-2)] border border-[var(--border)] rounded-lg text-[var(--text)] placeholder:text-[var(--muted)] focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="px-4 py-2 bg-[var(--surface-2)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                         <option value="">All Status</option>
                         <option value="published">Published</option>
@@ -172,95 +173,99 @@ export default function CourseManagement() {
 
                 {/* Courses Table */}
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-[var(--border)]">
+                        <thead className="bg-[var(--surface-2)]">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Course
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Instructor
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Status
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Enrollments
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Progress
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Created
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="divide-y divide-[var(--border)]">
                             {courses.map((course) => (
-                                <tr key={course.id}>
+                                <tr key={course.id} className="hover:bg-[var(--surface-2)] transition">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <div className="text-sm font-medium text-gray-900">{course.title}</div>
-                                            <div className="text-sm text-gray-500">{course.category}</div>
+                                            <div className="text-sm font-medium text-[var(--text)]">{course.title}</div>
+                                            <div className="text-sm text-[var(--muted)]">{course.category}</div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <div className="text-sm font-medium text-gray-900">{course.instructor_name}</div>
-                                            <div className="text-sm text-gray-500">{course.instructor_email}</div>
+                                            <div className="text-sm font-medium text-[var(--text)]">{course.instructor_name}</div>
+                                            <div className="text-sm text-[var(--muted)]">{course.instructor_email}</div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                            course.status === 'published' ? 'bg-green-100 text-green-800' :
-                                            course.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                            course.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                                            'bg-gray-100 text-gray-800'
+                                            course.status === 'published' ? 'bg-green-500/20 text-green-400' :
+                                            course.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                                            course.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
+                                            'bg-gray-500/20 text-gray-400'
                                         }`}>
                                             {course.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                         {course.enrollment_count || 0}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                         {course.avg_progress ? `${Math.round(course.avg_progress)}%` : 'N/A'}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                         {new Date(course.created_at).toLocaleDateString()}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div className="flex space-x-2">
                                             <button
                                                 onClick={() => openDetailsModal(course)}
-                                                className="text-blue-600 hover:text-blue-900"
+                                                className="p-1.5 text-blue-400 hover:bg-blue-500/20 rounded transition"
+                                                title="View details"
                                             >
-                                                View
+                                                <Eye className="w-4 h-4" />
                                             </button>
                                             {course.status === 'pending' && (
                                                 <>
                                                     <button
                                                         onClick={() => handleApproveCourse(course.id)}
-                                                        className="text-green-600 hover:text-green-900"
+                                                        className="p-1.5 text-green-400 hover:bg-green-500/20 rounded transition"
+                                                        title="Approve"
                                                     >
-                                                        Approve
+                                                        <CheckCircle className="w-4 h-4" />
                                                     </button>
                                                     <button
                                                         onClick={() => openRejectModal(course)}
-                                                        className="text-red-600 hover:text-red-900"
+                                                        className="p-1.5 text-red-400 hover:bg-red-500/20 rounded transition"
+                                                        title="Reject"
                                                     >
-                                                        Reject
+                                                        <XCircle className="w-4 h-4" />
                                                     </button>
                                                 </>
                                             )}
                                             <button
                                                 onClick={() => handleDeleteCourse(course)}
-                                                className="text-red-600 hover:text-red-900"
+                                                className="p-1.5 text-red-400 hover:bg-red-500/20 rounded transition"
+                                                title="Delete"
                                             >
-                                                Delete
+                                                <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>
                                     </td>
@@ -273,21 +278,21 @@ export default function CourseManagement() {
                 {/* Pagination */}
                 {totalCourses > 20 && (
                     <div className="flex items-center justify-between mt-6">
-                        <div className="text-sm text-gray-700">
+                        <div className="text-sm text-[var(--muted)]">
                             Showing {((currentPage - 1) * 20) + 1} to {Math.min(currentPage * 20, totalCourses)} of {totalCourses} results
                         </div>
                         <div className="flex space-x-2">
                             <button
                                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                                 disabled={currentPage === 1}
-                                className="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50"
+                                className="px-3 py-1 border border-[var(--border)] rounded-md text-sm text-[var(--text)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Previous
                             </button>
                             <button
                                 onClick={() => setCurrentPage(Math.min(Math.ceil(totalCourses / 20), currentPage + 1))}
                                 disabled={currentPage >= Math.ceil(totalCourses / 20)}
-                                className="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50"
+                                className="px-3 py-1 border border-[var(--border)] rounded-md text-sm text-[var(--text)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Next
                             </button>
@@ -298,20 +303,20 @@ export default function CourseManagement() {
 
             {/* Reject Modal */}
             {showRejectModal && selectedCourse && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h3 className="text-lg font-semibold mb-4">Reject Course</h3>
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 w-full max-w-md shadow-2xl">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Reject Course</h3>
                         <div className="mb-4">
-                            <p className="text-sm text-gray-600 mb-2">Course: <span className="font-medium">{selectedCourse.title}</span></p>
-                            <p className="text-sm text-gray-600">Instructor: <span className="font-medium">{selectedCourse.instructor_name}</span></p>
+                            <p className="text-sm text-[var(--muted)] mb-2">Course: <span className="font-medium text-[var(--text)]">{selectedCourse.title}</span></p>
+                            <p className="text-sm text-[var(--muted)]">Instructor: <span className="font-medium text-[var(--text)]">{selectedCourse.instructor_name}</span></p>
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Rejection Reason</label>
+                            <label className="block text-sm font-medium text-[var(--muted)] mb-2">Rejection Reason</label>
                             <textarea
                                 value={rejectReason}
                                 onChange={(e) => setRejectReason(e.target.value)}
                                 rows={4}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 bg-[var(--surface-2)] border border-[var(--border)] rounded-lg text-[var(--text)] placeholder:text-[var(--muted)] focus:ring-2 focus:ring-blue-500"
                                 placeholder="Please provide a reason for rejection..."
                                 required
                             />
@@ -319,7 +324,7 @@ export default function CourseManagement() {
                         <div className="flex space-x-3">
                             <button
                                 onClick={handleRejectCourse}
-                                className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+                                className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition font-medium"
                             >
                                 Reject Course
                             </button>
@@ -329,7 +334,7 @@ export default function CourseManagement() {
                                     setSelectedCourse(null);
                                     setRejectReason('');
                                 }}
-                                className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition"
+                                className="flex-1 bg-[var(--surface-2)] text-[var(--text)] py-2 rounded-lg hover:bg-[var(--surface-3)] border border-[var(--border)] transition font-medium"
                             >
                                 Cancel
                             </button>
@@ -340,13 +345,13 @@ export default function CourseManagement() {
 
             {/* Course Details Modal */}
             {showDetailsModal && courseDetails && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">Course Details</h3>
+                            <h3 className="text-lg font-semibold text-[var(--text)]">Course Details</h3>
                             <button
                                 onClick={() => setShowDetailsModal(false)}
-                                className="text-gray-400 hover:text-gray-600"
+                                className="text-[var(--muted)] hover:text-[var(--text)]"
                             >
                                 ✕
                             </button>
@@ -355,44 +360,44 @@ export default function CourseManagement() {
                         <div className="space-y-6">
                             {/* Course Info */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Course Information</h4>
+                                <h4 className="font-medium text-[var(--text)] mb-2">Course Information</h4>
                                 <div className="grid grid-cols-2 gap-4 text-sm">
                                     <div>
-                                        <span className="text-gray-500">Title:</span>
-                                        <span className="ml-2 font-medium">{courseDetails.course.title}</span>
+                                        <span className="text-[var(--muted)]">Title:</span>
+                                        <span className="ml-2 font-medium text-[var(--text)]">{courseDetails.course.title}</span>
                                     </div>
                                     <div>
-                                        <span className="text-gray-500">Status:</span>
-                                        <span className="ml-2 font-medium">{courseDetails.course.status}</span>
+                                        <span className="text-[var(--muted)]">Status:</span>
+                                        <span className="ml-2 font-medium text-[var(--text)]">{courseDetails.course.status}</span>
                                     </div>
                                     <div>
-                                        <span className="text-gray-500">Category:</span>
-                                        <span className="ml-2 font-medium">{courseDetails.course.category}</span>
+                                        <span className="text-[var(--muted)]">Category:</span>
+                                        <span className="ml-2 font-medium text-[var(--text)]">{courseDetails.course.category}</span>
                                     </div>
                                     <div>
-                                        <span className="text-gray-500">Difficulty:</span>
-                                        <span className="ml-2 font-medium">{courseDetails.course.difficulty_level}</span>
+                                        <span className="text-[var(--muted)]">Difficulty:</span>
+                                        <span className="ml-2 font-medium text-[var(--text)]">{courseDetails.course.difficulty_level}</span>
                                     </div>
                                 </div>
                                 <div className="mt-2">
-                                    <span className="text-gray-500">Description:</span>
-                                    <p className="mt-1 text-sm">{courseDetails.course.description}</p>
+                                    <span className="text-[var(--muted)]">Description:</span>
+                                    <p className="mt-1 text-sm text-[var(--text)]">{courseDetails.course.description}</p>
                                 </div>
                             </div>
 
                             {/* Enrollments */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Enrollments ({courseDetails.enrollments.length})</h4>
-                                <div className="max-h-40 overflow-y-auto">
+                                <h4 className="font-medium text-[var(--text)] mb-2">Enrollments ({courseDetails.enrollments.length})</h4>
+                                <div className="max-h-40 overflow-y-auto bg-[var(--surface-2)] rounded-lg p-2">
                                     {courseDetails.enrollments.map((enrollment) => (
-                                        <div key={enrollment.id} className="flex justify-between items-center py-2 border-b">
+                                        <div key={enrollment.id} className="flex justify-between items-center py-2 px-2 border-b border-[var(--border)]">
                                             <div>
-                                                <span className="text-sm font-medium">{enrollment.student_name}</span>
-                                                <span className="text-xs text-gray-500 ml-2">{enrollment.student_email}</span>
+                                                <span className="text-sm font-medium text-[var(--text)]">{enrollment.student_name}</span>
+                                                <span className="text-xs text-[var(--muted)] ml-2">{enrollment.student_email}</span>
                                             </div>
                                             <div className="text-sm">
-                                                <span className="text-gray-500">Progress:</span>
-                                                <span className="ml-1 font-medium">{enrollment.progress_percent || 0}%</span>
+                                                <span className="text-[var(--muted)]">Progress:</span>
+                                                <span className="ml-1 font-medium text-[var(--text)]">{enrollment.progress_percent || 0}%</span>
                                             </div>
                                         </div>
                                     ))}
@@ -401,12 +406,12 @@ export default function CourseManagement() {
 
                             {/* Lessons */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Lessons ({courseDetails.lessons.length})</h4>
-                                <div className="grid grid-cols-1 gap-2">
+                                <h4 className="font-medium text-[var(--text)] mb-2">Lessons ({courseDetails.lessons.length})</h4>
+                                <div className="grid grid-cols-1 gap-2 bg-[var(--surface-2)] rounded-lg p-2">
                                     {courseDetails.lessons.map((lesson) => (
-                                        <div key={lesson.id} className="flex justify-between items-center py-2 border-b text-sm">
-                                            <span>{lesson.title}</span>
-                                            <span className="text-gray-500">{lesson.quiz_count} quizzes</span>
+                                        <div key={lesson.id} className="flex justify-between items-center py-2 px-2 border-b border-[var(--border)] text-sm">
+                                            <span className="text-[var(--text)]">{lesson.title}</span>
+                                            <span className="text-[var(--muted)]">{lesson.quiz_count} quizzes</span>
                                         </div>
                                     ))}
                                 </div>
@@ -414,12 +419,12 @@ export default function CourseManagement() {
 
                             {/* Assignments */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Assignments ({courseDetails.assignments.length})</h4>
-                                <div className="grid grid-cols-1 gap-2">
+                                <h4 className="font-medium text-[var(--text)] mb-2">Assignments ({courseDetails.assignments.length})</h4>
+                                <div className="grid grid-cols-1 gap-2 bg-[var(--surface-2)] rounded-lg p-2">
                                     {courseDetails.assignments.map((assignment) => (
-                                        <div key={assignment.id} className="flex justify-between items-center py-2 border-b text-sm">
-                                            <span>{assignment.title}</span>
-                                            <span className="text-gray-500">{assignment.submission_count} submissions</span>
+                                        <div key={assignment.id} className="flex justify-between items-center py-2 px-2 border-b border-[var(--border)] text-sm">
+                                            <span className="text-[var(--text)]">{assignment.title}</span>
+                                            <span className="text-[var(--muted)]">{assignment.submission_count} submissions</span>
                                         </div>
                                     ))}
                                 </div>
@@ -427,12 +432,12 @@ export default function CourseManagement() {
 
                             {/* Assessments */}
                             <div>
-                                <h4 className="font-medium text-gray-900 mb-2">Assessments ({courseDetails.assessments.length})</h4>
-                                <div className="grid grid-cols-1 gap-2">
+                                <h4 className="font-medium text-[var(--text)] mb-2">Assessments ({courseDetails.assessments.length})</h4>
+                                <div className="grid grid-cols-1 gap-2 bg-[var(--surface-2)] rounded-lg p-2">
                                     {courseDetails.assessments.map((assessment) => (
-                                        <div key={assessment.id} className="flex justify-between items-center py-2 border-b text-sm">
-                                            <span>{assessment.title}</span>
-                                            <span className="text-gray-500">{assessment.result_count} results</span>
+                                        <div key={assessment.id} className="flex justify-between items-center py-2 px-2 border-b border-[var(--border)] text-sm">
+                                            <span className="text-[var(--text)]">{assessment.title}</span>
+                                            <span className="text-[var(--muted)]">{assessment.result_count} results</span>
                                         </div>
                                     ))}
                                 </div>
