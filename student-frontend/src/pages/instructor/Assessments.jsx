@@ -15,10 +15,10 @@ const TYPE_LABELS = {
 };
 
 const TYPE_COLORS = {
-    exam:    'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80 border-[var(--accent-primary)]/30',
-    midterm: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-    final:   'bg-red-500/20    text-red-300    border-red-500/30',
-    project: 'bg-green-500/20  text-green-300  border-green-500/30',
+    exam:    'bg-[var(--status-info)]/20 text-[var(--status-info)] border-[var(--status-info)]/30',
+    midterm: 'bg-[var(--status-warning)]/20 text-[var(--status-warning)] border-[var(--status-warning)]/30',
+    final:   'bg-[var(--status-error)]/20    text-[var(--status-error)]    border-[var(--status-error)]/30',
+    project: 'bg-[var(--status-success)]/20  text-[var(--status-success)]  border-[var(--status-success)]/30',
 };
 
 const emptyQuestion = () => ({

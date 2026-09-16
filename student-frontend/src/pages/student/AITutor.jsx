@@ -166,7 +166,7 @@ export default function AITutor() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-4 py-6">
+        <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[var(--surface)] to-[var(--bg)] px-4 py-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -190,7 +190,7 @@ export default function AITutor() {
                             </select>
                             <button
                                 onClick={clearChat}
-                                className="px-4 py-2.5 bg-red-600/20 border border-red-500/30 rounded-xl text-red-300 text-sm hover:bg-red-600/30 transition"
+                                className="px-4 py-2.5 bg-[var(--status-error)]/20 border border-[var(--status-error)]/30 rounded-xl text-[var(--status-error)] text-sm hover:bg-[var(--status-error)]/30 transition"
                             >
                                 Clear Chat
                             </button>
@@ -220,7 +220,7 @@ export default function AITutor() {
                                             )}
                                             {msg.isQuiz && (
                                                 <div className="flex items-center gap-2 mb-2 text-xs">
-                                                    <span className="bg-green-600/30 px-2 py-1 rounded-full text-green-300">
+                                                    <span className="bg-[var(--status-success)]/30 px-2 py-1 rounded-full text-[var(--status-success)]">
                                                         Quiz: {msg.topic}
                                                     </span>
                                                 </div>
@@ -231,7 +231,7 @@ export default function AITutor() {
                                                         {msg.isError ? '⚠️ Error' : 'AI Tutor'}
                                                     </span>
                                                     {msg.ai_source && !msg.isError && (
-                                                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${msg.ai_source === 'groq' ? 'bg-blue-500/20 text-blue-300' : 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80'}`}>
+                                                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${msg.ai_source === 'groq' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' : 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]'}`}>
                                                             {msg.ai_source}
                                                         </span>
                                                     )}

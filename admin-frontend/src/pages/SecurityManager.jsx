@@ -379,10 +379,10 @@ export default function SecurityManager() {
                                                     {log.details}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${log.level === 'security' ? 'bg-red-500/20 text-red-400' :
-                                                            log.level === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                                log.level === 'info' ? 'bg-blue-500/20 text-blue-400' :
-                                                                    'bg-gray-500/20 text-[var(--muted)]'
+                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${log.level === 'security' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
+                                                            log.level === 'warning' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
+                                                                log.level === 'info' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
+                                                                    'bg-[var(--muted)]/20 text-[var(--muted)]'
                                                         }`}>
                                                         {log.level}
                                                     </span>
@@ -451,10 +451,10 @@ export default function SecurityManager() {
                                                     {event.description}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${event.severity === 'critical' ? 'bg-red-500/20 text-red-400' :
-                                                            event.severity === 'high' ? 'bg-orange-500/20 text-orange-400' :
-                                                                event.severity === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                                    'bg-blue-500/20 text-blue-400'
+                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${event.severity === 'critical' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
+                                                            event.severity === 'high' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
+                                                                event.severity === 'medium' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
+                                                                    'bg-[var(--status-success)]/20 text-[var(--status-success)]'
                                                         }`}>
                                                         {event.severity}
                                                     </span>

@@ -128,11 +128,11 @@ export default function Quiz() {
     };
 
     const calculateGrade = (score) => {
-        if (score >= 90) return { grade: 'A', color: 'text-green-400' };
-        if (score >= 80) return { grade: 'B', color: 'text-blue-400' };
-        if (score >= 70) return { grade: 'C', color: 'text-yellow-400' };
-        if (score >= 60) return { grade: 'D', color: 'text-orange-400' };
-        return { grade: 'F', color: 'text-red-400' };
+        if (score >= 90) return { grade: 'A', color: 'text-[var(--status-success)]' };
+        if (score >= 80) return { grade: 'B', color: 'text-[var(--status-info)]' };
+        if (score >= 70) return { grade: 'C', color: 'text-[var(--status-warning)]' };
+        if (score >= 60) return { grade: 'D', color: 'text-[var(--status-warning)]' };
+        return { grade: 'F', color: 'text-[var(--status-error)]' };
     };
 
     const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -167,7 +167,7 @@ export default function Quiz() {
                     </div>
 
                     <div className="bg-[var(--surface-2)] rounded-xl p-4 mb-6">
-                        <div className="text-lg font-bold text-yellow-400">{quiz.passing_score}%</div>
+                        <div className="text-lg font-bold text-[var(--status-warning)]">{quiz.passing_score}%</div>
                         <div className="text-sm text-[var(--muted)]">Passing Score</div>
                     </div>
 

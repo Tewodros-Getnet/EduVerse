@@ -115,7 +115,7 @@ export default function InstructorAITools() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-4 py-8">
+        <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[var(--surface)] to-[var(--bg)] px-4 py-8">
             <div className="max-w-7xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">

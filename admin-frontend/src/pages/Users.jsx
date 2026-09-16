@@ -3,9 +3,9 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 
 const ROLE_COLORS = {
-    student: 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80',
-    instructor: 'bg-blue-500/20 text-blue-300',
-    admin: 'bg-green-500/20 text-green-300',
+    student: 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]',
+    instructor: 'bg-[var(--status-info)]/20 text-[var(--status-info)]',
+    admin: 'bg-[var(--status-success)]/20 text-[var(--status-success)]',
 };
 
 export default function Users() {
@@ -122,7 +122,7 @@ export default function Users() {
                                     </span>
                                 </td>
                                 <td className="px-5 py-3">
-                                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${user.is_active ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`}>
+                                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${user.is_active ? 'bg-[var(--status-success)]/20 text-[var(--status-success)]' : 'bg-[var(--status-error)]/20 text-[var(--status-error)]'}`}>
                                         {user.is_active ? 'Active' : 'Inactive'}
                                     </span>
                                 </td>
@@ -133,13 +133,13 @@ export default function Users() {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => toggleStatus(user.id, user.is_active)}
-                                            className={`text-xs px-3 py-1 rounded-lg transition ${user.is_active ? 'bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30' : 'bg-green-500/20 text-green-300 hover:bg-green-500/30'}`}
+                                            className={`text-xs px-3 py-1 rounded-lg transition ${user.is_active ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)] hover:bg-[var(--status-warning)]/30' : 'bg-[var(--status-success)]/20 text-[var(--status-success)] hover:bg-[var(--status-success)]/30'}`}
                                         >
                                             {user.is_active ? 'Deactivate' : 'Activate'}
                                         </button>
                                         <button
                                             onClick={() => deleteUser(user.id)}
-                                            className="text-xs px-3 py-1 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 transition"
+                                            className="text-xs px-3 py-1 rounded-lg bg-[var(--status-error)]/20 text-[var(--status-error)] hover:bg-[var(--status-error)]/30 transition"
                                         >
                                             Delete
                                         </button>

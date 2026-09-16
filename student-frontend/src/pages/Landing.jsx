@@ -51,7 +51,7 @@ export default function Landing() {
     };
 
     return (
-        <div className={`min-h-screen bg-gradient-to-br from-[var(--bg)] via-[#1a0533] to-[var(--bg)] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`min-h-screen bg-gradient-to-br from-[var(--bg)] via-[var(--surface)] to-[var(--bg)] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             {/* Navbar */}
             <nav className="flex items-center justify-between px-8 py-4 animate-fade-in-down">
                 <div className="flex items-center gap-2 group cursor-pointer">

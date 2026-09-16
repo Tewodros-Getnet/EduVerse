@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
-const STATUS_COLORS = { published: 'bg-green-500/20 text-green-300', draft: 'bg-yellow-500/20 text-yellow-300', archived: 'bg-gray-500/20 text-[var(--muted)]' };
-const DIFF_COLORS = { beginner: 'bg-blue-500/20 text-blue-300', intermediate: 'bg-orange-500/20 text-orange-300', advanced: 'bg-red-500/20 text-red-300' };
+const STATUS_COLORS = { published: 'bg-[var(--status-success)]/20 text-[var(--status-success)]', draft: 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]', archived: 'bg-[var(--muted)]/20 text-[var(--muted)]' };
+const DIFF_COLORS = { beginner: 'bg-[var(--status-info)]/20 text-[var(--status-info)]', intermediate: 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]', advanced: 'bg-[var(--status-error)]/20 text-[var(--status-error)]' };
 
 export default function Courses() {
     const [courses, setCourses] = useState([]);

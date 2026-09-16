@@ -7,10 +7,10 @@ import api from '../../api/axios';
 const EXAM_TYPES = ['exam', 'midterm', 'final'];
 
 const TYPE_COLORS = {
-    exam:    'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80 border-[var(--accent-primary)]/30',
-    midterm: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-    final:   'bg-red-500/20    text-red-300    border-red-500/30',
-    project: 'bg-green-500/20  text-green-300  border-green-500/30',
+    exam:    'bg-[var(--status-info)]/20 text-[var(--status-info)] border-[var(--status-info)]/30',
+    midterm: 'bg-[var(--status-warning)]/20 text-[var(--status-warning)] border-[var(--status-warning)]/30',
+    final:   'bg-[var(--status-error)]/20    text-[var(--status-error)]    border-[var(--status-error)]/30',
+    project: 'bg-[var(--status-success)]/20  text-[var(--status-success)]  border-[var(--status-success)]/30',
 };
 
 const Assessments = () => {
@@ -38,10 +38,10 @@ const Assessments = () => {
 
     const getStatusBadge = (status) => {
         const map = {
-            completed: { bg: 'bg-green-500/20',  text: 'text-green-400',  label: 'Completed' },
-            upcoming:  { bg: 'bg-blue-500/20',   text: 'text-blue-400',   label: 'Upcoming'  },
+            completed: { bg: 'bg-[var(--status-success)]/20',  text: 'text-[var(--status-success)]',  label: 'Completed' },
+            upcoming:  { bg: 'bg-[var(--status-info)]/20',   text: 'text-[var(--status-info)]',   label: 'Upcoming'  },
             available: { bg: 'bg-[var(--accent-primary)]/20', text: 'text-[var(--accent-primary)]', label: 'Available' },
-            closed:    { bg: 'bg-gray-500/20',   text: 'text-[var(--muted)]',   label: 'Closed'    },
+            closed:    { bg: 'bg-[var(--muted)]/20',   text: 'text-[var(--muted)]',   label: 'Closed'    },
         };
         const { bg, text, label } = map[status] || map.upcoming;
         return <span className={`px-2 py-1 ${bg} ${text} rounded-full text-xs font-medium`}>{label}</span>;

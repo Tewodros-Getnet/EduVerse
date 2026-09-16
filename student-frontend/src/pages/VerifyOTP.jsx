@@ -111,7 +111,7 @@ export default function VerifyOTP() {
     };
 
     return (
-        <div className={`min-h-screen bg-gradient-to-br from-[var(--bg)] via-[#1a0533] to-[var(--bg)] flex items-center justify-center p-4 transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`min-h-screen bg-gradient-to-br from-[var(--bg)] via-[var(--surface)] to-[var(--bg)] flex items-center justify-center p-4 transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             <div className="w-full max-w-md">
                 {/* Logo */}
                 <div className="text-center mb-8">

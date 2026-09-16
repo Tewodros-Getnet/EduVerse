@@ -150,7 +150,7 @@ export default function InstructorCourses() {
     const filteredCourses = filter === 'all' ? courses : courses.filter(c => c.status === filter);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] px-4 py-8">
+        <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[var(--surface)] to-[var(--bg)] px-4 py-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
@@ -382,7 +382,7 @@ export default function InstructorCourses() {
                 {/* Analytics Modal */}
                 {showAnalytics && (
                     <div className="fixed inset-0 bg-black/60 backdrop-blur flex items-center justify-center z-50 p-4">
-                        <div className="bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] border border-[var(--accent-primary)]/30 rounded-2xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                        <div className="bg-gradient-to-br from-[var(--surface)] to-[var(--surface-2)] border border-[var(--accent-primary)]/30 rounded-2xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-2xl font-bold text-[var(--text)]">ðŸ“Š Course Analytics</h3>
                                 <button

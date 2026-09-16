@@ -121,7 +121,7 @@ export default function TakeExam() {
 
     const answeredCount = questions.filter(q => answers[q.id] !== undefined && answers[q.id] !== '').length;
     const progress      = questions.length > 0 ? Math.round((answeredCount / questions.length) * 100) : 0;
-    const timerColor    = timeLeft !== null && timeLeft < 120 ? 'text-red-400' : timeLeft < 300 ? 'text-yellow-400' : 'text-green-400';
+    const timerColor    = timeLeft !== null && timeLeft < 120 ? 'text-[var(--status-error)]' : timeLeft < 300 ? 'text-[var(--status-warning)]' : 'text-[var(--status-success)]';
 
     // ── Loading ────────────────────────────────────────────────────────────
     if (loading) return (
@@ -151,7 +151,7 @@ export default function TakeExam() {
 
                     {autoGraded && score !== null ? (
                         <>
-                            <div className={`text-5xl font-bold mb-2 ${score >= 80 ? 'text-green-400' : score >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
+                            <div className={`text-5xl font-bold mb-2 ${score >= 80 ? 'text-[var(--status-success)]' : score >= 60 ? 'text-[var(--status-warning)]' : 'text-[var(--status-error)]'}`}>
                                 {score}%
                             </div>
                             <p className={`text-lg font-semibold mb-6 ${passed ? 'text-green-400' : 'text-red-400'}`}>
@@ -173,8 +173,8 @@ export default function TakeExam() {
                             </div>
                         </>
                     ) : (
-                        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6 text-left">
-                            <p className="text-yellow-300 text-sm font-medium mb-1">📝 Short Answer Pending</p>
+                        <div className="bg-[var(--status-warning)]/10 border border-[var(--status-warning)]/30 rounded-xl p-4 mb-6 text-left">
+                            <p className="text-[var(--status-warning)] text-sm font-medium mb-1">📝 Short Answer Pending</p>
                             <p className="text-[var(--muted)] text-sm">
                                 Your answers have been recorded. Your instructor will review the short answer
                                 questions and update your grade. Check back on the Assessments page.
@@ -234,7 +234,7 @@ export default function TakeExam() {
                                         i === current
                                             ? 'bg-[var(--accent-primary)] text-[var(--text)]'
                                             : answered
-                                            ? 'bg-green-600/30 text-green-300 border border-green-600/40'
+                                            ? 'bg-[var(--status-success)]/30 text-[var(--status-success)] border border-[var(--status-success)]/40'
                                             : 'bg-[var(--surface-2)] text-[var(--muted)] hover:text-[var(--text)] border border-purple-900/30'
                                     }`}
                                 >
@@ -326,8 +326,8 @@ export default function TakeExam() {
                                                     className={`flex-1 py-5 rounded-xl text-lg font-semibold border transition-all ${
                                                         selected
                                                             ? val === 'True'
-                                                                ? 'bg-green-600/30 border-green-500 text-green-300'
-                                                                : 'bg-red-600/30 border-red-500 text-red-300'
+                                                                ? 'bg-[var(--status-success)]/30 border-[var(--status-success)] text-[var(--status-success)]'
+                                                                : 'bg-[var(--status-error)]/30 border-[var(--status-error)] text-[var(--status-error)]'
                                                             : 'bg-[var(--surface-2)] border-purple-900/30 text-[var(--muted)] hover:border-purple-500/50 hover:text-[var(--text)]'
                                                     }`}
                                                 >
@@ -348,7 +348,7 @@ export default function TakeExam() {
                                             rows={6}
                                             className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-purple-500/20 resize-none transition"
                                         />
-                                        <p className="text-xs text-yellow-400 mt-2">
+                                        <p className="text-xs text-[var(--status-warning)] mt-2">
                                             📝 This answer will be reviewed by your instructor.
                                         </p>
                                     </div>

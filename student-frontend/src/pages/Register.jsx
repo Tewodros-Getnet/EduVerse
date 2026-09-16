@@ -35,7 +35,7 @@ export default function Register() {
     };
 
     return (
-        <div className={`min-h-screen bg-gradient-to-br from-[var(--bg)] via-[#1a0533] to-[var(--bg)] flex items-center justify-center p-4 transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`min-h-screen bg-gradient-to-br from-[var(--bg)] via-[var(--surface)] to-[var(--bg)] flex items-center justify-center p-4 transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             <div className="w-full max-w-md animate-fade-in-up">
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center gap-2 mb-4 group cursor-pointer">

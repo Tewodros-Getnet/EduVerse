@@ -88,9 +88,9 @@ export default function Grades() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                     { label: 'Avg Score', value: `${grades.overallGPA}%`, Icon: BarChart2, color: 'from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80' },
-                    { label: 'Quizzes', value: grades.quizzes.length, Icon: Target, color: 'from-blue-600 to-cyan-500' },
-                    { label: 'Assignments', value: grades.assignments.length, Icon: ClipboardList, color: 'from-green-600 to-emerald-500' },
-                    { label: 'Assessments', value: grades.assessments.length, Icon: FileCheck, color: 'from-yellow-600 to-orange-500' },
+                    { label: 'Quizzes', value: grades.quizzes.length, Icon: Target, color: 'from-[var(--status-info)]/80 to-[var(--status-info)]/60' },
+                    { label: 'Assignments', value: grades.assignments.length, Icon: ClipboardList, color: 'from-[var(--status-success)]/80 to-[var(--status-success)]/60' },
+                    { label: 'Assessments', value: grades.assessments.length, Icon: FileCheck, color: 'from-[var(--status-warning)]/80 to-[var(--status-warning)]/60' },
                 ].map(s => (
                     <div key={s.label} className={`bg-gradient-to-br ${s.color} rounded-2xl p-5 text-[var(--text)] shadow-lg shadow-purple-500/25 hover:shadow-xl transition-all duration-300`}>
                         <div className="mb-2">
