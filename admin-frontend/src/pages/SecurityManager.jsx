@@ -257,7 +257,7 @@ export default function SecurityManager() {
                                     </select>
                                     <button
                                         onClick={fetchSessions}
-                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 font-medium"
+                                        className="px-3 py-1 bg-blue-600 text-[var(--text)] rounded text-sm hover:bg-blue-700 font-medium"
                                     >
                                         Filter
                                     </button>
@@ -345,7 +345,7 @@ export default function SecurityManager() {
                                     />
                                     <button
                                         onClick={fetchActivityLogs}
-                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 font-medium"
+                                        className="px-3 py-1 bg-blue-600 text-[var(--text)] rounded text-sm hover:bg-blue-700 font-medium"
                                     >
                                         Filter
                                     </button>
@@ -382,7 +382,7 @@ export default function SecurityManager() {
                                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${log.level === 'security' ? 'bg-red-500/20 text-red-400' :
                                                             log.level === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
                                                                 log.level === 'info' ? 'bg-blue-500/20 text-blue-400' :
-                                                                    'bg-gray-500/20 text-gray-400'
+                                                                    'bg-gray-500/20 text-[var(--muted)]'
                                                         }`}>
                                                         {log.level}
                                                     </span>
@@ -417,7 +417,7 @@ export default function SecurityManager() {
                                     </select>
                                     <button
                                         onClick={fetchSecurityEvents}
-                                        className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 font-medium"
+                                        className="px-3 py-1 bg-blue-600 text-[var(--text)] rounded text-sm hover:bg-blue-700 font-medium"
                                     >
                                         Filter
                                     </button>
@@ -553,3 +553,5 @@ export default function SecurityManager() {
         </div>
     );
 }
+
+

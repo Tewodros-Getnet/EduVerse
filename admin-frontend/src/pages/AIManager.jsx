@@ -92,17 +92,17 @@ export default function AIManager() {
         if (!text) return '';
         return text.split('\n').map((line, index) => {
             if (line.startsWith('# ')) {
-                return <h2 key={index} className="text-xl font-bold text-gray-900 mt-4 mb-2">{line.substring(2)}</h2>;
+                return <h2 key={index} className="text-xl font-bold text-[var(--text)] mt-4 mb-2">{line.substring(2)}</h2>;
             } else if (line.startsWith('## ')) {
-                return <h3 key={index} className="text-lg font-semibold text-gray-900 mt-3 mb-2">{line.substring(3)}</h3>;
+                return <h3 key={index} className="text-lg font-semibold text-[var(--text)] mt-3 mb-2">{line.substring(3)}</h3>;
             } else if (line.startsWith('### ')) {
-                return <h4 key={index} className="text-md font-medium text-gray-900 mt-2 mb-1">{line.substring(4)}</h4>;
+                return <h4 key={index} className="text-md font-medium text-[var(--text)] mt-2 mb-1">{line.substring(4)}</h4>;
             } else if (line.startsWith('- ')) {
                 return <li key={index} className="ml-4 text-gray-700">• {line.substring(2)}</li>;
             } else if (line.startsWith('1. ')) {
                 return <li key={index} className="ml-4 list-decimal text-gray-700">{line.substring(3)}</li>;
             } else if (line.startsWith('**') && line.endsWith('**')) {
-                return <p key={index} className="font-semibold text-gray-900">{line.substring(2, line.length - 2)}</p>;
+                return <p key={index} className="font-semibold text-[var(--text)]">{line.substring(2, line.length - 2)}</p>;
             } else if (line.trim() === '') {
                 return <br key={index} />;
             } else {
@@ -115,7 +115,7 @@ export default function AIManager() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">AI Analytics & Insights</h1>
+                <h1 className="text-2xl font-bold text-[var(--text)]">AI Analytics & Insights</h1>
                 <p className="text-gray-600 text-sm mt-1">Leverage AI for platform analytics and user insights</p>
             </div>
 
@@ -130,7 +130,7 @@ export default function AIManager() {
                                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                                     activeTab === tab
                                         ? 'border-blue-500 text-blue-600'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                        : 'border-transparent text-[var(--muted)] hover:text-gray-700 hover:border-gray-300'
                                 }`}
                             >
                                 {tab === 'stats-summary' ? 'Statistics Summary' :
@@ -146,7 +146,7 @@ export default function AIManager() {
                     {activeTab === 'stats-summary' && (
                         <div>
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Generate AI-Powered Statistics Summary</h3>
+                                <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Generate AI-Powered Statistics Summary</h3>
                                 <form onSubmit={handleGenerateStatsSummary} className="flex gap-4 items-end">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Time Period</label>
@@ -164,7 +164,7 @@ export default function AIManager() {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                                        className="px-4 py-2 bg-blue-600 text-[var(--text)] rounded-lg hover:bg-blue-700 disabled:opacity-50"
                                     >
                                         {loading ? 'Generating...' : 'Generate Summary'}
                                     </button>
@@ -174,35 +174,35 @@ export default function AIManager() {
                             {statsSummary && (
                                 <div className="space-y-6">
                                     <div className="bg-gray-50 rounded-lg p-4">
-                                        <h4 className="font-medium text-gray-900 mb-2">Raw Statistics Data</h4>
+                                        <h4 className="font-medium text-[var(--text)] mb-2">Raw Statistics Data</h4>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                             <div>
-                                                <span className="text-gray-500">Total Users:</span>
+                                                <span className="text-[var(--muted)]">Total Users:</span>
                                                 <span className="ml-2 font-medium">{statsSummary.stats_data.users.total_users}</span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-500">Active Users:</span>
+                                                <span className="text-[var(--muted)]">Active Users:</span>
                                                 <span className="ml-2 font-medium">{statsSummary.stats_data.users.active_users}</span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-500">Total Courses:</span>
+                                                <span className="text-[var(--muted)]">Total Courses:</span>
                                                 <span className="ml-2 font-medium">{statsSummary.stats_data.courses.total_courses}</span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-500">Total Enrollments:</span>
+                                                <span className="text-[var(--muted)]">Total Enrollments:</span>
                                                 <span className="ml-2 font-medium">{statsSummary.stats_data.enrollments.total_enrollments}</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="bg-white border border-gray-200 rounded-lg p-6">
-                                        <h4 className="font-medium text-gray-900 mb-4">AI-Generated Insights</h4>
+                                        <h4 className="font-medium text-[var(--text)] mb-4">AI-Generated Insights</h4>
                                         <div className="prose max-w-none">
                                             {formatMarkdown(statsSummary.summary)}
                                         </div>
                                     </div>
 
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-xs text-[var(--muted)]">
                                         Generated at: {new Date(statsSummary.generated_at).toLocaleString()}
                                     </div>
                                 </div>
@@ -214,7 +214,7 @@ export default function AIManager() {
                     {activeTab === 'inactive-users' && (
                         <div>
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Detect Inactive Users</h3>
+                                <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Detect Inactive Users</h3>
                                 <form onSubmit={handleUpdateInactiveThreshold} className="flex gap-4 items-end">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Inactive Threshold (days)</label>
@@ -230,7 +230,7 @@ export default function AIManager() {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                                        className="px-4 py-2 bg-blue-600 text-[var(--text)] rounded-lg hover:bg-blue-700 disabled:opacity-50"
                                     >
                                         {loading ? 'Analyzing...' : 'Analyze Users'}
                                     </button>
@@ -239,11 +239,11 @@ export default function AIManager() {
 
                             {userInsights && (
                                 <div className="mb-6 bg-blue-50 rounded-lg p-4">
-                                    <h4 className="font-medium text-gray-900 mb-2">AI Insights</h4>
+                                    <h4 className="font-medium text-[var(--text)] mb-2">AI Insights</h4>
                                     <p className="text-gray-700 mb-3">{userInsights.summary}</p>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <h5 className="font-medium text-gray-900 mb-2">Role Distribution</h5>
+                                            <h5 className="font-medium text-[var(--text)] mb-2">Role Distribution</h5>
                                             {Object.entries(userInsights.role_distribution).map(([role, count]) => (
                                                 <div key={role} className="flex justify-between text-sm">
                                                     <span className="capitalize">{role}:</span>
@@ -252,7 +252,7 @@ export default function AIManager() {
                                             ))}
                                         </div>
                                         <div>
-                                            <h5 className="font-medium text-gray-900 mb-2">Average Metrics</h5>
+                                            <h5 className="font-medium text-[var(--text)] mb-2">Average Metrics</h5>
                                             <div className="text-sm space-y-1">
                                                 <div className="flex justify-between">
                                                     <span>Courses Enrolled:</span>
@@ -266,7 +266,7 @@ export default function AIManager() {
                                         </div>
                                     </div>
                                     <div className="mt-4">
-                                        <h5 className="font-medium text-gray-900 mb-2">Recommendations</h5>
+                                        <h5 className="font-medium text-[var(--text)] mb-2">Recommendations</h5>
                                         <ul className="text-sm text-gray-700 space-y-1">
                                             {userInsights.recommendations.map((rec, index) => (
                                                 <li key={index}>• {rec}</li>
@@ -281,12 +281,12 @@ export default function AIManager() {
                                     <table className="min-w-full divide-y divide-gray-200">
                                         <thead className="bg-gray-50">
                                             <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Courses</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Progress</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Activities</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Last Login</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Role</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Courses</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Progress</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Activities</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Last Login</th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
@@ -294,8 +294,8 @@ export default function AIManager() {
                                                 <tr key={user.id}>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div>
-                                                            <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                                                            <div className="text-sm text-gray-500">{user.email}</div>
+                                                            <div className="text-sm font-medium text-[var(--text)]">{user.name}</div>
+                                                            <div className="text-sm text-[var(--muted)]">{user.email}</div>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
@@ -306,16 +306,16 @@ export default function AIManager() {
                                                             {user.role}
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                         {user.course_count || 0}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                         {Math.round(user.avg_progress || 0)}%
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                         {(user.lesson_activities || 0) + (user.quiz_attempts || 0) + (user.assignment_submissions || 0)}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                                         {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString() : 'Never'}
                                                     </td>
                                                 </tr>
@@ -331,7 +331,7 @@ export default function AIManager() {
                     {activeTab === 'engagement-prediction' && (
                         <div>
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Predict User Engagement</h3>
+                                <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Predict User Engagement</h3>
                                 <form onSubmit={handleGenerateEngagementPrediction} className="flex gap-4 items-end flex-wrap">
                                     <div className="flex-1 min-w-[200px] relative">
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Search User</label>
@@ -360,7 +360,7 @@ export default function AIManager() {
                                                         className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm"
                                                     >
                                                         <span className="font-medium">{u.name}</span>
-                                                        <span className="text-gray-500 ml-2">{u.email}</span>
+                                                        <span className="text-[var(--muted)] ml-2">{u.email}</span>
                                                         <span className={`ml-2 text-xs px-1.5 py-0.5 rounded-full ${u.role === 'instructor' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
                                                             {u.role}
                                                         </span>
@@ -387,7 +387,7 @@ export default function AIManager() {
                                     <button
                                         type="submit"
                                         disabled={loading || !predictionForm.user_id}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                                        className="px-4 py-2 bg-blue-600 text-[var(--text)] rounded-lg hover:bg-blue-700 disabled:opacity-50"
                                     >
                                         {loading ? 'Predicting...' : 'Generate Prediction'}
                                     </button>
@@ -397,35 +397,35 @@ export default function AIManager() {
                             {engagementPrediction && (
                                 <div className="space-y-6">
                                     <div className="bg-gray-50 rounded-lg p-4">
-                                        <h4 className="font-medium text-gray-900 mb-2">User Profile</h4>
+                                        <h4 className="font-medium text-[var(--text)] mb-2">User Profile</h4>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                             <div>
-                                                <span className="text-gray-500">Name:</span>
+                                                <span className="text-[var(--muted)]">Name:</span>
                                                 <span className="ml-2 font-medium">{engagementPrediction.user_data.name}</span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-500">Email:</span>
+                                                <span className="text-[var(--muted)]">Email:</span>
                                                 <span className="ml-2 font-medium">{engagementPrediction.user_data.email}</span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-500">Role:</span>
+                                                <span className="text-[var(--muted)]">Role:</span>
                                                 <span className="ml-2 font-medium">{engagementPrediction.user_data.role}</span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-500">Courses:</span>
+                                                <span className="text-[var(--muted)]">Courses:</span>
                                                 <span className="ml-2 font-medium">{engagementPrediction.user_data.enrolled_courses || 0}</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="bg-white border border-gray-200 rounded-lg p-6">
-                                        <h4 className="font-medium text-gray-900 mb-4">AI-Generated Prediction</h4>
+                                        <h4 className="font-medium text-[var(--text)] mb-4">AI-Generated Prediction</h4>
                                         <div className="prose max-w-none">
                                             {formatMarkdown(engagementPrediction.prediction)}
                                         </div>
                                     </div>
 
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-xs text-[var(--muted)]">
                                         Generated at: {new Date(engagementPrediction.generated_at).toLocaleString()}
                                     </div>
                                 </div>
@@ -437,3 +437,5 @@ export default function AIManager() {
         </div>
     );
 }
+
+

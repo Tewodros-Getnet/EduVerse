@@ -130,7 +130,7 @@ export default function StudentProfile() {
                             {avatarSrc ? (
                                 <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
                             ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold">
+                                <div className="w-full h-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center text-[var(--text)] text-3xl font-bold">
                                     {initials}
                                 </div>
                             )}
@@ -138,7 +138,7 @@ export default function StudentProfile() {
                         <button
                             onClick={handleAvatarClick}
                             disabled={avatarLoading}
-                            className="absolute bottom-0 right-0 w-8 h-8 bg-indigo-600 hover:bg-indigo-500 rounded-full flex items-center justify-center text-white shadow-lg transition disabled:opacity-60"
+                            className="absolute bottom-0 right-0 w-8 h-8 bg-indigo-600 hover:bg-indigo-500 rounded-full flex items-center justify-center text-[var(--text)] shadow-lg transition disabled:opacity-60"
                             title="Change profile picture"
                         >
                             {avatarLoading
@@ -220,7 +220,7 @@ export default function StudentProfile() {
                         <button
                             type="submit"
                             disabled={formLoading}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-xl transition disabled:opacity-60"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-[var(--text)] text-sm font-medium rounded-xl transition disabled:opacity-60"
                         >
                             {formLoading
                                 ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -282,7 +282,7 @@ export default function StudentProfile() {
                     <button
                         type="submit"
                         disabled={pwLoading}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-xl transition disabled:opacity-60"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-[var(--accent-primary)] hover:bg-purple-500 text-[var(--text)] text-sm font-medium rounded-xl transition disabled:opacity-60"
                     >
                         {pwLoading
                             ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -300,7 +300,7 @@ function StatPill({ icon: Icon, label, value, color }) {
     const colors = {
         blue: 'bg-blue-500/10 text-blue-400',
         green: 'bg-green-500/10 text-green-400',
-        purple: 'bg-purple-500/10 text-purple-400',
+        purple: 'bg-purple-500/10 text-[var(--accent-primary)]',
         yellow: 'bg-yellow-500/10 text-yellow-400',
     };
     return (
@@ -334,3 +334,6 @@ function PasswordStrength({ password }) {
         </div>
     );
 }
+
+
+

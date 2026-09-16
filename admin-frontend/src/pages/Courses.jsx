@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
-const STATUS_COLORS = { published: 'bg-green-500/20 text-green-300', draft: 'bg-yellow-500/20 text-yellow-300', archived: 'bg-gray-500/20 text-gray-300' };
+const STATUS_COLORS = { published: 'bg-green-500/20 text-green-300', draft: 'bg-yellow-500/20 text-yellow-300', archived: 'bg-gray-500/20 text-[var(--muted)]' };
 const DIFF_COLORS = { beginner: 'bg-blue-500/20 text-blue-300', intermediate: 'bg-orange-500/20 text-orange-300', advanced: 'bg-red-500/20 text-red-300' };
 
 export default function Courses() {
@@ -31,40 +31,40 @@ export default function Courses() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-white">Course Management</h1>
-                <p className="text-gray-400 text-sm mt-1">{courses.length} total courses</p>
+                <h1 className="text-2xl font-bold text-[var(--text)]">Course Management</h1>
+                <p className="text-[var(--muted)] text-sm mt-1">{courses.length} total courses</p>
             </div>
 
             <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
                 <table className="w-full">
                     <thead>
                         <tr className="border-b border-[var(--border)]">
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Course</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Instructor</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Difficulty</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Students</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Status</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Actions</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Course</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Instructor</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Difficulty</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Students</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Status</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={6} className="text-center py-10 text-gray-500">Loading...</td></tr>
+                            <tr><td colSpan={6} className="text-center py-10 text-[var(--muted)]">Loading...</td></tr>
                         ) : courses.length === 0 ? (
-                            <tr><td colSpan={6} className="text-center py-10 text-gray-500">No courses found</td></tr>
+                            <tr><td colSpan={6} className="text-center py-10 text-[var(--muted)]">No courses found</td></tr>
                         ) : courses.map(course => (
                             <tr key={course.id} className="border-b border-[var(--border)] hover:bg-[var(--surface-2)] transition">
                                 <td className="px-5 py-3">
-                                    <p className="text-sm font-medium text-white">{course.title}</p>
-                                    <p className="text-xs text-gray-500">{course.category}</p>
+                                    <p className="text-sm font-medium text-[var(--text)]">{course.title}</p>
+                                    <p className="text-xs text-[var(--muted)]">{course.category}</p>
                                 </td>
-                                <td className="px-5 py-3 text-sm text-gray-300">{course.instructor_name || '—'}</td>
+                                <td className="px-5 py-3 text-sm text-[var(--muted)]">{course.instructor_name || '—'}</td>
                                 <td className="px-5 py-3">
-                                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${DIFF_COLORS[course.difficulty_level] || 'bg-gray-500/20 text-gray-300'}`}>
+                                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${DIFF_COLORS[course.difficulty_level] || 'bg-gray-500/20 text-[var(--muted)]'}`}>
                                         {course.difficulty_level || '—'}
                                     </span>
                                 </td>
-                                <td className="px-5 py-3 text-sm text-gray-300">{course.enrollment_count || 0}</td>
+                                <td className="px-5 py-3 text-sm text-[var(--muted)]">{course.enrollment_count || 0}</td>
                                 <td className="px-5 py-3">
                                     <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLORS[course.status]}`}>{course.status}</span>
                                 </td>
@@ -72,7 +72,7 @@ export default function Courses() {
                                     <select
                                         value={course.status || 'draft'}
                                         onChange={e => updateStatus(course.id, e.target.value)}
-                                        className="bg-[var(--surface-2)] border border-[var(--border)] rounded-lg px-2 py-1 text-xs text-white focus:outline-none"
+                                        className="bg-[var(--surface-2)] border border-[var(--border)] rounded-lg px-2 py-1 text-xs text-[var(--text)] focus:outline-none"
                                     >
                                         <option value="draft">Draft</option>
                                         <option value="published">Published</option>
@@ -87,3 +87,7 @@ export default function Courses() {
         </div>
     );
 }
+
+
+
+

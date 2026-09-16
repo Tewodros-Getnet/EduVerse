@@ -125,7 +125,7 @@ export default function TakeExam() {
 
     // ── Loading ────────────────────────────────────────────────────────────
     if (loading) return (
-        <div className="min-h-screen bg-[#0d0d1a] flex items-center justify-center">
+        <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
             <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
         </div>
     );
@@ -137,15 +137,15 @@ export default function TakeExam() {
         const autoGraded  = result.auto_graded;
 
         return (
-            <div className="min-h-screen bg-[#0d0d1a] flex items-center justify-center p-4">
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 max-w-lg w-full text-center">
+            <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center p-4">
+                <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-8 max-w-lg w-full text-center">
                     <div className="text-6xl mb-4">
                         {!autoGraded ? '📋' : passed ? '🎉' : '📚'}
                     </div>
-                    <h1 className="text-2xl font-bold text-white mb-2">
+                    <h1 className="text-2xl font-bold text-[var(--text)] mb-2">
                         {!autoGraded ? 'Submitted for Review' : passed ? 'Congratulations!' : 'Keep Practising'}
                     </h1>
-                    <p className="text-gray-400 mb-6">
+                    <p className="text-[var(--muted)] mb-6">
                         {assessment?.title}
                     </p>
 
@@ -158,24 +158,24 @@ export default function TakeExam() {
                                 {passed ? '✓ Passed' : '✗ Failed'} (passing score: {assessment?.passing_score || 60}%)
                             </p>
                             <div className="grid grid-cols-3 gap-3 mb-6">
-                                <div className="bg-[#1a1a35] rounded-xl p-3">
-                                    <p className="text-xl font-bold text-white">{result.earned_points}</p>
-                                    <p className="text-xs text-gray-400">Points Earned</p>
+                                <div className="bg-[var(--surface-2)] rounded-xl p-3">
+                                    <p className="text-xl font-bold text-[var(--text)]">{result.earned_points}</p>
+                                    <p className="text-xs text-[var(--muted)]">Points Earned</p>
                                 </div>
-                                <div className="bg-[#1a1a35] rounded-xl p-3">
-                                    <p className="text-xl font-bold text-white">{result.total_points}</p>
-                                    <p className="text-xs text-gray-400">Total Points</p>
+                                <div className="bg-[var(--surface-2)] rounded-xl p-3">
+                                    <p className="text-xl font-bold text-[var(--text)]">{result.total_points}</p>
+                                    <p className="text-xs text-[var(--muted)]">Total Points</p>
                                 </div>
-                                <div className="bg-[#1a1a35] rounded-xl p-3">
-                                    <p className="text-xl font-bold text-white">{questions.length}</p>
-                                    <p className="text-xs text-gray-400">Questions</p>
+                                <div className="bg-[var(--surface-2)] rounded-xl p-3">
+                                    <p className="text-xl font-bold text-[var(--text)]">{questions.length}</p>
+                                    <p className="text-xs text-[var(--muted)]">Questions</p>
                                 </div>
                             </div>
                         </>
                     ) : (
                         <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6 text-left">
                             <p className="text-yellow-300 text-sm font-medium mb-1">📝 Short Answer Pending</p>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-[var(--muted)] text-sm">
                                 Your answers have been recorded. Your instructor will review the short answer
                                 questions and update your grade. Check back on the Assessments page.
                             </p>
@@ -184,7 +184,7 @@ export default function TakeExam() {
 
                     <button
                         onClick={() => navigate('/student/assessments')}
-                        className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:opacity-90 transition"
+                        className="w-full py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-xl text-[var(--text)] font-semibold hover:opacity-90 transition"
                     >
                         Back to Assessments
                     </button>
@@ -197,12 +197,12 @@ export default function TakeExam() {
 
     // ── Exam taking screen ─────────────────────────────────────────────────
     return (
-        <div className="min-h-screen bg-[#0d0d1a] flex flex-col">
+        <div className="min-h-screen bg-[var(--bg)] flex flex-col">
             {/* Top bar */}
-            <div className="bg-[#12122a] border-b border-purple-900/30 px-4 py-3 flex items-center justify-between flex-shrink-0">
+            <div className="bg-[var(--surface)] border-b border-purple-900/30 px-4 py-3 flex items-center justify-between flex-shrink-0">
                 <div className="min-w-0">
-                    <h1 className="font-bold text-white truncate">{assessment?.title}</h1>
-                    <p className="text-xs text-gray-400">{answeredCount}/{questions.length} answered</p>
+                    <h1 className="font-bold text-[var(--text)] truncate">{assessment?.title}</h1>
+                    <p className="text-xs text-[var(--muted)]">{answeredCount}/{questions.length} answered</p>
                 </div>
 
                 {/* Timer */}
@@ -212,17 +212,17 @@ export default function TakeExam() {
             </div>
 
             {/* Progress bar */}
-            <div className="h-1 bg-[#1a1a35]">
+            <div className="h-1 bg-[var(--surface-2)]">
                 <div
-                    className="h-1 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
+                    className="h-1 bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] transition-all duration-300"
                     style={{ width: `${progress}%` }}
                 />
             </div>
 
             <div className="flex-1 flex overflow-hidden">
                 {/* Question navigator sidebar */}
-                <div className="hidden md:flex flex-col w-56 bg-[#12122a] border-r border-purple-900/30 p-4 overflow-y-auto flex-shrink-0">
-                    <p className="text-xs text-gray-400 font-medium mb-3 uppercase tracking-wider">Questions</p>
+                <div className="hidden md:flex flex-col w-56 bg-[var(--surface)] border-r border-purple-900/30 p-4 overflow-y-auto flex-shrink-0">
+                    <p className="text-xs text-[var(--muted)] font-medium mb-3 uppercase tracking-wider">Questions</p>
                     <div className="grid grid-cols-5 gap-1.5">
                         {questions.map((q, i) => {
                             const answered = answers[q.id] !== undefined && answers[q.id] !== '';
@@ -232,10 +232,10 @@ export default function TakeExam() {
                                     onClick={() => setCurrent(i)}
                                     className={`w-8 h-8 rounded-lg text-xs font-bold transition ${
                                         i === current
-                                            ? 'bg-purple-600 text-white'
+                                            ? 'bg-[var(--accent-primary)] text-[var(--text)]'
                                             : answered
                                             ? 'bg-green-600/30 text-green-300 border border-green-600/40'
-                                            : 'bg-[#1a1a35] text-gray-400 hover:text-white border border-purple-900/30'
+                                            : 'bg-[var(--surface-2)] text-[var(--muted)] hover:text-[var(--text)] border border-purple-900/30'
                                     }`}
                                 >
                                     {i + 1}
@@ -247,15 +247,15 @@ export default function TakeExam() {
                     <div className="mt-auto pt-4 space-y-1 text-xs">
                         <div className="flex items-center gap-2">
                             <div className="w-3 h-3 rounded bg-green-600/30 border border-green-600/40" />
-                            <span className="text-gray-400">Answered</span>
+                            <span className="text-[var(--muted)]">Answered</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded bg-[#1a1a35] border border-purple-900/30" />
-                            <span className="text-gray-400">Not answered</span>
+                            <div className="w-3 h-3 rounded bg-[var(--surface-2)] border border-purple-900/30" />
+                            <span className="text-[var(--muted)]">Not answered</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded bg-purple-600" />
-                            <span className="text-gray-400">Current</span>
+                            <div className="w-3 h-3 rounded bg-[var(--accent-primary)]" />
+                            <span className="text-[var(--muted)]">Current</span>
                         </div>
                     </div>
                 </div>
@@ -268,20 +268,20 @@ export default function TakeExam() {
                                 {/* Question header */}
                                 <div className="flex items-start justify-between mb-6">
                                     <div>
-                                        <span className="text-xs text-purple-400 font-medium uppercase tracking-wider">
+                                        <span className="text-xs text-[var(--accent-primary)] font-medium uppercase tracking-wider">
                                             Question {current + 1} of {questions.length}
                                         </span>
                                         <div className="flex items-center gap-2 mt-1">
-                                            <span className="text-xs px-2 py-0.5 rounded-full bg-[#1a1a35] text-gray-400 capitalize border border-purple-900/30">
+                                            <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--surface-2)] text-[var(--muted)] capitalize border border-purple-900/30">
                                                 {q.question_type === 'mcq' ? 'Multiple Choice' : q.question_type === 'true_false' ? 'True / False' : 'Short Answer'}
                                             </span>
-                                            <span className="text-xs text-gray-400">{q.points} pt{q.points > 1 ? 's' : ''}</span>
+                                            <span className="text-xs text-[var(--muted)]">{q.points} pt{q.points > 1 ? 's' : ''}</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Question text */}
-                                <p className="text-white text-lg font-medium leading-relaxed mb-8">
+                                <p className="text-[var(--text)] text-lg font-medium leading-relaxed mb-8">
                                     {q.question}
                                 </p>
 
@@ -296,8 +296,8 @@ export default function TakeExam() {
                                                     onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt }))}
                                                     className={`w-full text-left px-5 py-4 rounded-xl border transition-all ${
                                                         selected
-                                                            ? 'bg-purple-600/30 border-purple-500 text-white'
-                                                            : 'bg-[#1a1a35] border-purple-900/30 text-gray-300 hover:border-purple-500/50 hover:text-white'
+                                                            ? 'bg-[var(--accent-primary)]/30 border-purple-500 text-[var(--text)]'
+                                                            : 'bg-[var(--surface-2)] border-purple-900/30 text-[var(--muted)] hover:border-purple-500/50 hover:text-[var(--text)]'
                                                     }`}
                                                 >
                                                     <div className="flex items-center gap-3">
@@ -328,7 +328,7 @@ export default function TakeExam() {
                                                             ? val === 'True'
                                                                 ? 'bg-green-600/30 border-green-500 text-green-300'
                                                                 : 'bg-red-600/30 border-red-500 text-red-300'
-                                                            : 'bg-[#1a1a35] border-purple-900/30 text-gray-300 hover:border-purple-500/50 hover:text-white'
+                                                            : 'bg-[var(--surface-2)] border-purple-900/30 text-[var(--muted)] hover:border-purple-500/50 hover:text-[var(--text)]'
                                                     }`}
                                                 >
                                                     {val === 'True' ? '✓ True' : '✗ False'}
@@ -346,7 +346,7 @@ export default function TakeExam() {
                                             onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
                                             placeholder="Type your answer here..."
                                             rows={6}
-                                            className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 resize-none transition"
+                                            className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-purple-500/20 resize-none transition"
                                         />
                                         <p className="text-xs text-yellow-400 mt-2">
                                             📝 This answer will be reviewed by your instructor.
@@ -358,24 +358,24 @@ export default function TakeExam() {
                     </div>
 
                     {/* Bottom navigation */}
-                    <div className="border-t border-purple-900/30 bg-[#12122a] px-4 md:px-8 py-4 flex items-center justify-between flex-shrink-0">
+                    <div className="border-t border-purple-900/30 bg-[var(--surface)] px-4 md:px-8 py-4 flex items-center justify-between flex-shrink-0">
                         <button
                             onClick={() => setCurrent(i => Math.max(0, i - 1))}
                             disabled={current === 0}
-                            className="px-5 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition"
+                            className="px-5 py-2.5 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] disabled:opacity-30 disabled:cursor-not-allowed transition"
                         >
                             ← Previous
                         </button>
 
                         {/* Mobile question counter */}
-                        <span className="text-sm text-gray-400 md:hidden">
+                        <span className="text-sm text-[var(--muted)] md:hidden">
                             {current + 1} / {questions.length}
                         </span>
 
                         {current < questions.length - 1 ? (
                             <button
                                 onClick={() => setCurrent(i => Math.min(questions.length - 1, i + 1))}
-                                className="px-5 py-2.5 bg-purple-600/30 border border-purple-500/30 rounded-xl text-purple-300 text-sm hover:bg-purple-600/40 transition"
+                                className="px-5 py-2.5 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-[var(--accent-primary)]/80 text-sm hover:bg-[var(--accent-primary)]/40 transition"
                             >
                                 Next →
                             </button>
@@ -383,7 +383,7 @@ export default function TakeExam() {
                             <button
                                 onClick={handleSubmitClick}
                                 disabled={submitting}
-                                className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-emerald-500 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition disabled:opacity-50"
+                                className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-emerald-500 rounded-xl text-[var(--text)] text-sm font-semibold hover:opacity-90 transition disabled:opacity-50"
                             >
                                 {submitting ? '⏳ Submitting...' : '✓ Submit Exam'}
                             </button>
@@ -394,3 +394,13 @@ export default function TakeExam() {
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+

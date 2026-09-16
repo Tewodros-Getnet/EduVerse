@@ -67,7 +67,7 @@ export default function ModernInstructorDashboard() {
                 <button
                     type="button"
                     onClick={fetchDashboardData}
-                    className="px-5 py-2.5 rounded-xl bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition"
+                    className="px-5 py-2.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text)] text-sm font-medium hover:bg-purple-700 transition"
                 >
                     Try again
                 </button>
@@ -87,7 +87,7 @@ export default function ModernInstructorDashboard() {
         <div className="min-h-screen bg-[var(--bg)] p-4 md:p-6 space-y-6 overflow-x-hidden">
 
             {/* ── Welcome Banner ─────────────────────────────────────────── */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 p-8 text-white shadow-lg shadow-purple-500/20">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 p-8 text-[var(--text)] shadow-lg shadow-purple-500/20">
                 {/* Decorative blobs */}
                 <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
@@ -117,21 +117,21 @@ export default function ModernInstructorDashboard() {
                     Icon={BookOpen}
                     label="Active Courses"
                     value={totalCourses}
-                    accent="bg-blue-500/10 text-blue-500 dark:bg-blue-500/20 dark:text-blue-400"
+                    accent="bg-blue-500/10 text-[var(--accent-tertiary)] dark:bg-blue-500/20 dark:text-blue-400"
                     trend="Published & draft courses you own"
                 />
                 <MetricCard
                     Icon={Users}
                     label="Total Students"
                     value={totalStudents.toLocaleString()}
-                    accent="bg-purple-500/10 text-purple-500 dark:bg-purple-500/20 dark:text-purple-400"
+                    accent="bg-purple-500/10 text-purple-500 dark:bg-[var(--accent-primary)]/20 dark:text-[var(--accent-primary)]"
                     trend="Unique learners across enrollments"
                 />
                 <MetricCard
                     Icon={TrendingUp}
                     label="Avg Completion"
                     value={`${Math.round(avgCompletion)}%`}
-                    accent="bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400"
+                    accent="bg-emerald-500/10 text-green-600 dark:bg-emerald-500/20 dark:text-green-400"
                     trend="Mean progress across enrollments"
                 />
                 <MetricCard
@@ -169,7 +169,7 @@ export default function ModernInstructorDashboard() {
                             Icon={BarChart3}
                             title="View Analytics"
                             description="See detailed reports"
-                            gradient="from-emerald-600 to-teal-600"
+                            gradient="from-green-600 to-cyan-600"
                             to="/instructor/analytics"
                         />
                     </div>
@@ -179,7 +179,7 @@ export default function ModernInstructorDashboard() {
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-xl font-bold text-[var(--text)]">My Courses</h2>
                             <Link to="/instructor/courses"
-                                className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">
+                                className="text-sm font-medium text-[var(--accent-primary)]/80 dark:text-[var(--accent-primary)] hover:underline">
                                 View All →
                             </Link>
                         </div>
@@ -192,10 +192,10 @@ export default function ModernInstructorDashboard() {
                             </div>
                         ) : (
                             <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center">
-                                <GraduationCap className="w-10 h-10 text-purple-400 mx-auto mb-3" />
+                                <GraduationCap className="w-10 h-10 text-[var(--accent-primary)] mx-auto mb-3" />
                                 <p className="text-[var(--muted)] mb-4">No courses created yet</p>
                                 <Link to="/instructor/courses"
-                                    className="inline-block px-6 py-2 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-700 transition">
+                                    className="inline-block px-6 py-2 rounded-xl bg-[var(--accent-primary)] text-[var(--text)] font-medium text-sm hover:bg-purple-700 transition">
                                     Create Your First Course
                                 </Link>
                             </div>
@@ -225,7 +225,7 @@ export default function ModernInstructorDashboard() {
                                             </div>
                                         </div>
                                         <Link to={`/instructor/live/${session.id}`}
-                                            className="px-4 py-2 rounded-lg bg-purple-600 text-white font-medium text-sm hover:bg-purple-700 transition">
+                                            className="px-4 py-2 rounded-lg bg-[var(--accent-primary)] text-[var(--text)] font-medium text-sm hover:bg-purple-700 transition">
                                             Manage
                                         </Link>
                                     </div>
@@ -249,15 +249,15 @@ export default function ModernInstructorDashboard() {
                                 label="Course Completion"
                                 value={`${Math.round(avgCompletion)}%`}
                                 pct={avgCompletion}
-                                color="from-violet-500 to-purple-600"
-                                textColor="text-purple-600 dark:text-purple-400"
+                                color="from-violet-500 to-[var(--accent-primary)]/80"
+                                textColor="text-[var(--accent-primary)]/80 dark:text-[var(--accent-primary)]"
                             />
                             <ProgressRow
                                 label="Student Satisfaction"
                                 value="4.8/5"
                                 pct={96}
-                                color="from-emerald-500 to-teal-500"
-                                textColor="text-emerald-600 dark:text-emerald-400"
+                                color="from-green-500 to-cyan-500"
+                                textColor="text-green-600 dark:text-green-400"
                             />
                             <ProgressRow
                                 label="Assignment Turn-in"
@@ -271,9 +271,9 @@ export default function ModernInstructorDashboard() {
 
                     {/* AI Tools */}
                     <Link to="/instructor/ai-tools"
-                        className="group block overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white p-6 hover:shadow-lg hover:shadow-purple-500/25 transition">
+                        className="group block overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-[var(--text)] p-6 hover:shadow-lg hover:shadow-purple-500/25 transition">
                         <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mb-3 group-hover:bg-white/30 transition">
-                            <Bot className="w-6 h-6 text-white" />
+                            <Bot className="w-6 h-6 text-[var(--text)]" />
                         </div>
                         <h3 className="font-bold text-lg mb-1">AI Tools</h3>
                         <p className="text-sm text-purple-100">Generate quizzes, content & feedback</p>
@@ -316,12 +316,12 @@ function MetricCard({ Icon, label, value, accent, trend }) {
 function ActionCard({ Icon, title, description, gradient, to }) {
     return (
         <Link to={to}
-            className={`group block rounded-2xl bg-gradient-to-br ${gradient} text-white p-6 hover:shadow-lg hover:scale-[1.02] transition-all`}>
+            className={`group block rounded-2xl bg-gradient-to-br ${gradient} text-[var(--text)] p-6 hover:shadow-lg hover:scale-[1.02] transition-all`}>
             <div className="w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center mb-4 group-hover:bg-white/30 transition">
-                <Icon className="w-5 h-5 text-white" />
+                <Icon className="w-5 h-5 text-[var(--text)]" />
             </div>
             <h3 className="font-bold mb-1">{title}</h3>
-            <p className="text-sm text-white/80">{description}</p>
+            <p className="text-sm text-[var(--text)]/80">{description}</p>
         </Link>
     );
 }
@@ -331,7 +331,7 @@ function InstructorCourseCard({ course }) {
         <Link to={`/instructor/courses/${course.id}`}
             className="group block rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden hover:border-purple-500/50 hover:shadow-md transition">
             {/* Header strip */}
-            <div className="h-20 bg-gradient-to-br from-violet-500 to-purple-600 relative overflow-hidden">
+            <div className="h-20 bg-gradient-to-br from-violet-500 to-[var(--accent-primary)]/80 relative overflow-hidden">
                 <div className="absolute inset-0 bg-white/5" />
                 <div className="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full" />
             </div>
@@ -344,13 +344,13 @@ function InstructorCourseCard({ course }) {
                     </div>
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                         course.status === 'published'
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                            ? 'bg-emerald-500/10 text-green-600 dark:text-green-400'
                             : 'bg-orange-500/10 text-orange-600 dark:text-orange-400'
                     }`}>
                         {course.status === 'published' ? 'Published' : 'Draft'}
                     </span>
                 </div>
-                <span className="block w-full text-center py-2 rounded-xl bg-purple-600 text-white font-medium text-sm group-hover:bg-purple-700 transition">
+                <span className="block w-full text-center py-2 rounded-xl bg-[var(--accent-primary)] text-[var(--text)] font-medium text-sm group-hover:bg-purple-700 transition">
                     Manage course
                 </span>
             </div>
@@ -377,8 +377,12 @@ function ManageLink({ Icon, label, to }) {
     return (
         <Link to={to}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--text)] hover:bg-purple-500/10 dark:hover:bg-purple-500/10 transition group">
-            <Icon className="w-4 h-4 text-purple-500 group-hover:text-purple-400 flex-shrink-0" />
+            <Icon className="w-4 h-4 text-purple-500 group-hover:text-[var(--accent-primary)] flex-shrink-0" />
             <span className="text-sm font-medium">{label}</span>
         </Link>
     );
 }
+
+
+
+

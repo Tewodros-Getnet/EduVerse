@@ -123,19 +123,19 @@ export default function NotificationManager() {
             {stats && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Total Notifications</h3>
-                        <p className="text-2xl font-bold text-gray-900">{stats.total_notifications.toLocaleString()}</p>
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Total Notifications</h3>
+                        <p className="text-2xl font-bold text-[var(--text)]">{stats.total_notifications.toLocaleString()}</p>
                     </div>
                     <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Unread</h3>
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Unread</h3>
                         <p className="text-2xl font-bold text-yellow-600">{stats.unread_notifications.toLocaleString()}</p>
                     </div>
                     <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Recent (7 days)</h3>
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Recent (7 days)</h3>
                         <p className="text-2xl font-bold text-blue-600">{stats.recent_notifications.toLocaleString()}</p>
                     </div>
                     <div className="bg-white rounded-lg shadow p-6">
-                        <h3 className="text-sm font-medium text-gray-500">Read Rate</h3>
+                        <h3 className="text-sm font-medium text-[var(--muted)]">Read Rate</h3>
                         <p className="text-2xl font-bold text-green-600">{stats.read_rate.toFixed(1)}%</p>
                     </div>
                 </div>
@@ -144,23 +144,23 @@ export default function NotificationManager() {
             {/* Header and Controls */}
             <div className="bg-white rounded-lg shadow p-6">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900">Notification Management</h2>
+                    <h2 className="text-xl font-semibold text-[var(--text)]">Notification Management</h2>
                     <div className="flex space-x-3">
                         <button
                             onClick={() => setShowBroadcastModal(true)}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                            className="px-4 py-2 bg-blue-600 text-[var(--text)] rounded-lg hover:bg-blue-700 transition"
                         >
                             Send Broadcast
                         </button>
                         <button
                             onClick={() => setShowAnnouncementModal(true)}
-                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                            className="px-4 py-2 bg-green-600 text-[var(--text)] rounded-lg hover:bg-green-700 transition"
                         >
                             Send Announcement
                         </button>
                         <button
                             onClick={handleMarkAllRead}
-                            className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition"
+                            className="px-4 py-2 bg-yellow-600 text-[var(--text)] rounded-lg hover:bg-yellow-700 transition"
                         >
                             Mark All Read
                         </button>
@@ -187,19 +187,19 @@ export default function NotificationManager() {
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Title
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Type
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Recipients
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Created
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
@@ -209,8 +209,8 @@ export default function NotificationManager() {
                                 <tr key={notification.id}>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
-                                            <div className="text-sm font-medium text-gray-900">{notification.title}</div>
-                                            <div className="text-sm text-gray-500 truncate max-w-xs">{notification.message}</div>
+                                            <div className="text-sm font-medium text-[var(--text)]">{notification.title}</div>
+                                            <div className="text-sm text-[var(--muted)] truncate max-w-xs">{notification.message}</div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
@@ -222,10 +222,10 @@ export default function NotificationManager() {
                                             {notification.type}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                         {notification.recipient_count || 0}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
                                         {new Date(notification.created_at).toLocaleDateString()}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -319,7 +319,7 @@ export default function NotificationManager() {
                             <div className="flex space-x-3">
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                                    className="flex-1 bg-blue-600 text-[var(--text)] py-2 rounded-lg hover:bg-blue-700 transition"
                                 >
                                     Send Broadcast
                                 </button>
@@ -365,7 +365,7 @@ export default function NotificationManager() {
                             <div className="flex space-x-3">
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+                                    className="flex-1 bg-green-600 text-[var(--text)] py-2 rounded-lg hover:bg-green-700 transition"
                                 >
                                     Send Announcement
                                 </button>
@@ -384,3 +384,5 @@ export default function NotificationManager() {
         </div>
     );
 }
+
+

@@ -111,19 +111,19 @@ export default function VerifyOTP() {
     };
 
     return (
-        <div className={`min-h-screen bg-gradient-to-br from-[#0d0d1a] via-[#1a0533] to-[#0d0d1a] flex items-center justify-center p-4 transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`min-h-screen bg-gradient-to-br from-[var(--bg)] via-[#1a0533] to-[var(--bg)] flex items-center justify-center p-4 transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             <div className="w-full max-w-md">
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center gap-2 mb-4">
-                        <GraduationCap className="w-8 h-8 text-purple-400" />
-                        <span className="text-2xl font-bold text-white">EduVerse</span>
+                        <GraduationCap className="w-8 h-8 text-[var(--accent-primary)]" />
+                        <span className="text-2xl font-bold text-[var(--text)]">EduVerse</span>
                     </div>
-                    <div className="w-16 h-16 bg-purple-600/20 border-2 border-purple-500/40 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Mail className="w-8 h-8 text-purple-400" />
+                    <div className="w-16 h-16 bg-[var(--accent-primary)]/20 border-2 border-purple-500/40 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Mail className="w-8 h-8 text-[var(--accent-primary)]" />
                     </div>
-                    <h1 className="text-2xl font-bold text-white mb-2">Verify your email</h1>
-                    <p className="text-gray-400 text-sm">
+                    <h1 className="text-2xl font-bold text-[var(--text)] mb-2">Verify your email</h1>
+                    <p className="text-[var(--muted)] text-sm">
                         We sent a 6-digit code to your email.<br />
                         Enter it below to activate your account.
                     </p>
@@ -155,7 +155,7 @@ export default function VerifyOTP() {
                         <button
                             type="submit"
                             disabled={loading || otp.join('').length < 6}
-                            className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-3 rounded-xl font-semibold text-[var(--text)] bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] hover:opacity-90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">
@@ -167,12 +167,12 @@ export default function VerifyOTP() {
 
                         {/* Resend */}
                         <div className="text-center">
-                            <p className="text-gray-400 text-sm mb-2">Didn't receive the code?</p>
+                            <p className="text-[var(--muted)] text-sm mb-2">Didn't receive the code?</p>
                             <button
                                 type="button"
                                 onClick={handleResend}
                                 disabled={resending || countdown > 0}
-                                className="text-purple-400 hover:text-purple-300 text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="text-[var(--accent-primary)] hover:text-[var(--accent-primary)]/80 text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {resending ? 'Sending...' : countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}
                             </button>
@@ -182,7 +182,7 @@ export default function VerifyOTP() {
                             <button
                                 type="button"
                                 onClick={() => navigate('/register')}
-                                className="text-gray-500 hover:text-gray-400 text-xs transition"
+                                className="text-[var(--muted)] hover:text-[var(--muted)] text-xs transition"
                             >
                                 ← Back to Register
                             </button>
@@ -193,3 +193,10 @@ export default function VerifyOTP() {
         </div>
     );
 }
+
+
+
+
+
+
+

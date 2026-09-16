@@ -170,7 +170,7 @@ export default function UserManagement() {
                     </div>
                     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
                         <h3 className="text-sm font-medium text-[var(--muted)]">Students</h3>
-                        <p className="text-2xl font-bold text-blue-500 mt-2">{stats.students}</p>
+                        <p className="text-2xl font-bold text-[var(--accent-tertiary)] mt-2">{stats.students}</p>
                     </div>
                     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
                         <h3 className="text-sm font-medium text-[var(--muted)]">Instructors</h3>
@@ -185,7 +185,7 @@ export default function UserManagement() {
                     <h2 className="text-xl font-semibold text-[var(--text)]">User Management</h2>
                     <button
                         onClick={() => setShowCreateModal(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-[var(--text)] rounded-lg hover:bg-blue-700 transition font-medium"
                     >
                         <Plus className="w-4 h-4" />
                         Add User
@@ -258,7 +258,7 @@ export default function UserManagement() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                            user.role === 'admin' ? 'bg-purple-500/20 text-purple-400' :
+                                            user.role === 'admin' ? 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]' :
                                             user.role === 'instructor' ? 'bg-blue-500/20 text-blue-400' :
                                             'bg-green-500/20 text-green-400'
                                         }`}>
@@ -393,7 +393,7 @@ export default function UserManagement() {
                             <div className="flex space-x-3 pt-2">
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium"
+                                    className="flex-1 bg-blue-600 text-[var(--text)] py-2 rounded-lg hover:bg-blue-700 transition font-medium"
                                 >
                                     Create User
                                 </button>
@@ -462,7 +462,7 @@ export default function UserManagement() {
                             <div className="flex space-x-3 pt-2">
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium"
+                                    className="flex-1 bg-blue-600 text-[var(--text)] py-2 rounded-lg hover:bg-blue-700 transition font-medium"
                                 >
                                     Update User
                                 </button>
@@ -490,7 +490,7 @@ export default function UserManagement() {
                         <div className="flex space-x-3">
                             <button
                                 onClick={handleDeleteUser}
-                                className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition font-medium"
+                                className="flex-1 bg-red-600 text-[var(--text)] py-2 rounded-lg hover:bg-red-700 transition font-medium"
                             >
                                 Delete
                             </button>
@@ -523,7 +523,7 @@ export default function UserManagement() {
                         <div className="flex space-x-3">
                             <button
                                 onClick={handleResetPassword}
-                                className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-medium"
+                                className="flex-1 bg-green-600 text-[var(--text)] py-2 rounded-lg hover:bg-green-700 transition font-medium"
                             >
                                 Reset Password
                             </button>
@@ -540,3 +540,6 @@ export default function UserManagement() {
         </div>
     );
 }
+
+
+

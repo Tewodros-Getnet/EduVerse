@@ -399,24 +399,24 @@ export default function StudentLiveClass() {
         }
     };
 
-    if (!session) return <div className="text-center py-20 text-gray-400">Loading session...</div>;
+    if (!session) return <div className="text-center py-20 text-[var(--muted)]">Loading session...</div>;
 
     if (!joined) {
         return (
             <div className="max-w-lg mx-auto mt-20 text-center space-y-6">
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8">
+                <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-8">
                     <div className="text-5xl mb-4">📹</div>
-                    <h1 className="text-xl font-bold text-white mb-2">{session.title}</h1>
-                    <p className="text-gray-400 text-sm mb-1">{session.course_title}</p>
-                    <p className="text-gray-400 text-xs mb-1">{session.instructor_name && `by ${session.instructor_name}`}</p>
-                    <p className="text-gray-500 text-xs mb-6">
+                    <h1 className="text-xl font-bold text-[var(--text)] mb-2">{session.title}</h1>
+                    <p className="text-[var(--muted)] text-sm mb-1">{session.course_title}</p>
+                    <p className="text-[var(--muted)] text-xs mb-1">{session.instructor_name && `by ${session.instructor_name}`}</p>
+                    <p className="text-[var(--muted)] text-xs mb-6">
                         {session.status === 'live' ? '🔴 Live now' : `Scheduled: ${new Date(session.scheduled_at).toLocaleString()}`}
                     </p>
                     {session.status === 'live' ? (
                         <div className="space-y-3">
                             {/* In-app WebRTC join */}
                             <button onClick={joinSession}
-                                className="w-full px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-semibold hover:opacity-90 transition">
+                                className="w-full px-8 py-3 bg-gradient-to-r from-cyan-500 to-[var(--accent-tertiary)] rounded-xl text-[var(--text)] font-semibold hover:opacity-90 transition">
                                 📹 Join with In-App Video
                             </button>
                             {/* External meeting URL fallback */}
@@ -425,7 +425,7 @@ export default function StudentLiveClass() {
                                     href={session.meeting_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="block w-full px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl text-white font-semibold hover:opacity-90 transition text-center"
+                                    className="block w-full px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl text-[var(--text)] font-semibold hover:opacity-90 transition text-center"
                                 >
                                     🔗 Join via External Meeting Link
                                 </a>
@@ -435,11 +435,11 @@ export default function StudentLiveClass() {
                         <div>
                             <p className="text-yellow-400 text-sm mb-4">This session hasn't started yet.</p>
                             {session.meeting_url && (
-                                <p className="text-gray-400 text-xs mb-4">
+                                <p className="text-[var(--muted)] text-xs mb-4">
                                     Meeting link will be available once the session starts.
                                 </p>
                             )}
-                            <Link to={liveListPath} className="px-6 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-300 text-sm hover:text-white transition">
+                            <Link to={liveListPath} className="px-6 py-2.5 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition">
                                 Back to Live Classes
                             </Link>
                         </div>
@@ -450,19 +450,19 @@ export default function StudentLiveClass() {
     }
 
     return (
-        <div className="h-[calc(100vh-80px)] flex flex-col bg-[#0d0d1a] relative">
+        <div className="h-[calc(100vh-80px)] flex flex-col bg-[var(--bg)] relative">
             {/* Top bar */}
-            <div className="flex items-center justify-between px-4 py-2 bg-[#12122a] border-b border-purple-900/30 flex-shrink-0">
+            <div className="flex items-center justify-between px-4 py-2 bg-[var(--surface)] border-b border-purple-900/30 flex-shrink-0">
                 <div className="flex items-center gap-2 min-w-0">
                     <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse flex-shrink-0" />
-                    <span className="text-sm font-medium text-white truncate">{session.title}</span>
-                    <span className="text-xs text-gray-400 hidden sm:block truncate">({session.course_title})</span>
+                    <span className="text-sm font-medium text-[var(--text)] truncate">{session.title}</span>
+                    <span className="text-xs text-[var(--muted)] hidden sm:block truncate">({session.course_title})</span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-sm text-gray-400">👥 {participants.length}</span>
+                    <span className="text-sm text-[var(--muted)]">👥 {participants.length}</span>
                     <button
                         onClick={() => setSidebarOpen(o => !o)}
-                        className="px-3 py-1.5 bg-purple-600/20 text-purple-300 border border-purple-500/30 rounded-lg text-sm hover:bg-purple-600/30 transition"
+                        className="px-3 py-1.5 bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80 border border-[var(--accent-primary)]/30 rounded-lg text-sm hover:bg-[var(--accent-primary)]/30 transition"
                         title={sidebarOpen ? 'Close panel' : 'Open panel'}
                     >
                         {sidebarOpen ? '✕ Panel' : '☰ Panel'}
@@ -492,40 +492,40 @@ export default function StudentLiveClass() {
                                     <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
                                     {/* Cam-off overlay */}
                                     {!videoOn && (
-                                        <div className="absolute inset-0 bg-[#0d0d1a] flex flex-col items-center justify-center gap-2">
-                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold">
+                                        <div className="absolute inset-0 bg-[var(--bg)] flex flex-col items-center justify-center gap-2">
+                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center text-[var(--text)] text-2xl font-bold">
                                                 {user?.name?.[0]?.toUpperCase() || 'Y'}
                                             </div>
-                                            <span className="text-xs text-gray-400">Camera off</span>
+                                            <span className="text-xs text-[var(--muted)]">Camera off</span>
                                         </div>
                                     )}
                                     {/* Bottom-left label row */}
                                     <div className="absolute bottom-2 left-2 flex items-center gap-1">
-                                        <div className="bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
+                                        <div className="bg-[var(--surface)]/80 px-2 py-1 rounded text-xs text-[var(--text)] flex items-center gap-1">
                                             {screenSharing && <span className="text-green-400">🖥️</span>}
                                             You
                                         </div>
                                         {!micOn && (
-                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
+                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-[var(--text)] flex items-center gap-1">
                                                 🔇
                                             </div>
                                         )}
                                         {!videoOn && (
-                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
+                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-[var(--text)] flex items-center gap-1">
                                                 📷
                                             </div>
                                         )}
                                     </div>
                                     {screenSharing && (
-                                        <div className="absolute top-2 right-2 bg-green-500/90 px-2 py-1 rounded text-xs text-white font-medium animate-pulse">
+                                        <div className="absolute top-2 right-2 bg-green-500/90 px-2 py-1 rounded text-xs text-[var(--text)] font-medium animate-pulse">
                                             Sharing
                                         </div>
                                     )}
                                 </>
                             ) : (
-                                <div className="h-full flex flex-col items-center justify-center text-gray-500 px-4">
+                                <div className="h-full flex flex-col items-center justify-center text-[var(--muted)] px-4">
                                     <div className="text-4xl mb-2">📹</div>
-                                    <p className="text-xs text-gray-400 text-center">Allow camera access to show video</p>
+                                    <p className="text-xs text-[var(--muted)] text-center">Allow camera access to show video</p>
                                 </div>
                             )}
                         </div>
@@ -540,25 +540,25 @@ export default function StudentLiveClass() {
                                     <video ref={el => { if (el) remoteVideoRefs.current[userId] = el; }} autoPlay playsInline className="w-full h-full object-cover" />
                                     {/* Cam-off overlay */}
                                     {remoteVideoOff && (
-                                        <div className="absolute inset-0 bg-[#0d0d1a] flex flex-col items-center justify-center gap-2">
-                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold">
+                                        <div className="absolute inset-0 bg-[var(--bg)] flex flex-col items-center justify-center gap-2">
+                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center text-[var(--text)] text-2xl font-bold">
                                                 {(remoteData.name || '?')[0].toUpperCase()}
                                             </div>
-                                            <span className="text-xs text-gray-400">Camera off</span>
+                                            <span className="text-xs text-[var(--muted)]">Camera off</span>
                                         </div>
                                     )}
                                     {/* Bottom-left label row */}
                                     <div className="absolute bottom-2 left-2 flex items-center gap-1">
-                                        <div className="bg-[#12122a]/80 px-2 py-1 rounded text-xs text-white">
+                                        <div className="bg-[var(--surface)]/80 px-2 py-1 rounded text-xs text-[var(--text)]">
                                             {remoteData.name}
                                         </div>
                                         {remoteMicOff && (
-                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-white">
+                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-[var(--text)]">
                                                 🔇
                                             </div>
                                         )}
                                         {remoteVideoOff && (
-                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-white">
+                                            <div className="bg-red-500/80 px-2 py-1 rounded text-xs text-[var(--text)]">
                                                 📷
                                             </div>
                                         )}
@@ -568,7 +568,7 @@ export default function StudentLiveClass() {
                         })}
 
                         {Object.keys(remoteStreams).length === 0 && localStream && (
-                            <div className="h-[120px] sm:h-[150px] bg-[#1a1a35] rounded-2xl flex items-center justify-center text-gray-400 text-xs col-span-full">
+                            <div className="h-[120px] sm:h-[150px] bg-[var(--surface-2)] rounded-2xl flex items-center justify-center text-[var(--muted)] text-xs col-span-full">
                                 Waiting for others to join...
                             </div>
                         )}
@@ -590,7 +590,7 @@ export default function StudentLiveClass() {
                                         ? 'bg-green-500/30 text-green-300 border border-green-500/40 animate-pulse'
                                         : ctrl.active === false
                                         ? 'bg-red-500/20 text-red-400'
-                                        : 'bg-[#12122a] text-gray-300 hover:bg-[#1a1a35] hover:text-white'
+                                        : 'bg-[var(--surface)] text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]'
                                 }`}>
                                 <span className="text-lg sm:text-xl">{ctrl.icon}</span>
                                 <span className="text-xs hidden sm:block">{ctrl.label}</span>
@@ -609,7 +609,7 @@ export default function StudentLiveClass() {
 
                 {/* Panel itself — drawer on all screen sizes */}
                 <div className={`
-                    bg-[#12122a] border-l border-purple-900/30 flex flex-col
+                    bg-[var(--surface)] border-l border-purple-900/30 flex flex-col
                     fixed right-0 top-0 bottom-0 w-72 z-40 transition-transform duration-300
                     ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}
                 `}>
@@ -617,14 +617,14 @@ export default function StudentLiveClass() {
                     <div className="flex border-b border-purple-900/30 flex-shrink-0">
                         {['chat', 'participants'].map(t => (
                             <button key={t} onClick={() => setTab(t)}
-                                className={`flex-1 py-3 text-sm font-medium capitalize transition ${tab === t ? 'text-white border-b-2 border-purple-500' : 'text-gray-400 hover:text-white'}`}>
+                                className={`flex-1 py-3 text-sm font-medium capitalize transition ${tab === t ? 'text-[var(--text)] border-b-2 border-purple-500' : 'text-[var(--muted)] hover:text-[var(--text)]'}`}>
                                 {t === 'chat' ? `💬 Chat` : `👥 (${participants.length})`}
                             </button>
                         ))}
                         {/* Close button — always visible */}
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="px-3 py-3 text-gray-400 hover:text-white transition text-lg"
+                            className="px-3 py-3 text-[var(--muted)] hover:text-[var(--text)] transition text-lg"
                         >
                             ✕
                         </button>
@@ -633,36 +633,36 @@ export default function StudentLiveClass() {
                     {tab === 'chat' ? (
                         <>
                             <div className="flex-1 p-3 space-y-3 overflow-y-auto">
-                                {messages.length === 0 && <p className="text-center text-gray-500 text-xs mt-4">No messages yet</p>}
+                                {messages.length === 0 && <p className="text-center text-[var(--muted)] text-xs mt-4">No messages yet</p>}
                                 {messages.map((msg, i) => (
                                     <div key={i}>
                                         <div className="flex items-center justify-between mb-0.5">
-                                            <span className="text-xs font-medium text-purple-300">{msg.name || msg.userId}</span>
-                                            <span className="text-xs text-gray-500">
+                                            <span className="text-xs font-medium text-[var(--accent-primary)]/80">{msg.name || msg.userId}</span>
+                                            <span className="text-xs text-[var(--muted)]">
                                                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-gray-300 bg-[#1a1a35] rounded-xl px-3 py-2">{msg.message}</p>
+                                        <p className="text-sm text-[var(--muted)] bg-[var(--surface-2)] rounded-xl px-3 py-2">{msg.message}</p>
                                     </div>
                                 ))}
                                 <div ref={chatEndRef} />
                             </div>
                             <form onSubmit={sendMessage} className="p-3 border-t border-purple-900/30 flex gap-2 flex-shrink-0">
                                 <input value={message} onChange={e => setMessage(e.target.value)} placeholder="Type a message..."
-                                    className="flex-1 bg-[#1a1a35] border border-purple-900/40 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" />
-                                <button type="submit" className="px-3 py-2 bg-purple-600 rounded-xl text-white text-sm hover:bg-purple-500 transition">→</button>
+                                    className="flex-1 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-3 py-2 text-sm text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)]" />
+                                <button type="submit" className="px-3 py-2 bg-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm hover:bg-purple-500 transition">→</button>
                             </form>
                         </>
                     ) : (
                         <div className="flex-1 p-3 space-y-2 overflow-y-auto">
                             {participants.map(p => (
-                                <div key={p.userId} className="flex items-center justify-between p-2 rounded-xl hover:bg-[#1a1a35] transition">
+                                <div key={p.userId} className="flex items-center justify-between p-2 rounded-xl hover:bg-[var(--surface-2)] transition">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-7 h-7 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs text-white font-bold">
+                                        <div className="w-7 h-7 bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-xs text-[var(--text)] font-bold">
                                             {(p.name || '?')[0]}
                                         </div>
                                         <div>
-                                            <p className="text-sm text-white">{p.name}</p>
+                                            <p className="text-sm text-[var(--text)]">{p.name}</p>
                                             {p.role === 'instructor' && <span className="text-xs text-blue-400">Instructor</span>}
                                         </div>
                                     </div>
@@ -680,3 +680,13 @@ export default function StudentLiveClass() {
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+

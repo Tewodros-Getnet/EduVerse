@@ -48,7 +48,7 @@ export default function StudentLayout() {
                         <Menu className="w-6 h-6" />
                     </button>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                        <GraduationCap className="w-6 h-6 text-purple-400" />
+                        <GraduationCap className="w-6 h-6 text-[var(--accent-primary)]" />
                         <span className="font-bold text-[var(--text)] hidden sm:block">EduVerse</span>
                     </div>
                     <nav className="hidden lg:flex gap-1 flex-1 overflow-x-auto">
@@ -71,22 +71,22 @@ export default function StudentLayout() {
                         <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-purple-500/40 flex-shrink-0">
                             {user?.avatar_url
                                 ? <img src={user.avatar_url} alt="avatar" className="w-full h-full object-cover" />
-                                : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">{user?.name?.[0]?.toUpperCase()}</div>
+                                : <div className="w-full h-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center text-[var(--text)] text-sm font-bold">{user?.name?.[0]?.toUpperCase()}</div>
                             }
                         </div>
                         <span className="text-sm text-[var(--muted)] hidden lg:block">{user?.name}</span>
                         <ChevronDown className="w-3 h-3 text-[var(--muted)] hidden lg:block" />
                     </button>
                     {menuOpen && (
-                        <div className="absolute right-0 top-12 bg-[#1a1a35] border border-purple-900/40 rounded-xl shadow-xl z-50 min-w-[180px] py-1">
+                        <div className="absolute right-0 top-12 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl shadow-xl z-50 min-w-[180px] py-1">
                             <div className="px-4 py-2 border-b border-purple-900/30">
-                                <p className="text-sm font-medium text-white">{user?.name}</p>
-                                <p className="text-xs text-gray-400">{user?.email}</p>
+                                <p className="text-sm font-medium text-[var(--text)]">{user?.name}</p>
+                                <p className="text-xs text-[var(--muted)]">{user?.email}</p>
                             </div>
                             <Link
                                 to="/student/profile"
                                 onClick={() => setMenuOpen(false)}
-                                className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-purple-600/20 hover:text-white transition flex items-center gap-2"
+                                className="w-full text-left px-4 py-2.5 text-sm text-[var(--muted)] hover:bg-[var(--accent-primary)]/20 hover:text-[var(--text)] transition flex items-center gap-2"
                             >
                                 <UserCircle className="w-4 h-4" /> My Profile
                             </Link>
@@ -156,3 +156,9 @@ function BottomTab({ to, end, icon: Icon, label }) {
         </NavLink>
     );
 }
+
+
+
+
+
+

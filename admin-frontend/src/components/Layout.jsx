@@ -30,7 +30,7 @@ export default function Layout() {
             {/* Sidebar */}
             <aside className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-[var(--surface)] border-r border-[var(--border)] flex flex-col transition-all duration-300`}>
                 <div className="p-4 flex items-center gap-3 border-b border-[var(--border)]">
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold flex-shrink-0">E</div>
+                    <div className="w-8 h-8 bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-lg flex items-center justify-center text-[var(--text)] font-bold flex-shrink-0">E</div>
                     {sidebarOpen && <span className="font-bold text-[var(--text)] text-lg">EduVerse</span>}
                 </div>
                 <nav className="flex-1 p-3 space-y-1">
@@ -76,10 +76,10 @@ export default function Layout() {
                         </button>
                         <AdminNotificationButton />
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                            <div className="w-8 h-8 bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-[var(--text)] text-sm font-bold">
                                 {user?.name?.[0]?.toUpperCase() || 'A'}
                             </div>
-                            <span className="text-sm text-gray-300">{user?.name || 'Admin'}</span>
+                            <span className="text-sm text-[var(--muted)]">{user?.name || 'Admin'}</span>
                         </div>
                     </div>
                 </header>
@@ -92,3 +92,5 @@ export default function Layout() {
         </div>
     );
 }
+
+

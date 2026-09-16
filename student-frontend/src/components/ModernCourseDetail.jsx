@@ -117,7 +117,7 @@ export default function ModernCourseDetail() {
     if (!course) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
-                <div className="text-white text-center">
+                <div className="text-[var(--text)] text-center">
                     <p className="text-xl mb-4">Course not found</p>
                     <button
                         onClick={() => navigate('/student/courses')}
@@ -133,7 +133,7 @@ export default function ModernCourseDetail() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
             {/* Header */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-4 flex items-center justify-between">
+            <div className="bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] px-6 py-4 flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold">{course.title}</h1>
                     <p className="text-indigo-100">by {course.instructor_name}</p>
@@ -152,8 +152,8 @@ export default function ModernCourseDetail() {
                     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 text-center">
                         <div className="mb-6">
                             <div className="text-6xl mb-4">🔒</div>
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Enroll to Start Learning</h2>
-                            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">{course.description}</p>
+                            <h2 className="text-3xl font-bold text-[var(--text)] dark:text-[var(--text)] mb-2">Enroll to Start Learning</h2>
+                            <p className="text-gray-600 dark:text-[var(--muted)] mb-6 max-w-2xl mx-auto">{course.description}</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -164,7 +164,7 @@ export default function ModernCourseDetail() {
 
                         <button
                             onClick={handleEnroll}
-                            className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:opacity-90 transition"
+                            className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] rounded-xl font-bold text-lg hover:opacity-90 transition"
                         >
                             Enroll Now
                         </button>
@@ -176,7 +176,7 @@ export default function ModernCourseDetail() {
                     {/* Progress Bar */}
                     <div className="mb-6 bg-white dark:bg-slate-800 rounded-2xl p-4">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="font-bold text-gray-900 dark:text-white">Course Progress</span>
+                            <span className="font-bold text-[var(--text)] dark:text-[var(--text)]">Course Progress</span>
                             <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{progress}%</span>
                         </div>
                         <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
@@ -191,7 +191,7 @@ export default function ModernCourseDetail() {
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                         {/* Left Sidebar - Lessons */}
                         <div className="lg:col-span-1 bg-white dark:bg-slate-800 rounded-2xl shadow-lg overflow-hidden flex flex-col h-[600px]">
-                            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 font-bold">
+                            <div className="bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] p-4 font-bold">
                                 Lessons ({completedLessons.size}/{lessons.length})
                             </div>
                             <div className="overflow-y-auto flex-1">
@@ -210,10 +210,10 @@ export default function ModernCourseDetail() {
                                                 {completedLessons.has(lesson.id) ? '✅' : `${idx + 1}`}
                                             </span>
                                             <div className="flex-1 min-w-0">
-                                                <p className="font-semibold text-gray-900 dark:text-white text-sm line-clamp-2">
+                                                <p className="font-semibold text-[var(--text)] dark:text-[var(--text)] text-sm line-clamp-2">
                                                     {lesson.title}
                                                 </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                <p className="text-xs text-[var(--muted)] dark:text-[var(--muted)] mt-1">
                                                     {lesson.duration_minutes} min
                                                 </p>
                                             </div>
@@ -252,7 +252,7 @@ export default function ModernCourseDetail() {
                                                     <div className="text-5xl mb-3" aria-hidden>
                                                         📖
                                                     </div>
-                                                    <p className="font-medium text-white mb-1">No video for this lesson</p>
+                                                    <p className="font-medium text-[var(--text)] mb-1">No video for this lesson</p>
                                                     <p className="text-sm text-slate-400">
                                                         Read the lesson content below, use notes, or ask the AI tutor if you need help.
                                                     </p>
@@ -263,11 +263,11 @@ export default function ModernCourseDetail() {
 
                                     {/* Lesson Content */}
                                     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 space-y-4">
-                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{activeLesson.title}</h2>
+                                        <h2 className="text-2xl font-bold text-[var(--text)] dark:text-[var(--text)]">{activeLesson.title}</h2>
 
                                         {activeLesson.text_content && (
                                             <div className="prose dark:prose-invert max-w-none">
-                                                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                                <p className="text-gray-700 dark:text-[var(--muted)] leading-relaxed">
                                                     {activeLesson.text_content}
                                                 </p>
                                             </div>
@@ -278,14 +278,14 @@ export default function ModernCourseDetail() {
                                             {!completedLessons.has(activeLesson.id) && (
                                                 <button
                                                     onClick={markLessonComplete}
-                                                    className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg font-medium hover:opacity-90 transition"
+                                                    className="px-6 py-2 bg-gradient-to-r from-green-500 to-cyan-500 text-[var(--text)] rounded-lg font-medium hover:opacity-90 transition"
                                                 >
                                                     ✓ Mark Complete
                                                 </button>
                                             )}
                                             <Link
                                                 to={`/student/ai-tutor?lesson=${activeLesson.id}&course=${id}`}
-                                                className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90 transition"
+                                                className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] rounded-lg font-medium hover:opacity-90 transition"
                                             >
                                                 🧠 Ask AI Tutor
                                             </Link>
@@ -294,7 +294,7 @@ export default function ModernCourseDetail() {
                                                     href={activeLesson.pdf_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-slate-600 transition"
+                                                    className="px-6 py-2 bg-gray-200 dark:bg-slate-700 text-[var(--text)] dark:text-[var(--text)] rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-slate-600 transition"
                                                 >
                                                     📄 Download PDF
                                                 </a>
@@ -307,7 +307,7 @@ export default function ModernCourseDetail() {
                             {/* Related Quizzes */}
                             {quizzes.length > 0 && (
                                 <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6">
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">📝 Quizzes</h3>
+                                    <h3 className="text-xl font-bold text-[var(--text)] dark:text-[var(--text)] mb-4">📝 Quizzes</h3>
                                     <div className="space-y-2">
                                         {quizzes.map(quiz => (
                                             <Link
@@ -316,8 +316,8 @@ export default function ModernCourseDetail() {
                                                 className="block p-3 bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 rounded-lg transition"
                                             >
                                                 <div className="flex items-center justify-between">
-                                                    <span className="font-medium text-gray-900 dark:text-white">{quiz.title}</span>
-                                                    <span className="text-sm text-gray-500 dark:text-gray-400">{quiz.max_attempts} attempts</span>
+                                                    <span className="font-medium text-[var(--text)] dark:text-[var(--text)]">{quiz.title}</span>
+                                                    <span className="text-sm text-[var(--muted)] dark:text-[var(--muted)]">{quiz.max_attempts} attempts</span>
                                                 </div>
                                             </Link>
                                         ))}
@@ -331,7 +331,7 @@ export default function ModernCourseDetail() {
                             {/* AI Tutor Quick Card */}
                             <Link
                                 to="/student/ai-tutor"
-                                className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-2xl p-6 hover:shadow-lg transition-all"
+                                className="bg-gradient-to-br from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] rounded-2xl p-6 hover:shadow-lg transition-all"
                             >
                                 <div className="text-4xl mb-2">🧠</div>
                                 <h3 className="font-bold mb-1">Ask AI Tutor</h3>
@@ -340,17 +340,17 @@ export default function ModernCourseDetail() {
 
                             {/* Notes Section */}
                             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 space-y-4 h-fit">
-                                <h3 className="font-bold text-gray-900 dark:text-white">📝 Notes</h3>
+                                <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)]">📝 Notes</h3>
                                 <textarea
                                     value={lessonNotes}
                                     onChange={(e) => setLessonNotes(e.target.value)}
                                     placeholder="Take notes here..."
-                                    className="w-full h-40 p-3 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full h-40 p-3 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-[var(--text)] dark:text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                                 <button
                                     onClick={saveLessonNotes}
                                     disabled={notesLoading}
-                                    className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90 transition disabled:opacity-50"
+                                    className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] rounded-lg font-medium hover:opacity-90 transition disabled:opacity-50"
                                 >
                                     {notesLoading ? 'Saving...' : 'Save Notes'}
                                 </button>
@@ -358,7 +358,7 @@ export default function ModernCourseDetail() {
 
                             {/* Resources */}
                             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6">
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-4">📚 Resources</h3>
+                                <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)] mb-4">📚 Resources</h3>
                                 <div className="space-y-2">
                                     <ResourceLink as={Link} to={`/student/course-notes/${id}`} icon="📝" label="Course notes" />
                                     <ResourceLink as={Link} to={`/student/assignments/${id}`} icon="📋" label="Assignments" />
@@ -377,15 +377,15 @@ function InfoCard({ icon, label, value }) {
     return (
         <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl p-4">
             <div className="text-3xl mb-2">{icon}</div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{label}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
+            <p className="text-sm text-gray-600 dark:text-[var(--muted)]">{label}</p>
+            <p className="text-2xl font-bold text-[var(--text)] dark:text-[var(--text)]">{value}</p>
         </div>
     );
 }
 
 function ResourceLink({ as: Comp = 'a', to, href, icon, label, ...rest }) {
     const className =
-        'flex items-center gap-2 p-3 rounded-lg bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 transition text-gray-900 dark:text-white font-medium text-left w-full';
+        'flex items-center gap-2 p-3 rounded-lg bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 transition text-[var(--text)] dark:text-[var(--text)] font-medium text-left w-full';
     if (Comp === 'a') {
         return (
             <a href={href || '#'} className={className} {...rest}>
@@ -407,3 +407,8 @@ function ResourceLink({ as: Comp = 'a', to, href, icon, label, ...rest }) {
         </Comp>
     );
 }
+
+
+
+
+

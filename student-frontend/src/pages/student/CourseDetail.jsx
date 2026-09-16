@@ -154,18 +154,18 @@ export default function CourseDetail() {
         if (durationSec > 0) return Math.min(100, Math.round((watchSec / durationSec) * 100));
         return watchSec > 0 ? 25 : 0;
     };
-    if (!course) return <div className="text-center py-20 text-gray-400">Course not found</div>;
+    if (!course) return <div className="text-center py-20 text-[var(--muted)]">Course not found</div>;
 
     return (
         <div className="max-w-6xl mx-auto space-y-6">
             {/* Header with Progress */}
-            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6">
+            <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-6">
                 <div className="flex flex-col md:flex-row gap-6">
                     <div className="flex-1">
-                        <span className="text-xs text-purple-400 font-medium uppercase">{course.category}</span>
-                        <h1 className="text-2xl font-bold text-white mt-1">{course.title}</h1>
-                        <p className="text-gray-400 mt-2 text-sm">{course.description}</p>
-                        <div className="flex items-center gap-4 mt-4 text-sm text-gray-400">
+                        <span className="text-xs text-[var(--accent-primary)] font-medium uppercase">{course.category}</span>
+                        <h1 className="text-2xl font-bold text-[var(--text)] mt-1">{course.title}</h1>
+                        <p className="text-[var(--muted)] mt-2 text-sm">{course.description}</p>
+                        <div className="flex items-center gap-4 mt-4 text-sm text-[var(--muted)]">
                             <span> {course.instructor_name}</span>
                             <span> {course.difficulty_level}</span>
                             <span> {lessons.length} lessons</span>
@@ -177,16 +177,16 @@ export default function CourseDetail() {
                         {isEnrolled && (
                             <div className="mt-4">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm text-gray-400">Course Progress</span>
-                                    <span className="text-sm text-purple-400 font-medium">{overallProgress}%</span>
+                                    <span className="text-sm text-[var(--muted)]">Course Progress</span>
+                                    <span className="text-sm text-[var(--accent-primary)] font-medium">{overallProgress}%</span>
                                 </div>
                                 <div className="w-full bg-gray-700 rounded-full h-2">
                                     <div
-                                        className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                                        className="bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] h-2 rounded-full transition-all duration-300"
                                         style={{ width: `${overallProgress}%` }}
                                     />
                                 </div>
-                                <div className="mt-2 text-xs text-gray-400">
+                                <div className="mt-2 text-xs text-[var(--muted)]">
                                     {completedLessons.size} of {lessons.length} lessons completed
                                 </div>
                             </div>
@@ -194,13 +194,13 @@ export default function CourseDetail() {
 
                         {!isEnrolled ? (
                             <button onClick={enroll}
-                                className="mt-4 px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white font-semibold hover:opacity-90 transition text-sm">
+                                className="mt-4 px-6 py-2.5 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] font-semibold hover:opacity-90 transition text-sm">
                                 Enroll Now
                             </button>
                         ) : (
                             <div className="mt-4 flex gap-2">
                                 <Link to={`/student/course-notes/${id}`}
-                                    className="px-4 py-2 bg-blue-600/30 border border-blue-500/30 rounded-xl text-sm text-blue-300 hover:bg-blue-600/40 transition">
+                                    className="px-4 py-2 bg-blue-600/30 border border-[var(--accent-tertiary)]/30 rounded-xl text-sm text-blue-300 hover:bg-blue-600/40 transition">
                                     Course Notes
                                 </Link>
                                 <Link to={`/student/assignments/${id}`}
@@ -208,7 +208,7 @@ export default function CourseDetail() {
                                     Assignments
                                 </Link>
                                 <Link to={`/student/ai-tutor?course=${id}`}
-                                    className="px-4 py-2 bg-purple-600/30 border border-purple-500/30 rounded-xl text-sm text-purple-300 hover:bg-purple-600/40 transition">
+                                    className="px-4 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-sm text-[var(--accent-primary)]/80 hover:bg-[var(--accent-primary)]/40 transition">
                                     AI Tutor
                                 </Link>
                             </div>
@@ -222,8 +222,8 @@ export default function CourseDetail() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Enhanced Lesson List */}
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
-                    <h2 className="font-semibold text-white mb-3">Course Content</h2>
+                <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-4">
+                    <h2 className="font-semibold text-[var(--text)] mb-3">Course Content</h2>
 
                     {/* Lessons */}
                     <div className="space-y-2">
@@ -232,14 +232,14 @@ export default function CourseDetail() {
                             const isActive = activeLesson?.id === lesson.id;
                             return (
                                 <button key={lesson.id} onClick={() => setActiveLesson(lesson)}
-                                    className={`w-full text-left px-3 py-3 rounded-xl text-sm transition ${isActive ? 'bg-purple-600/30 text-purple-300 border border-purple-500/30' :
-                                        'text-gray-400 hover:bg-[#1a1a35] hover:text-white'
+                                    className={`w-full text-left px-3 py-3 rounded-xl text-sm transition ${isActive ? 'bg-[var(--accent-primary)]/30 text-[var(--accent-primary)]/80 border border-[var(--accent-primary)]/30' :
+                                        'text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]'
                                         }`}>
                                     <div className="flex items-center gap-2">
                                         <div className="flex items-center gap-2 flex-shrink-0">
-                                            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${status === 'completed' ? 'bg-green-500 text-white' :
-                                                status === 'in-progress' ? 'bg-yellow-500 text-white' :
-                                                    'bg-[#1a1a35] text-gray-500 border border-gray-600'
+                                            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${status === 'completed' ? 'bg-green-500 text-[var(--text)]' :
+                                                status === 'in-progress' ? 'bg-yellow-500 text-[var(--text)]' :
+                                                    'bg-[var(--surface-2)] text-[var(--muted)] border border-gray-600'
                                                 }`}>
                                                 {status === 'completed' ? '✓' : status === 'in-progress' ? '⏸' : i + 1}
                                             </span>
@@ -254,7 +254,7 @@ export default function CourseDetail() {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="font-medium truncate">{lesson.title}</div>
-                                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                                            <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
                                                 {lesson.duration_minutes && <span>{lesson.duration_minutes}min</span>}
                                                 {lessonProgress[lesson.id]?.watch_time > 0 && (
                                                     <span> {Math.round(lessonProgress[lesson.id].watch_time / 60)}min watched</span>
@@ -270,15 +270,15 @@ export default function CourseDetail() {
                     {/* Quizzes */}
                     {quizzes.length > 0 && (
                         <div className="mt-4 pt-4 border-t border-purple-900/30">
-                            <h3 className="text-sm font-semibold text-white mb-2">Quizzes</h3>
+                            <h3 className="text-sm font-semibold text-[var(--text)] mb-2">Quizzes</h3>
                             <div className="space-y-2">
                                 {quizzes.map(quiz => (
                                     <Link key={quiz.id} to={`/student/quiz/${quiz.id}`}
-                                        className="block px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:bg-[#1a1a35] hover:text-white transition">
+                                        className="block px-3 py-2.5 rounded-xl text-sm text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text)] transition">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-purple-400"></span>
+                                            <span className="text-[var(--accent-primary)]"></span>
                                             <span className="flex-1">{quiz.title}</span>
-                                            <span className="text-xs text-gray-500">{quiz.max_attempts} attempts</span>
+                                            <span className="text-xs text-[var(--muted)]">{quiz.max_attempts} attempts</span>
                                         </div>
                                     </Link>
                                 ))}
@@ -289,15 +289,15 @@ export default function CourseDetail() {
                     {/* Assignments */}
                     {assignments.length > 0 && (
                         <div className="mt-4 pt-4 border-t border-purple-900/30">
-                            <h3 className="text-sm font-semibold text-white mb-2">Assignments</h3>
+                            <h3 className="text-sm font-semibold text-[var(--text)] mb-2">Assignments</h3>
                             <div className="space-y-2">
                                 {assignments.map(assignment => (
                                     <Link key={assignment.id} to={`/student/assignments/${id}`}
-                                        className="block px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:bg-[#1a1a35] hover:text-white transition">
+                                        className="block px-3 py-2.5 rounded-xl text-sm text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text)] transition">
                                         <div className="flex items-center gap-2">
                                             <span className="text-green-400"></span>
                                             <span className="flex-1">{assignment.title}</span>
-                                            <span className="text-xs text-gray-500">{assignment.max_points}pts</span>
+                                            <span className="text-xs text-[var(--muted)]">{assignment.max_points}pts</span>
                                         </div>
                                     </Link>
                                 ))}
@@ -307,24 +307,24 @@ export default function CourseDetail() {
                 </div>
 
                 {/* Enhanced Lesson Content */}
-                <div className="lg:col-span-2 bg-[#12122a] border border-purple-900/30 rounded-2xl p-5">
+                <div className="lg:col-span-2 bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-5">
                     {activeLesson ? (
                         <div>
                             {/* Lesson Header with Navigation */}
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="font-semibold text-white">{activeLesson.title}</h2>
+                                <h2 className="font-semibold text-[var(--text)]">{activeLesson.title}</h2>
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={navigateToPreviousLesson}
                                         disabled={lessons.findIndex(l => l.id === activeLesson.id) === 0}
-                                        className="p-2 bg-[#1a1a35] border border-purple-900/40 rounded-lg text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                        className="p-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-lg text-[var(--muted)] hover:text-[var(--text)] disabled:opacity-50 disabled:cursor-not-allowed transition"
                                     >
                                         ←
                                     </button>
                                     <button
                                         onClick={navigateToNextLesson}
                                         disabled={lessons.findIndex(l => l.id === activeLesson.id) === lessons.length - 1}
-                                        className="p-2 bg-[#1a1a35] border border-purple-900/40 rounded-lg text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                        className="p-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-lg text-[var(--muted)] hover:text-[var(--text)] disabled:opacity-50 disabled:cursor-not-allowed transition"
                                     >
                                         →
                                     </button>
@@ -354,7 +354,7 @@ export default function CourseDetail() {
                                     )}
                                     {isPlaying && shouldUseVideoElement(activeLesson.video_url) && (
                                         <div className="absolute bottom-4 left-4 bg-black/50 rounded px-2 py-1">
-                                            <span className="text-xs text-white">
+                                            <span className="text-xs text-[var(--text)]">
                                                 {Math.floor(watchTime / 60)}:{String(Math.floor(watchTime % 60)).padStart(2, '0')}
                                             </span>
                                         </div>
@@ -374,7 +374,7 @@ export default function CourseDetail() {
 
                             {/* PDF Viewer — shown inline below video (or alone if no video) */}
                             {activeLesson.pdf_url && (
-                                <div className="mb-4 rounded-xl overflow-hidden border border-purple-900/30 bg-[#0d0d1a]">
+                                <div className="mb-4 rounded-xl overflow-hidden border border-purple-900/30 bg-[var(--bg)]">
                                     <iframe
                                         src={`https://docs.google.com/viewer?url=${encodeURIComponent(activeLesson.pdf_url)}&embedded=true`}
                                         className="w-full"
@@ -387,7 +387,7 @@ export default function CourseDetail() {
                             {/* Lesson Content */}
                             <div className="space-y-4">
                                 {activeLesson.text_content && (
-                                    <div className="prose prose-invert text-gray-300 text-sm leading-relaxed">
+                                    <div className="prose prose-invert text-[var(--muted)] text-sm leading-relaxed">
                                         {activeLesson.text_content}
                                     </div>
                                 )}
@@ -398,26 +398,26 @@ export default function CourseDetail() {
                                         <a
                                             href={pdfProxyUrl(activeLesson.pdf_url, true)}
                                             download
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-sm text-white hover:border-purple-500 transition">
+                                            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-sm text-[var(--text)] hover:border-purple-500 transition">
                                             ⬇️ Download {activeLesson.pdf_url.match(/\.(doc|docx)$/i) ? 'Document' : 'PDF'}
                                         </a>
                                     )}
                                     <Link to={`/student/course-notes/${id}`}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/30 border border-blue-500/30 rounded-xl text-sm text-blue-300 hover:bg-blue-600/40 transition">
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/30 border border-[var(--accent-tertiary)]/30 rounded-xl text-sm text-blue-300 hover:bg-blue-600/40 transition">
                                         📝 Take Notes
                                     </Link>
                                     <Link to={`/student/ai-tutor?course=${id}&lesson=${activeLesson.id}`}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600/30 border border-purple-500/30 rounded-xl text-sm text-purple-300 hover:bg-purple-600/40 transition">
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-sm text-[var(--accent-primary)]/80 hover:bg-[var(--accent-primary)]/40 transition">
                                         🧠 Ask AI Tutor
                                     </Link>
                                 </div>
 
                                 {/* Lesson Progress */}
                                 {lessonProgress[activeLesson.id] && (
-                                    <div className="bg-[#1a1a35] rounded-xl p-3">
+                                    <div className="bg-[var(--surface-2)] rounded-xl p-3">
                                         <div className="flex justify-between items-center mb-2">
-                                            <span className="text-sm text-gray-400">Lesson Progress</span>
-                                            <span className="text-sm text-purple-400">
+                                            <span className="text-sm text-[var(--muted)]">Lesson Progress</span>
+                                            <span className="text-sm text-[var(--accent-primary)]">
                                                 {Math.round(lessonProgress[activeLesson.id].watch_time / 60)}min watched
                                             </span>
                                         </div>
@@ -437,7 +437,7 @@ export default function CourseDetail() {
                                 <div className="flex gap-2">
                                     {completedLessons.has(activeLesson.id) && (
                                         <span className="flex items-center gap-1.5 text-sm text-green-400 mr-auto">
-                                            <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</span>
+                                            <span className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-[var(--text)] text-xs">✓</span>
                                             Completed
                                         </span>
                                     )}
@@ -447,7 +447,7 @@ export default function CourseDetail() {
                                     </Link>
                                     {quizzes.length > 0 && (
                                         <Link to={`/student/quiz/${quizzes[0].id}`}
-                                            className="px-3 py-2 bg-purple-600/30 border border-purple-500/30 rounded-xl text-sm text-purple-300 hover:bg-purple-600/40 transition">
+                                            className="px-3 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-sm text-[var(--accent-primary)]/80 hover:bg-[var(--accent-primary)]/40 transition">
                                             Take Quiz
                                         </Link>
                                     )}
@@ -455,14 +455,14 @@ export default function CourseDetail() {
                             </div>
                         </div>
                     ) : (
-                        <div className="text-center py-12 text-gray-400">
+                        <div className="text-center py-12 text-[var(--muted)]">
                             <div className="mb-4">
-                                <div className="w-16 h-16 bg-[#1a1a35] rounded-full flex items-center justify-center mx-auto mb-4">
+                                <div className="w-16 h-16 bg-[var(--surface-2)] rounded-full flex items-center justify-center mx-auto mb-4">
                                     <span className="text-2xl"></span>
                                 </div>
                             </div>
-                            <h3 className="text-lg font-medium text-white mb-2">Select a lesson to start learning</h3>
-                            <p className="text-sm text-gray-400">Choose from the lessons on the left to begin your learning journey</p>
+                            <h3 className="text-lg font-medium text-[var(--text)] mb-2">Select a lesson to start learning</h3>
+                            <p className="text-sm text-[var(--muted)]">Choose from the lessons on the left to begin your learning journey</p>
                         </div>
                     )}
                 </div>
@@ -470,3 +470,13 @@ export default function CourseDetail() {
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+

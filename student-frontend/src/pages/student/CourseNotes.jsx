@@ -20,24 +20,24 @@ export default function CourseNotes() {
             .finally(() => setLoading(false));
     }, [courseId]);
 
-    if (loading) return <div className="text-center py-20 text-gray-400">Loading notes...</div>;
+    if (loading) return <div className="text-center py-20 text-[var(--muted)]">Loading notes...</div>;
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
-            <h1 className="text-2xl font-bold text-white">Course Notes - {courseName}</h1>
+            <h1 className="text-2xl font-bold text-[var(--text)]">Course Notes - {courseName}</h1>
 
             {notes.length === 0 ? (
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center text-gray-400">
+                <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-8 text-center text-[var(--muted)]">
                     No notes available yet. Check back for instructor updates!
                 </div>
             ) : (
                 <div className="space-y-4">
                     {notes.map(note => (
-                        <div key={note.id} className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-5">
+                        <div key={note.id} className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-5">
                             <div className="flex items-start justify-between mb-3">
                                 <div>
-                                    <h3 className="font-semibold text-white">{note.title}</h3>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <h3 className="font-semibold text-[var(--text)]">{note.title}</h3>
+                                    <p className="text-xs text-[var(--muted)] mt-1">
                                         By {note.instructor_name} • {new Date(note.created_at).toLocaleDateString()}
                                     </p>
                                 </div>
@@ -45,7 +45,7 @@ export default function CourseNotes() {
                                     <span className="text-xs px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded-full">Private</span>
                                 )}
                             </div>
-                            <div className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
+                            <div className="text-[var(--muted)] text-sm whitespace-pre-wrap leading-relaxed">
                                 {note.content}
                             </div>
                         </div>
@@ -55,3 +55,7 @@ export default function CourseNotes() {
         </div>
     );
 }
+
+
+
+

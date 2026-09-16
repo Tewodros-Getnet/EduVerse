@@ -27,6 +27,28 @@
     /* Scrollbar */
     --scrollbar-track: #e0dff0;
     --scrollbar-thumb: #7c3aed;
+
+    /* Accent colors */
+    --accent-primary: #7c3aed;      /* purple */
+    --accent-secondary: #ec4899;    /* pink */
+    --accent-tertiary: #06b6d4;     /* cyan */
+
+    /* Status colors */
+    --status-success: #22c55e;      /* green */
+    --status-warning: #eab308;      /* yellow */
+    --status-error: #ef4444;        /* red */
+    --status-info: #3b82f6;         /* blue */
+
+    /* Notification type colors */
+    --notify-enrollment: #22c55e;
+    --notify-assignment: #3b82f6;
+    --notify-review: #eab308;
+    --notify-reminder: #f97316;
+    --notify-revenue: #7c3aed;
+    --notify-announcement: #06b6d4;
+    --notify-live: #ef4444;
+    --notify-system: #ef4444;
+    --notify-broadcast: #7c3aed;
 }
 
 /* ── Dark theme ──────────────────────────────────────────────────────────── */
@@ -54,6 +76,28 @@
     /* Scrollbar */
     --scrollbar-track: #10102a;
     --scrollbar-thumb: #7c3aed;
+
+    /* Accent colors (same as light for consistency) */
+    --accent-primary: #7c3aed;
+    --accent-secondary: #ec4899;
+    --accent-tertiary: #06b6d4;
+
+    /* Status colors (same as light) */
+    --status-success: #22c55e;
+    --status-warning: #eab308;
+    --status-error: #ef4444;
+    --status-info: #3b82f6;
+
+    /* Notification type colors (same as light) */
+    --notify-enrollment: #22c55e;
+    --notify-assignment: #3b82f6;
+    --notify-review: #eab308;
+    --notify-reminder: #f97316;
+    --notify-revenue: #7c3aed;
+    --notify-announcement: #06b6d4;
+    --notify-live: #ef4444;
+    --notify-system: #ef4444;
+    --notify-broadcast: #7c3aed;
 }
 
 html {

@@ -172,16 +172,16 @@ export default function AITutor() {
                 <div className="mb-8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
-                            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                            <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--accent-primary)] via-[var(--accent-secondary)] to-[var(--accent-primary)] bg-clip-text text-transparent">
                                 AI Learning Assistant
                             </h1>
-                            <p className="text-gray-400 text-sm mt-2">Your personal AI tutor and study companion</p>
+                            <p className="text-[var(--muted)] text-sm mt-2">Your personal AI tutor and study companion</p>
                         </div>
                         <div className="flex gap-2 flex-wrap">
                             <select
                                 value={courseContext}
                                 onChange={(e) => setCourseContext(e.target.value)}
-                                className="px-4 py-2.5 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-[var(--text)] text-sm hover:border-purple-500/50 transition focus:outline-none focus:border-purple-500"
+                                className="px-4 py-2.5 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-[var(--text)] text-sm hover:border-purple-500/50 transition focus:outline-none focus:border-[var(--accent-primary)]"
                             >
                                 <option value="">General Context</option>
                                 {enrolledCourses.map(course => (
@@ -208,12 +208,12 @@ export default function AITutor() {
                                 {messages.map((msg, i) => (
                                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${msg.role === 'user'
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                            ? 'bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 text-[var(--text)]'
                                             : 'bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)]'
                                             }`}>
                                             {msg.isExplanation && (
                                                 <div className="flex items-center gap-2 mb-2 text-xs">
-                                                    <span className="bg-purple-600/30 px-2 py-1 rounded-full text-purple-300">
+                                                    <span className="bg-[var(--accent-primary)]/30 px-2 py-1 rounded-full text-[var(--accent-primary)]/80">
                                                         Explanation: {msg.topic}
                                                     </span>
                                                 </div>
@@ -227,16 +227,16 @@ export default function AITutor() {
                                             )}
                                             {msg.role === 'assistant' && (
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <span className={`text-xs font-medium ${msg.isError ? 'text-red-400' : 'text-purple-400'}`}>
+                                                    <span className={`text-xs font-medium ${msg.isError ? 'text-red-400' : 'text-[var(--accent-primary)]'}`}>
                                                         {msg.isError ? '⚠️ Error' : 'AI Tutor'}
                                                     </span>
                                                     {msg.ai_source && !msg.isError && (
-                                                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${msg.ai_source === 'groq' ? 'bg-blue-500/20 text-blue-300' : 'bg-purple-500/20 text-purple-300'}`}>
+                                                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${msg.ai_source === 'groq' ? 'bg-blue-500/20 text-blue-300' : 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80'}`}>
                                                             {msg.ai_source}
                                                         </span>
                                                     )}
                                                     {msg.response_time_ms && !msg.isError && (
-                                                        <span className="text-xs text-gray-500">{msg.response_time_ms}ms</span>
+                                                        <span className="text-xs text-[var(--muted)]">{msg.response_time_ms}ms</span>
                                                     )}
                                                 </div>
                                             )}
@@ -273,7 +273,7 @@ export default function AITutor() {
                                     <button
                                         onClick={sendMessage}
                                         disabled={loading || !input.trim()}
-                                        className="px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white font-medium hover:opacity-90 transition disabled:opacity-50"
+                                        className="px-4 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-lg text-[var(--text)] font-medium hover:opacity-90 transition disabled:opacity-50"
                                     >
                                         {loading ? '...' : 'Send'}
                                     </button>
@@ -326,8 +326,8 @@ export default function AITutor() {
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
                                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition ${activeTab === tab.id
-                                            ? 'bg-purple-600 text-white'
-                                            : 'text-gray-400 hover:text-white'
+                                            ? 'bg-[var(--accent-primary)] text-[var(--text)]'
+                                            : 'text-[var(--muted)] hover:text-[var(--text)]'
                                             }`}
                                     >
                                         <span>{tab.icon}</span>
@@ -348,14 +348,14 @@ export default function AITutor() {
                                                 <div className="flex items-start gap-2">
                                                     <span className="text-lg">{rec.icon || ''}</span>
                                                     <div className="flex-1">
-                                                        <h4 className="text-sm font-medium text-white mb-1">{rec.title}</h4>
-                                                        <p className="text-xs text-gray-400 mb-2">{rec.description}</p>
+                                                        <h4 className="text-sm font-medium text-[var(--text)] mb-1">{rec.title}</h4>
+                                                        <p className="text-xs text-[var(--muted)] mb-2">{rec.description}</p>
                                                         <button
                                                             onClick={() => {
                                                                 setInput(`Tell me more about: ${rec.title}`);
                                                                 setActiveTab('chat');
                                                             }}
-                                                            className="text-xs text-purple-400 hover:text-purple-300 transition"
+                                                            className="text-xs text-[var(--accent-primary)] hover:text-[var(--accent-primary)]/80 transition"
                                                         >
                                                             Learn More →
                                                         </button>
@@ -368,7 +368,7 @@ export default function AITutor() {
                                             <div className="w-12 h-12 bg-[var(--surface-2)] rounded-full flex items-center justify-center mx-auto mb-3">
                                                 <span className="text-xl"></span>
                                             </div>
-                                            <p className="text-sm text-gray-400">Start chatting to get personalized recommendations</p>
+                                            <p className="text-sm text-[var(--muted)]">Start chatting to get personalized recommendations</p>
                                         </div>
                                     )}
                                 </div>
@@ -388,11 +388,11 @@ export default function AITutor() {
                                         { topic: 'Data Structures', difficulty: 'intermediate' }
                                     ].map((item, index) => (
                                         <div key={index} className="flex items-center justify-between p-2 bg-[var(--surface-2)] rounded-lg">
-                                            <span className="text-sm text-gray-300">{item.topic}</span>
+                                            <span className="text-sm text-[var(--muted)]">{item.topic}</span>
                                             <button
                                                 onClick={() => generateExplanation(item.topic, item.difficulty)}
                                                 disabled={loading}
-                                                className="px-3 py-1 bg-purple-600/30 border border-purple-500/30 rounded text-xs text-purple-300 hover:bg-purple-600/40 transition disabled:opacity-50"
+                                                className="px-3 py-1 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded text-xs text-[var(--accent-primary)]/80 hover:bg-[var(--accent-primary)]/40 transition disabled:opacity-50"
                                             >
                                                 Explain
                                             </button>
@@ -401,13 +401,13 @@ export default function AITutor() {
                                 </div>
 
                                 <div className="mt-4">
-                                    <h4 className="text-sm font-medium text-white mb-2">Request custom explanation</h4>
+                                    <h4 className="text-sm font-medium text-[var(--text)] mb-2">Request custom explanation</h4>
                                     <div className="flex gap-2">
                                         <input
                                             ref={topicInputRef}
                                             type="text"
                                             placeholder="Enter a topic..."
-                                            className="flex-1 bg-[#1a1a35] border border-purple-900/40 rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm"
+                                            className="flex-1 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-lg px-3 py-2 text-[var(--text)] placeholder-[var(--muted)] text-sm"
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
                                                     const v = topicInputRef.current?.value?.trim();
@@ -427,7 +427,7 @@ export default function AITutor() {
                                                     topicInputRef.current.value = '';
                                                 }
                                             }}
-                                            className="px-3 py-2 bg-purple-600/30 border border-purple-500/30 rounded-lg text-purple-300 text-sm hover:bg-purple-600/40 transition"
+                                            className="px-3 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-lg text-[var(--accent-primary)]/80 text-sm hover:bg-[var(--accent-primary)]/40 transition"
                                         >
                                             Generate
                                         </button>
@@ -446,7 +446,7 @@ export default function AITutor() {
                                 >
                                     Clear Chat
                                 </button>
-                                <div className="text-xs text-gray-400 text-center">
+                                <div className="text-xs text-[var(--muted)] text-center">
                                     AI responses are generated based on your learning context
                                 </div>
                             </div>
@@ -457,3 +457,15 @@ export default function AITutor() {
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+

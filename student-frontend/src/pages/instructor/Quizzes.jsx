@@ -229,17 +229,17 @@ export default function InstructorQuizzes() {
     return (
         <div className="space-y-6 max-w-5xl mx-auto">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Quizzes</h1>
+                <h1 className="text-2xl font-bold text-[var(--text)]">Quizzes</h1>
                 <button
                     onClick={() => setShowCreateForm(true)}
-                    className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition"
+                    className="px-4 py-2 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition"
                 >
                     + Create Quiz
                 </button>
             </div>
 
             {showCreateForm && (
-                <div className="bg-gradient-to-br from-[#1a1a35] to-[#12122a] border border-purple-900/30 rounded-2xl p-6 shadow-xl">
+                <div className="bg-gradient-to-br from-[var(--surface-2)] to-[var(--surface)] border border-purple-900/30 rounded-2xl p-6 shadow-xl">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-xl font-bold text-[var(--text)]">Create New Quiz</h2>
                         <button
@@ -247,28 +247,28 @@ export default function InstructorQuizzes() {
                             onClick={() => setShowCreateForm(false)}
                             className="text-[var(--muted)] hover:text-[var(--text)] transition text-lg leading-none"
                         >
-                            ✕
+                            âœ•
                         </button>
                     </div>
                     <form onSubmit={handleCreateQuiz} className="space-y-5">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-2">Quiz Title *</label>
+                                <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Quiz Title *</label>
                                 <input
                                     type="text"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
+                                    className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
                                     placeholder="Enter quiz title"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-2">Course *</label>
+                                <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Course *</label>
                                 <select
                                     value={formData.courseId}
                                     onChange={(e) => setFormData({ ...formData, courseId: e.target.value })}
-                                    className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
+                                    className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
                                     required
                                 >
                                     <option value="">Select a course</option>
@@ -286,7 +286,7 @@ export default function InstructorQuizzes() {
                                     min="1"
                                     value={formData.time_limit_minutes}
                                     onChange={(e) => setFormData({ ...formData, time_limit_minutes: parseInt(e.target.value) })}
-                                    className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
+                                    className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
                                     required
                                 />
                             </div>
@@ -297,7 +297,7 @@ export default function InstructorQuizzes() {
                                     min="1"
                                     value={formData.max_attempts}
                                     onChange={(e) => setFormData({ ...formData, max_attempts: parseInt(e.target.value) })}
-                                    className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
+                                    className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
                                     required
                                 />
                             </div>
@@ -309,7 +309,7 @@ export default function InstructorQuizzes() {
                                     max="100"
                                     value={formData.passing_score}
                                     onChange={(e) => setFormData({ ...formData, passing_score: parseInt(e.target.value) })}
-                                    className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
+                                    className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
                                     required
                                 />
                             </div>
@@ -317,12 +317,12 @@ export default function InstructorQuizzes() {
 
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
-                                <h3 className="font-semibold text-white">Questions ({formData.questions.length})</h3>
+                                <h3 className="font-semibold text-[var(--text)]">Questions ({formData.questions.length})</h3>
                                 <div className="flex gap-2">
                                     <button
                                         type="button"
                                         onClick={addQuestion}
-                                        className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white text-sm font-medium hover:opacity-90 transition shadow-lg shadow-purple-500/25"
+                                        className="px-4 py-2 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-lg text-[var(--text)] text-sm font-medium hover:opacity-90 transition shadow-lg shadow-purple-500/25"
                                     >
                                         + Add Question
                                     </button>
@@ -330,10 +330,10 @@ export default function InstructorQuizzes() {
                             </div>
 
                             {formData.questions.map((question, index) => (
-                                <div key={index} className="bg-[#0d0d1a] rounded-xl p-5 space-y-4 border border-purple-900/30">
+                                <div key={index} className="bg-[var(--bg)] rounded-xl p-5 space-y-4 border border-purple-900/30">
                                     <div className="flex justify-between items-start">
-                                        <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                                            <span className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                                        <h4 className="text-sm font-bold text-[var(--text)] flex items-center gap-2">
+                                            <span className="w-8 h-8 bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-[var(--text)] text-xs font-bold">
                                                 {index + 1}
                                             </span>
                                             Question {index + 1}
@@ -351,7 +351,7 @@ export default function InstructorQuizzes() {
                                         placeholder="Enter your question here..."
                                         value={question.question}
                                         onChange={(e) => updateQuestion(index, 'question', e.target.value)}
-                                        className="w-full px-4 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
+                                        className="w-full px-4 py-3 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
                                         rows={2}
                                         required
                                     />
@@ -360,7 +360,7 @@ export default function InstructorQuizzes() {
                                         <select
                                             value={question.question_type}
                                             onChange={(e) => updateQuestion(index, 'question_type', e.target.value)}
-                                            className="px-4 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition"
+                                            className="px-4 py-3 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] transition"
                                         >
                                             <option value="mcq">Multiple Choice</option>
                                             <option value="true_false">True / False</option>
@@ -373,14 +373,14 @@ export default function InstructorQuizzes() {
                                             placeholder="Points"
                                             value={question.points}
                                             onChange={(e) => updateQuestion(index, 'points', parseInt(e.target.value) || 1)}
-                                            className="px-4 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition"
+                                            className="px-4 py-3 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] transition"
                                             required
                                         />
                                     </div>
 
                                     {(question.question_type === 'multiple_choice' || question.question_type === 'mcq') && (
                                         <div className="space-y-2">
-                                            <label className="text-sm font-semibold text-gray-300">Options (mark correct answer)</label>
+                                            <label className="text-sm font-semibold text-[var(--muted)]">Options (mark correct answer)</label>
                                             {question.options.map((option, optIndex) => (
                                                 <div key={optIndex} className="flex items-center gap-2">
                                                     <input
@@ -388,7 +388,7 @@ export default function InstructorQuizzes() {
                                                         name={`correct-${index}`}
                                                         checked={question.correct_answer === option}
                                                         onChange={() => updateQuestion(index, 'correct_answer', option)}
-                                                        className="w-4 h-4 text-purple-600 focus:ring-purple-500"
+                                                        className="w-4 h-4 text-[var(--accent-primary)]/80 focus:ring-purple-500"
                                                     />
                                                     <input
                                                         type="text"
@@ -399,12 +399,12 @@ export default function InstructorQuizzes() {
                                                             newOptions[optIndex] = e.target.value;
                                                             updateQuestion(index, 'options', newOptions);
                                                         }}
-                                                        className={`flex-1 px-4 py-2.5 bg-[#1a1a35] border rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition ${question.correct_answer === option ? 'border-green-500 bg-green-500/10' : 'border-purple-900/40'
+                                                        className={`flex-1 px-4 py-2.5 bg-[var(--surface-2)] border rounded-xl text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] transition ${question.correct_answer === option ? 'border-green-500 bg-green-500/10' : 'border-[var(--border)]/40'
                                                             }`}
                                                         required
                                                     />
                                                     {question.correct_answer === option && (
-                                                        <span className="text-green-400 text-sm">✓</span>
+                                                        <span className="text-green-400 text-sm">âœ“</span>
                                                     )}
                                                 </div>
                                             ))}
@@ -413,7 +413,7 @@ export default function InstructorQuizzes() {
 
                                     {question.question_type === 'true_false' && (
                                         <div className="space-y-2">
-                                            <label className="text-sm font-semibold text-gray-300">Select Correct Answer</label>
+                                            <label className="text-sm font-semibold text-[var(--muted)]">Select Correct Answer</label>
                                             <div className="flex gap-4">
                                                 {['true', 'false'].map((value) => (
                                                     <label key={value} className="flex items-center gap-2 cursor-pointer">
@@ -422,9 +422,9 @@ export default function InstructorQuizzes() {
                                                             name={`correct-${index}`}
                                                             checked={question.correct_answer === value}
                                                             onChange={() => updateQuestion(index, 'correct_answer', value)}
-                                                            className="w-4 h-4 text-purple-600 focus:ring-purple-500"
+                                                            className="w-4 h-4 text-[var(--accent-primary)]/80 focus:ring-purple-500"
                                                         />
-                                                        <span className="text-white capitalize">{value}</span>
+                                                        <span className="text-[var(--text)] capitalize">{value}</span>
                                                     </label>
                                                 ))}
                                             </div>
@@ -433,13 +433,13 @@ export default function InstructorQuizzes() {
 
                                     {question.question_type === 'short_answer' && (
                                         <div>
-                                            <label className="text-sm font-semibold text-gray-300 mb-2">Correct Answer (for reference)</label>
+                                            <label className="text-sm font-semibold text-[var(--muted)] mb-2">Correct Answer (for reference)</label>
                                             <input
                                                 type="text"
                                                 placeholder="Enter the correct answer"
                                                 value={question.correct_answer}
                                                 onChange={(e) => updateQuestion(index, 'correct_answer', e.target.value)}
-                                                className="w-full px-4 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition"
+                                                className="w-full px-4 py-2.5 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] transition"
                                             />
                                         </div>
                                     )}
@@ -450,14 +450,14 @@ export default function InstructorQuizzes() {
                         <div className="flex gap-3 pt-4">
                             <button
                                 type="submit"
-                                className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
+                                className="flex-1 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-xl text-[var(--text)] font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
                             >
                                 Create Quiz
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setShowCreateForm(false)}
-                                className="flex-1 py-3 bg-[#0d0d1a] border border-gray-600/40 rounded-xl text-gray-300 font-semibold hover:bg-gray-800/50 hover:text-white transition"
+                                className="flex-1 py-3 bg-[var(--bg)] border border-gray-600/40 rounded-xl text-[var(--muted)] font-semibold hover:bg-gray-800/50 hover:text-[var(--text)] transition"
                             >
                                 Cancel
                             </button>
@@ -468,11 +468,11 @@ export default function InstructorQuizzes() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {quizzes.map(quiz => (
-                    <div key={quiz.id} className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-5">
+                    <div key={quiz.id} className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-5">
                         <div className="flex items-start justify-between mb-3">
                             <div>
-                                <h3 className="font-semibold text-white">{quiz.title}</h3>
-                                <p className="text-sm text-gray-400 mt-1">{quiz.course_title}</p>
+                                <h3 className="font-semibold text-[var(--text)]">{quiz.title}</h3>
+                                <p className="text-sm text-[var(--muted)] mt-1">{quiz.course_title}</p>
                             </div>
                             <span className={`text-xs px-2 py-1 rounded-full font-medium ${quiz.is_published ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'
                                 }`}>
@@ -489,19 +489,19 @@ export default function InstructorQuizzes() {
                         <div className="flex flex-wrap gap-2">
                             <button
                                 onClick={() => fetchAttempts(quiz.id)}
-                                className="flex-1 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-purple-400 text-sm hover:bg-purple-600/20 transition"
+                                className="flex-1 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--accent-primary)] text-sm hover:bg-[var(--accent-primary)]/20 transition"
                             >
                                 View Attempts
                             </button>
                             <button
                                 onClick={() => fetchAnalytics(quiz.id)}
-                                className="px-3 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition"
+                                className="px-3 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition"
                             >
                                 Analytics
                             </button>
                             <button
                                 onClick={() => handleExport(quiz.id, 'csv')}
-                                className="px-3 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition"
+                                className="px-3 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition"
                             >
                                 Export
                             </button>
@@ -519,7 +519,7 @@ export default function InstructorQuizzes() {
                                     setDuplicateTitle(`${quiz.title} (Copy)`);
                                     setShowDuplicateModal(quiz);
                                 }}
-                                className="px-3 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition"
+                                className="px-3 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition"
                             >
                                 Duplicate
                             </button>
@@ -535,11 +535,11 @@ export default function InstructorQuizzes() {
             </div>
 
             {quizzes.length === 0 && (
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center">
-                    <p className="text-gray-400 mb-4">No quizzes created yet.</p>
+                <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-8 text-center">
+                    <p className="text-[var(--muted)] mb-4">No quizzes created yet.</p>
                     <button
                         onClick={() => setShowCreateForm(true)}
-                        className="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition"
+                        className="px-5 py-2.5 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition"
                     >
                         Create Your First Quiz
                     </button>
@@ -559,14 +559,14 @@ export default function InstructorQuizzes() {
             {/* Attempts Modal */}
             {showAttempts && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
                         <div className="flex items-center justify-between px-6 py-4 border-b border-purple-900/30 flex-shrink-0">
-                            <h3 className="text-lg font-semibold text-white">Quiz Attempts</h3>
-                            <button onClick={() => setShowAttempts(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <h3 className="text-lg font-semibold text-[var(--text)]">Quiz Attempts</h3>
+                            <button onClick={() => setShowAttempts(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">âœ•</button>
                         </div>
                         <div className="overflow-y-auto flex-1 p-6 space-y-4">
                             {attempts.length === 0 ? (
-                                <p className="text-center text-gray-400 py-12">No attempts yet.</p>
+                                <p className="text-center text-[var(--muted)] py-12">No attempts yet.</p>
                             ) : attempts.map(attempt => {
                                 const passingScore = quizzes.find(q => q.id === showAttempts)?.passing_score || 70;
                                 const passed = attempt.passed !== undefined ? attempt.passed : attempt.score >= passingScore;
@@ -574,20 +574,20 @@ export default function InstructorQuizzes() {
                                     ? (typeof attempt.answers === 'string' ? JSON.parse(attempt.answers) : attempt.answers)
                                     : [];
                                 return (
-                                    <div key={attempt.id} className="bg-[#1a1a35] border border-purple-900/20 rounded-xl p-4">
+                                    <div key={attempt.id} className="bg-[var(--surface-2)] border border-purple-900/20 rounded-xl p-4">
                                         {/* Student header */}
                                         <div className="flex items-start justify-between mb-3">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center">
                                                     {attempt.avatar_url
                                                         ? <img src={attempt.avatar_url} alt={attempt.name} className="w-full h-full object-cover" />
-                                                        : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold text-white">{attempt.name?.[0]?.toUpperCase() || '?'}</div>
+                                                        : <div className="w-full h-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center text-sm font-bold text-[var(--text)]">{attempt.name?.[0]?.toUpperCase() || '?'}</div>
                                                     }
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-white">{attempt.name}</p>
-                                                    <p className="text-xs text-gray-400">{attempt.email}</p>
-                                                    <p className="text-xs text-gray-500">
+                                                    <p className="font-medium text-[var(--text)]">{attempt.name}</p>
+                                                    <p className="text-xs text-[var(--muted)]">{attempt.email}</p>
+                                                    <p className="text-xs text-[var(--muted)]">
                                                         {new Date(attempt.completed_at).toLocaleString()}
                                                     </p>
                                                 </div>
@@ -605,16 +605,16 @@ export default function InstructorQuizzes() {
                                         {/* Per-question breakdown */}
                                         {gradedAnswers.length > 0 && (
                                             <div className="space-y-2 mt-3 pt-3 border-t border-purple-900/20">
-                                                <p className="text-xs text-gray-400 font-medium mb-2">Answer Breakdown</p>
+                                                <p className="text-xs text-[var(--muted)] font-medium mb-2">Answer Breakdown</p>
                                                 {gradedAnswers.map((ga, i) => (
                                                     <div key={i} className={`flex items-center justify-between text-xs px-3 py-2 rounded-lg ${ga.correct ? 'bg-green-500/10 text-green-300' : 'bg-red-500/10 text-red-300'}`}>
                                                         <span className="flex items-center gap-2">
-                                                            <span>{ga.correct ? '✓' : '✗'}</span>
-                                                            <span className="text-gray-300">Q{i + 1}:</span>
+                                                            <span>{ga.correct ? 'âœ“' : 'âœ—'}</span>
+                                                            <span className="text-[var(--muted)]">Q{i + 1}:</span>
                                                             <span>{ga.user_answer || 'No answer'}</span>
                                                         </span>
                                                         {!ga.correct && (
-                                                            <span className="text-gray-400 ml-2">
+                                                            <span className="text-[var(--muted)] ml-2">
                                                                 Correct: {ga.correct_answer}
                                                             </span>
                                                         )}
@@ -633,17 +633,17 @@ export default function InstructorQuizzes() {
             {/* Duplicate Quiz Modal */}
             {showDuplicateModal && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-md">
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl w-full max-w-md">
                         <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
-                            <h3 className="font-semibold text-white">Duplicate Quiz</h3>
-                            <button onClick={() => setShowDuplicateModal(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <h3 className="font-semibold text-[var(--text)]">Duplicate Quiz</h3>
+                            <button onClick={() => setShowDuplicateModal(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">âœ•</button>
                         </div>
                         <div className="p-5 space-y-4">
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">New Title</label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">New Title</label>
                                 <input type="text" value={duplicateTitle}
                                     onChange={e => setDuplicateTitle(e.target.value)}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]"
                                     autoFocus />
                             </div>
                             <div className="flex gap-3">
@@ -656,11 +656,11 @@ export default function InstructorQuizzes() {
                                             toast.error('Please enter a title');
                                         }
                                     }}
-                                    className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition">
+                                    className="flex-1 py-2.5 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition">
                                     Duplicate
                                 </button>
                                 <button onClick={() => setShowDuplicateModal(null)}
-                                    className="px-5 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition">
+                                    className="px-5 py-2.5 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition">
                                     Cancel
                                 </button>
                             </div>
@@ -672,66 +672,66 @@ export default function InstructorQuizzes() {
             {/* Analytics Modal */}
             {showAnalytics && analytics && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold text-white">Quiz Analytics</h3>
+                            <h3 className="text-lg font-semibold text-[var(--text)]">Quiz Analytics</h3>
                             <button
                                 onClick={() => setShowAnalytics(null)}
                                 className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition"
                             >
-                                ✕
+                                âœ•
                             </button>
                         </div>
 
                         <div className="space-y-6">
                             {/* Quiz Details */}
-                            <div className="bg-[#1a1a35] rounded-xl p-4">
-                                <h4 className="font-medium text-white mb-2">{analytics.quiz_details.title}</h4>
-                                <p className="text-sm text-gray-400">{analytics.quiz_details.course_title}</p>
-                                <div className="flex gap-4 mt-2 text-sm text-gray-400">
+                            <div className="bg-[var(--surface-2)] rounded-xl p-4">
+                                <h4 className="font-medium text-[var(--text)] mb-2">{analytics.quiz_details.title}</h4>
+                                <p className="text-sm text-[var(--muted)]">{analytics.quiz_details.course_title}</p>
+                                <div className="flex gap-4 mt-2 text-sm text-[var(--muted)]">
                                     <span>Time Limit: {analytics.quiz_details.time_limit_minutes} min</span>
                                     <span>Passing Score: {analytics.quiz_details.passing_score}%</span>
                                 </div>
                             </div>
 
                             {/* Attempt Stats */}
-                            <div className="bg-[#1a1a35] rounded-xl p-4">
-                                <h4 className="font-medium text-white mb-3">Attempt Statistics</h4>
+                            <div className="bg-[var(--surface-2)] rounded-xl p-4">
+                                <h4 className="font-medium text-[var(--text)] mb-3">Attempt Statistics</h4>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     <div>
-                                        <p className="text-gray-400 text-sm">Total Attempts</p>
-                                        <p className="text-white text-xl font-bold">{analytics.attempt_stats.total_attempts || 0}</p>
+                                        <p className="text-[var(--muted)] text-sm">Total Attempts</p>
+                                        <p className="text-[var(--text)] text-xl font-bold">{analytics.attempt_stats.total_attempts || 0}</p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400 text-sm">Unique Students</p>
-                                        <p className="text-white text-xl font-bold">{analytics.attempt_stats.unique_students || 0}</p>
+                                        <p className="text-[var(--muted)] text-sm">Unique Students</p>
+                                        <p className="text-[var(--text)] text-xl font-bold">{analytics.attempt_stats.unique_students || 0}</p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400 text-sm">Average Score</p>
-                                        <p className="text-white text-xl font-bold">{Math.round(analytics.attempt_stats.avg_score || 0)}%</p>
+                                        <p className="text-[var(--muted)] text-sm">Average Score</p>
+                                        <p className="text-[var(--text)] text-xl font-bold">{Math.round(analytics.attempt_stats.avg_score || 0)}%</p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400 text-sm">Passed</p>
-                                        <p className="text-white text-xl font-bold">{analytics.attempt_stats.passed_count || 0}</p>
+                                        <p className="text-[var(--muted)] text-sm">Passed</p>
+                                        <p className="text-[var(--text)] text-xl font-bold">{analytics.attempt_stats.passed_count || 0}</p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400 text-sm">Highest Score</p>
-                                        <p className="text-white text-xl font-bold">{Math.round(analytics.attempt_stats.max_score || 0)}%</p>
+                                        <p className="text-[var(--muted)] text-sm">Highest Score</p>
+                                        <p className="text-[var(--text)] text-xl font-bold">{Math.round(analytics.attempt_stats.max_score || 0)}%</p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400 text-sm">Lowest Score</p>
-                                        <p className="text-white text-xl font-bold">{Math.round(analytics.attempt_stats.min_score || 0)}%</p>
+                                        <p className="text-[var(--muted)] text-sm">Lowest Score</p>
+                                        <p className="text-[var(--text)] text-xl font-bold">{Math.round(analytics.attempt_stats.min_score || 0)}%</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Score Distribution */}
-                            <div className="bg-[#1a1a35] rounded-xl p-4">
-                                <h4 className="font-medium text-white mb-3">Grade Distribution</h4>
+                            <div className="bg-[var(--surface-2)] rounded-xl p-4">
+                                <h4 className="font-medium text-[var(--text)] mb-3">Grade Distribution</h4>
                                 <div className="space-y-2">
                                     {analytics.score_distribution.map(dist => (
                                         <div key={dist.grade_range} className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-400">{dist.grade_range}</span>
+                                            <span className="text-sm text-[var(--muted)]">{dist.grade_range}</span>
                                             <div className="flex items-center gap-2">
                                                 <div className="w-32 bg-gray-700 rounded-full h-2">
                                                     <div
@@ -739,7 +739,7 @@ export default function InstructorQuizzes() {
                                                         style={{ width: `${(dist.count / (analytics.attempt_stats.total_attempts || 1)) * 100}%` }}
                                                     />
                                                 </div>
-                                                <span className="text-sm text-white font-medium w-8">{dist.count}</span>
+                                                <span className="text-sm text-[var(--text)] font-medium w-8">{dist.count}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -748,13 +748,13 @@ export default function InstructorQuizzes() {
 
                             {/* Question Analysis */}
                             {analytics.question_analysis.length > 0 && (
-                                <div className="bg-[#1a1a35] rounded-xl p-4">
-                                    <h4 className="font-medium text-white mb-3">Question Analysis</h4>
+                                <div className="bg-[var(--surface-2)] rounded-xl p-4">
+                                    <h4 className="font-medium text-[var(--text)] mb-3">Question Analysis</h4>
                                     <div className="space-y-2">
                                         {analytics.question_analysis.map((qa, index) => (
                                             <div key={index} className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-400 truncate flex-1 mr-2">{qa.question}</span>
-                                                <span className="text-sm text-white font-medium">{Math.round(qa.correct_rate || 0)}% correct</span>
+                                                <span className="text-sm text-[var(--muted)] truncate flex-1 mr-2">{qa.question}</span>
+                                                <span className="text-sm text-[var(--text)] font-medium">{Math.round(qa.correct_rate || 0)}% correct</span>
                                             </div>
                                         ))}
                                     </div>
@@ -767,3 +767,13 @@ export default function InstructorQuizzes() {
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+

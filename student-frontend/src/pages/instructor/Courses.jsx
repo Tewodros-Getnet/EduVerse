@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -42,7 +42,7 @@ export default function InstructorCourses() {
             setCourses(prev => [res.data.course, ...prev]);
             setShowForm(false);
             setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' });
-            toast.success('✓ Course created successfully!');
+            toast.success('âœ“ Course created successfully!');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Failed to create course');
         } finally { setSaving(false); }
@@ -57,7 +57,7 @@ export default function InstructorCourses() {
             setCourses(prev => prev.map(c => c.id === editingId ? res.data.course : c));
             setEditingId(null);
             setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' });
-            toast.success('✓ Course updated successfully!');
+            toast.success('âœ“ Course updated successfully!');
             setShowForm(false);
         } catch (err) {
             toast.error(err.response?.data?.error || 'Failed to update course');
@@ -82,7 +82,7 @@ export default function InstructorCourses() {
         try {
             const res = await api.post(`/courses/${courseId}/publish`);
             setCourses(prev => prev.map(c => c.id === courseId ? res.data.course : c));
-            toast.success('✓ Course published successfully!');
+            toast.success('âœ“ Course published successfully!');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Failed to publish course');
         } finally {
@@ -94,7 +94,7 @@ export default function InstructorCourses() {
         try {
             const res = await api.post(`/courses/${courseId}/duplicate`, { new_title: newTitle });
             setCourses(prev => [res.data.course, ...prev]);
-            toast.success('✓ Course duplicated successfully!');
+            toast.success('âœ“ Course duplicated successfully!');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Failed to duplicate course');
         }
@@ -119,7 +119,7 @@ export default function InstructorCourses() {
                 try {
                     await api.delete(`/courses/${id}`);
                     setCourses(prev => prev.filter(c => c.id !== id));
-                    toast.success('✓ Course deleted');
+                    toast.success('âœ“ Course deleted');
                 } catch {
                     toast.error('Failed to delete course');
                 } finally {
@@ -131,10 +131,10 @@ export default function InstructorCourses() {
 
     const getDifficultyColor = (level) => {
         switch (level) {
-            case 'beginner': return 'from-green-500/20 to-green-500/10 border-green-500/30';
+            case 'beginner': return 'from-green-500/20 to-green-500/20 border-green-500/30';
             case 'intermediate': return 'from-yellow-500/20 to-yellow-500/10 border-yellow-500/30';
             case 'advanced': return 'from-red-500/20 to-red-500/10 border-red-500/30';
-            default: return 'from-purple-500/20 to-purple-500/10 border-purple-500/30';
+            default: return 'from-purple-500/20 to-purple-500/10 border-[var(--accent-primary)]/30';
         }
     };
 
@@ -143,7 +143,7 @@ export default function InstructorCourses() {
             case 'beginner': return 'bg-green-500/20 text-green-300 border border-green-500/30';
             case 'intermediate': return 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30';
             case 'advanced': return 'bg-red-500/20 text-red-300 border border-red-500/30';
-            default: return 'bg-purple-500/20 text-purple-300 border border-purple-500/30';
+            default: return 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80 border border-[var(--accent-primary)]/30';
         }
     };
 
@@ -155,14 +155,14 @@ export default function InstructorCourses() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
                     <div>
-                        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--accent-primary)] via-[var(--accent-secondary)] to-[var(--accent-primary)] bg-clip-text text-transparent">
                             My Courses
                         </h1>
-                        <p className="text-gray-400 mt-2">Manage and create your courses</p>
+                        <p className="text-[var(--muted)] mt-2">Manage and create your courses</p>
                     </div>
                     <button
                         onClick={() => { setShowForm(!showForm); setEditingId(null); setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' }); }}
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white font-medium transition duration-200 shadow-lg hover:shadow-purple-500/25">
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 hover:from-purple-700 hover:to-pink-700 rounded-xl text-[var(--text)] font-medium transition duration-200 shadow-lg hover:shadow-purple-500/25">
                         <Plus className="w-5 h-5" />
                         Create Course
                     </button>
@@ -175,7 +175,7 @@ export default function InstructorCourses() {
                             key={f}
                             onClick={() => setFilter(f)}
                             className={`px-4 py-2 rounded-lg font-medium text-sm capitalize transition ${filter === f
-                                    ? 'bg-purple-600 text-white'
+                                    ? 'bg-[var(--accent-primary)] text-[var(--text)]'
                                     : 'text-[var(--muted)] hover:text-[var(--text)]'
                                 }`}>
                             {f}
@@ -185,82 +185,82 @@ export default function InstructorCourses() {
 
                 {/* Form */}
                 {showForm && (
-                    <div className="mb-8 bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-purple-500/30 rounded-2xl p-8 backdrop-blur">
-                        <h2 className="text-2xl font-bold text-white mb-6">{editingId ? '✏️ Edit Course' : '➕ Create New Course'}</h2>
+                    <div className="mb-8 bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-[var(--accent-primary)]/30 rounded-2xl p-8 backdrop-blur">
+                        <h2 className="text-2xl font-bold text-[var(--text)] mb-6">{editingId ? 'âœï¸ Edit Course' : 'âž• Create New Course'}</h2>
                         <form onSubmit={editingId ? updateCourse : createCourse} className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">Course Title *</label>
+                                <label className="block text-sm font-medium text-[var(--muted)] mb-2">Course Title *</label>
                                 <input
                                     value={form.title}
                                     onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                                     required
                                     placeholder="e.g., Advanced Web Development"
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-purple-500 transition" />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">Description *</label>
+                                <label className="block text-sm font-medium text-[var(--muted)] mb-2">Description *</label>
                                 <textarea
                                     value={form.description}
                                     onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                                     required
                                     rows={4}
                                     placeholder="Describe what students will learn..."
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition resize-none" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-purple-500 transition resize-none" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">Difficulty Level</label>
+                                    <label className="block text-sm font-medium text-[var(--muted)] mb-2">Difficulty Level</label>
                                     <select
                                         value={form.difficulty_level}
                                         onChange={e => setForm(f => ({ ...f, difficulty_level: e.target.value }))}
-                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition">
-                                        <option value="beginner">🟢 Beginner</option>
-                                        <option value="intermediate">🟡 Intermediate</option>
-                                        <option value="advanced">🔴 Advanced</option>
+                                        className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] transition">
+                                        <option value="beginner">ðŸŸ¢ Beginner</option>
+                                        <option value="intermediate">ðŸŸ¡ Intermediate</option>
+                                        <option value="advanced">ðŸ”´ Advanced</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
+                                    <label className="block text-sm font-medium text-[var(--muted)] mb-2">Category</label>
                                     <input
                                         value={form.category}
                                         onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
                                         placeholder="e.g., Web Development"
-                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition" />
+                                        className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-purple-500 transition" />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">Price (USD)</label>
+                                <label className="block text-sm font-medium text-[var(--muted)] mb-2">Price (USD)</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-3 text-gray-400">$</span>
+                                    <span className="absolute left-4 top-3 text-[var(--muted)]">$</span>
                                     <input
                                         type="number"
                                         min="0"
                                         step="0.01"
                                         value={form.price}
                                         onChange={e => setForm(f => ({ ...f, price: parseFloat(e.target.value) || 0 }))}
-                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition" />
+                                        className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl pl-8 pr-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-purple-500 transition" />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">Prerequisites</label>
+                                <label className="block text-sm font-medium text-[var(--muted)] mb-2">Prerequisites</label>
                                 <textarea
                                     value={form.prerequisites}
                                     onChange={e => setForm(f => ({ ...f, prerequisites: e.target.value }))}
                                     rows={3}
                                     placeholder="List any required knowledge..."
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition resize-none" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-purple-500 transition resize-none" />
                             </div>
                             <div className="flex gap-3 pt-4">
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white font-medium transition disabled:opacity-50 shadow-lg hover:shadow-purple-500/25">
-                                    {saving ? '⏳ Saving...' : (editingId ? '✓ Update Course' : '✓ Create Course')}
+                                    className="px-6 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 hover:from-purple-700 hover:to-pink-700 rounded-xl text-[var(--text)] font-medium transition disabled:opacity-50 shadow-lg hover:shadow-purple-500/25">
+                                    {saving ? 'â³ Saving...' : (editingId ? 'âœ“ Update Course' : 'âœ“ Create Course')}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => { setShowForm(false); setEditingId(null); setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' }); }}
-                                    className="px-6 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-[var(--muted)] hover:text-[var(--text)] font-medium transition">
+                                    className="px-6 py-3 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] hover:text-[var(--text)] font-medium transition">
                                     Cancel
                                 </button>
                             </div>
@@ -277,7 +277,7 @@ export default function InstructorCourses() {
                                 className={`group bg-gradient-to-br ${getDifficultyColor(course.difficulty_level)} border rounded-2xl p-6 hover:shadow-xl hover:shadow-purple-500/20 transition duration-300 overflow-hidden relative`}>
                                 {/* Status Badge */}
                                 <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-medium ${course.status === 'published' ? 'bg-green-500/20 text-green-300 border border-green-500/30' :
-                                        course.status === 'archived' ? 'bg-gray-500/20 text-gray-300 border border-gray-500/30' :
+                                        course.status === 'archived' ? 'bg-gray-500/20 text-[var(--muted)] border border-gray-500/30' :
                                             'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
                                     }`}>
                                     {course.status === 'published' ? 'Published' : course.status === 'archived' ? 'Archived' : 'Draft'}
@@ -286,30 +286,30 @@ export default function InstructorCourses() {
                                 {/* Content */}
                                 <div className="space-y-4">
                                     <div>
-                                        <h3 className="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 group-hover:bg-clip-text transition line-clamp-2">
+                                        <h3 className="text-xl font-bold text-[var(--text)] group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 group-hover:bg-clip-text transition line-clamp-2">
                                             {course.title}
                                         </h3>
-                                        <p className="text-sm text-gray-400 mt-2">{course.category}</p>
+                                        <p className="text-sm text-[var(--muted)] mt-2">{course.category}</p>
                                     </div>
-                                    <p className="text-sm text-gray-300 line-clamp-3">{course.description}</p>
+                                    <p className="text-sm text-[var(--muted)] line-clamp-3">{course.description}</p>
 
                                     {/* Stats */}
                                     <div className="grid grid-cols-2 gap-3 pt-4">
                                         <div className="bg-black/30 rounded-lg px-3 py-2">
-                                            <div className="flex items-center gap-2 text-xs text-gray-400">
+                                            <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
                                                 <Users className="w-4 h-4" />
                                                 <span>{course.enrollment_count || 0} students</span>
                                             </div>
                                         </div>
                                         <div className="bg-black/30 rounded-lg px-3 py-2">
-                                            <div className="flex items-center gap-2 text-xs text-gray-400">
+                                            <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
                                                 <Clock className="w-4 h-4" />
                                                 <span>{course.duration_hours || 0}h</span>
                                             </div>
                                         </div>
                                         {course.price > 0 && (
                                             <div className="bg-black/30 rounded-lg px-3 py-2">
-                                                <div className="flex items-center gap-2 text-xs text-gray-400">
+                                                <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
                                                     <DollarSign className="w-4 h-4" />
                                                     <span>${course.price}</span>
                                                 </div>
@@ -317,7 +317,7 @@ export default function InstructorCourses() {
                                         )}
                                         <div className={`bg-black/30 rounded-lg px-3 py-2 text-xs font-medium ${getDifficultyBadgeColor(course.difficulty_level).split(' ')[0]}`}>
                                             <span className={getDifficultyBadgeColor(course.difficulty_level)}>
-                                                {course.difficulty_level === 'beginner' ? '🟢' : course.difficulty_level === 'intermediate' ? '🟡' : '🔴'} {course.difficulty_level}
+                                                {course.difficulty_level === 'beginner' ? 'ðŸŸ¢' : course.difficulty_level === 'intermediate' ? 'ðŸŸ¡' : 'ðŸ”´'} {course.difficulty_level}
                                             </span>
                                         </div>
                                     </div>
@@ -326,7 +326,7 @@ export default function InstructorCourses() {
                                     <div className="flex flex-wrap gap-2 pt-4 border-t border-black/20">
                                         <Link
                                             to={`/instructor/courses/${course.id}`}
-                                            className="flex-1 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-sm font-medium text-center transition flex items-center justify-center gap-2">
+                                            className="flex-1 py-2 bg-[var(--accent-primary)] hover:bg-purple-700 rounded-lg text-[var(--text)] text-sm font-medium text-center transition flex items-center justify-center gap-2">
                                             <Book className="w-4 h-4" />
                                             Manage
                                         </Link>
@@ -367,12 +367,12 @@ export default function InstructorCourses() {
                         ))}
                     </div>
                 ) : (
-                    <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-purple-500/30 rounded-2xl p-12 text-center">
-                        <div className="text-5xl mb-4">📚</div>
-                        <p className="text-gray-400 text-lg mb-6">No {filter !== 'all' ? filter : ''} courses yet. Start creating!</p>
+                    <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-[var(--accent-primary)]/30 rounded-2xl p-12 text-center">
+                        <div className="text-5xl mb-4">ðŸ“š</div>
+                        <p className="text-[var(--muted)] text-lg mb-6">No {filter !== 'all' ? filter : ''} courses yet. Start creating!</p>
                         <button
                             onClick={() => setShowForm(true)}
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white font-medium transition shadow-lg hover:shadow-purple-500/25">
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 hover:from-purple-700 hover:to-pink-700 rounded-xl text-[var(--text)] font-medium transition shadow-lg hover:shadow-purple-500/25">
                             <Plus className="w-5 h-5" />
                             Create Your First Course
                         </button>
@@ -382,52 +382,52 @@ export default function InstructorCourses() {
                 {/* Analytics Modal */}
                 {showAnalytics && (
                     <div className="fixed inset-0 bg-black/60 backdrop-blur flex items-center justify-center z-50 p-4">
-                        <div className="bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] border border-purple-500/30 rounded-2xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                        <div className="bg-gradient-to-br from-[#0f0f1a] to-[#1a1a2e] border border-[var(--accent-primary)]/30 rounded-2xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-2xl font-bold text-white">📊 Course Analytics</h3>
+                                <h3 className="text-2xl font-bold text-[var(--text)]">ðŸ“Š Course Analytics</h3>
                                 <button
                                     onClick={() => setShowAnalytics(null)}
                                     className="text-[var(--muted)] hover:text-[var(--text)] text-2xl transition">
-                                    ✕
+                                    âœ•
                                 </button>
                             </div>
 
                             <div className="space-y-6">
-                                <div className="bg-gradient-to-br from-purple-900/20 to-purple-900/5 border border-purple-500/30 rounded-xl p-6">
-                                    <h4 className="font-bold text-white mb-4 flex items-center gap-2">
+                                <div className="bg-gradient-to-br from-purple-900/20 to-purple-900/5 border border-[var(--accent-primary)]/30 rounded-xl p-6">
+                                    <h4 className="font-bold text-[var(--text)] mb-4 flex items-center gap-2">
                                         <Users className="w-5 h-5" />
                                         Enrollment Statistics
                                     </h4>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                         <div className="bg-black/30 rounded-lg p-4">
-                                            <p className="text-gray-400 text-sm mb-1">Total Enrollments</p>
-                                            <p className="text-white text-2xl font-bold">{showAnalytics.enrollment_stats?.total_enrollments || 0}</p>
+                                            <p className="text-[var(--muted)] text-sm mb-1">Total Enrollments</p>
+                                            <p className="text-[var(--text)] text-2xl font-bold">{showAnalytics.enrollment_stats?.total_enrollments || 0}</p>
                                         </div>
                                         <div className="bg-black/30 rounded-lg p-4">
-                                            <p className="text-gray-400 text-sm mb-1">Recent (30 days)</p>
-                                            <p className="text-white text-2xl font-bold">{showAnalytics.enrollment_stats?.recent_enrollments || 0}</p>
+                                            <p className="text-[var(--muted)] text-sm mb-1">Recent (30 days)</p>
+                                            <p className="text-[var(--text)] text-2xl font-bold">{showAnalytics.enrollment_stats?.recent_enrollments || 0}</p>
                                         </div>
                                         <div className="bg-black/30 rounded-lg p-4">
-                                            <p className="text-gray-400 text-sm mb-1">Avg Progress</p>
-                                            <p className="text-white text-2xl font-bold">{Math.round(showAnalytics.enrollment_stats?.avg_progress || 0)}%</p>
+                                            <p className="text-[var(--muted)] text-sm mb-1">Avg Progress</p>
+                                            <p className="text-[var(--text)] text-2xl font-bold">{Math.round(showAnalytics.enrollment_stats?.avg_progress || 0)}%</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 {showAnalytics.revenue_stats?.total_revenue > 0 && (
                                     <div className="bg-gradient-to-br from-green-900/20 to-green-900/5 border border-green-500/30 rounded-xl p-6">
-                                        <h4 className="font-bold text-white mb-4 flex items-center gap-2">
+                                        <h4 className="font-bold text-[var(--text)] mb-4 flex items-center gap-2">
                                             <DollarSign className="w-5 h-5" />
                                             Revenue
                                         </h4>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="bg-black/30 rounded-lg p-4">
-                                                <p className="text-gray-400 text-sm mb-1">Total Revenue</p>
-                                                <p className="text-white text-2xl font-bold">${showAnalytics.revenue_stats?.total_revenue || 0}</p>
+                                                <p className="text-[var(--muted)] text-sm mb-1">Total Revenue</p>
+                                                <p className="text-[var(--text)] text-2xl font-bold">${showAnalytics.revenue_stats?.total_revenue || 0}</p>
                                             </div>
                                             <div className="bg-black/30 rounded-lg p-4">
-                                                <p className="text-gray-400 text-sm mb-1">Paying Students</p>
-                                                <p className="text-white text-2xl font-bold">{showAnalytics.revenue_stats?.paying_students || 0}</p>
+                                                <p className="text-[var(--muted)] text-sm mb-1">Paying Students</p>
+                                                <p className="text-[var(--text)] text-2xl font-bold">{showAnalytics.revenue_stats?.paying_students || 0}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -447,3 +447,14 @@ export default function InstructorCourses() {
             />        </div>
     );
 }
+
+
+
+
+
+
+
+
+
+
+

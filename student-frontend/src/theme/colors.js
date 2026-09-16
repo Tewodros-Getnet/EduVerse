@@ -119,12 +119,13 @@ export const colors = {
 
 // Gradient Presets
 export const gradients = {
-  aiPrimary: 'from-indigo-600 to-purple-600',
-  aiSecondary: 'from-purple-600 to-pink-600',
-  success: 'from-emerald-500 to-teal-500',
+  aiPrimary: 'from-indigo-600 to-[var(--accent-primary)]/80',
+  aiSecondary: 'from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80',
+  success: 'from-green-500 to-cyan-500',
   warm: 'from-orange-500 to-rose-500',
-  cool: 'from-blue-500 to-cyan-400',
+  cool: 'from-[var(--accent-tertiary)] to-[var(--accent-tertiary)]/80',
   vibrant: 'from-violet-600 to-indigo-600',
 };
 
 export default colors;
+

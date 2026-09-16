@@ -182,7 +182,7 @@ export default function Live() {
         const scheduled = new Date(session.scheduled_at);
         
         if (session.status === 'live') return { text: 'LIVE NOW', color: 'text-red-400', bg: 'bg-red-500/20' };
-        if (session.status === 'ended') return { text: 'ENDED', color: 'text-gray-400', bg: 'bg-gray-500/20' };
+        if (session.status === 'ended') return { text: 'ENDED', color: 'text-[var(--muted)]', bg: 'bg-gray-500/20' };
         if (scheduled <= now) return { text: 'STARTING SOON', color: 'text-yellow-400', bg: 'bg-yellow-500/20' };
         return { text: 'UPCOMING', color: 'text-blue-400', bg: 'bg-blue-500/20' };
     };
@@ -193,8 +193,8 @@ export default function Live() {
             <div className="max-w-6xl mx-auto space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold text-white">{session.title}</h1>
-                        <p className="text-gray-400 text-sm mt-1">
+                        <h1 className="text-2xl font-bold text-[var(--text)]">{session.title}</h1>
+                        <p className="text-[var(--muted)] text-sm mt-1">
                             {session.course_title} • {session.instructor_name}
                         </p>
                     </div>
@@ -206,7 +206,7 @@ export default function Live() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Main Video Area */}
                     <div className="lg:col-span-2 space-y-4">
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl overflow-hidden">
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl overflow-hidden">
                             <div className="aspect-video bg-black relative">
                                 {session.status === 'live' ? (
                                     <div className="absolute inset-0 flex items-center justify-center">
@@ -214,8 +214,8 @@ export default function Live() {
                                             <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                                                 <span className="text-3xl">🔴</span>
                                             </div>
-                                            <h3 className="text-xl font-bold text-white mb-2">Live Session</h3>
-                                            <p className="text-gray-400">
+                                            <h3 className="text-xl font-bold text-[var(--text)] mb-2">Live Session</h3>
+                                            <p className="text-[var(--muted)]">
                                                 {isJoined ? 'You are in the session' : 'Join to participate'}
                                             </p>
                                         </div>
@@ -223,13 +223,13 @@ export default function Live() {
                                 ) : (
                                     <div className="absolute inset-0 flex items-center justify-center">
                                         <div className="text-center">
-                                            <div className="w-20 h-20 bg-[#1a1a35] rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <div className="w-20 h-20 bg-[var(--surface-2)] rounded-full flex items-center justify-center mx-auto mb-4">
                                                 <span className="text-3xl">📹</span>
                                             </div>
-                                            <h3 className="text-xl font-bold text-white mb-2">
+                                            <h3 className="text-xl font-bold text-[var(--text)] mb-2">
                                                 {session.status === 'ended' ? 'Session Ended' : 'Session Not Started'}
                                             </h3>
-                                            <p className="text-gray-400">
+                                            <p className="text-[var(--muted)]">
                                                 {session.status === 'ended' 
                                                     ? 'Check recordings below' 
                                                     : `Starts at ${formatSessionTime(session.scheduled_at)}`
@@ -256,7 +256,7 @@ export default function Live() {
                                                 <>
                                                     <button
                                                         onClick={leaveSession}
-                                                        className="px-4 py-2 bg-gray-600/30 border border-gray-500/30 rounded-xl text-gray-300 font-medium hover:bg-gray-600/40 transition"
+                                                        className="px-4 py-2 bg-gray-600/30 border border-gray-500/30 rounded-xl text-[var(--muted)] font-medium hover:bg-gray-600/40 transition"
                                                     >
                                                         Leave
                                                     </button>
@@ -264,8 +264,8 @@ export default function Live() {
                                                         onClick={toggleMic}
                                                         className={`p-2 rounded-lg transition ${
                                                             micEnabled 
-                                                                ? 'bg-blue-600/30 border border-blue-500/30 text-blue-300' 
-                                                                : 'bg-gray-600/30 border border-gray-500/30 text-gray-400'
+                                                                ? 'bg-blue-600/30 border border-[var(--accent-tertiary)]/30 text-blue-300' 
+                                                                : 'bg-gray-600/30 border border-gray-500/30 text-[var(--muted)]'
                                                         }`}
                                                     >
                                                         🎤
@@ -274,8 +274,8 @@ export default function Live() {
                                                         onClick={toggleCamera}
                                                         className={`p-2 rounded-lg transition ${
                                                             cameraEnabled 
-                                                                ? 'bg-blue-600/30 border border-blue-500/30 text-blue-300' 
-                                                                : 'bg-gray-600/30 border border-gray-500/30 text-gray-400'
+                                                                ? 'bg-blue-600/30 border border-[var(--accent-tertiary)]/30 text-blue-300' 
+                                                                : 'bg-gray-600/30 border border-gray-500/30 text-[var(--muted)]'
                                                         }`}
                                                     >
                                                         📷
@@ -285,7 +285,7 @@ export default function Live() {
                                                         className={`p-2 rounded-lg transition ${
                                                             screenShare 
                                                                 ? 'bg-green-600/30 border border-green-500/30 text-green-300' 
-                                                                : 'bg-gray-600/30 border border-gray-500/30 text-gray-400'
+                                                                : 'bg-gray-600/30 border border-gray-500/30 text-[var(--muted)]'
                                                         }`}
                                                     >
                                                         🖥️
@@ -293,7 +293,7 @@ export default function Live() {
                                                 </>
                                             )}
                                         </div>
-                                        <div className="text-sm text-gray-400">
+                                        <div className="text-sm text-[var(--muted)]">
                                             {participants.length} participants
                                         </div>
                                     </div>
@@ -303,13 +303,13 @@ export default function Live() {
 
                         {/* Chat */}
                         {isJoined && (
-                            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
-                                <h3 className="font-semibold text-white mb-4">Live Chat</h3>
+                            <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-4">
+                                <h3 className="font-semibold text-[var(--text)] mb-4">Live Chat</h3>
                                 <div className="h-64 overflow-y-auto mb-4 space-y-2">
                                     {chatMessages.map((msg, index) => (
                                         <div key={index} className="flex gap-2">
-                                            <span className="text-purple-400 text-sm font-medium">{msg.user_name}:</span>
-                                            <span className="text-gray-300 text-sm">{msg.message}</span>
+                                            <span className="text-[var(--accent-primary)] text-sm font-medium">{msg.user_name}:</span>
+                                            <span className="text-[var(--muted)] text-sm">{msg.message}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -320,11 +320,11 @@ export default function Live() {
                                         onChange={(e) => setNewMessage(e.target.value)}
                                         onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                                         placeholder="Type a message..."
-                                        className="flex-1 bg-[#1a1a35] border border-purple-900/40 rounded-xl px-3 py-2 text-white placeholder-gray-500 text-sm"
+                                        className="flex-1 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-3 py-2 text-[var(--text)] placeholder-[var(--muted)] text-sm"
                                     />
                                     <button
                                         onClick={sendMessage}
-                                        className="px-4 py-2 bg-purple-600/30 border border-purple-500/30 rounded-xl text-purple-300 text-sm hover:bg-purple-600/40 transition"
+                                        className="px-4 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-[var(--accent-primary)]/80 text-sm hover:bg-[var(--accent-primary)]/40 transition"
                                     >
                                         Send
                                     </button>
@@ -336,41 +336,41 @@ export default function Live() {
                     {/* Sidebar */}
                     <div className="space-y-4">
                         {/* Session Info */}
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
-                            <h3 className="font-semibold text-white mb-3">Session Details</h3>
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-4">
+                            <h3 className="font-semibold text-[var(--text)] mb-3">Session Details</h3>
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="text-gray-400">Instructor:</span>
-                                    <span className="text-white">{session.instructor_name}</span>
+                                    <span className="text-[var(--muted)]">Instructor:</span>
+                                    <span className="text-[var(--text)]">{session.instructor_name}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-400">Course:</span>
-                                    <span className="text-white">{session.course_title}</span>
+                                    <span className="text-[var(--muted)]">Course:</span>
+                                    <span className="text-[var(--text)]">{session.course_title}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-400">Duration:</span>
-                                    <span className="text-white">{session.duration_minutes} min</span>
+                                    <span className="text-[var(--muted)]">Duration:</span>
+                                    <span className="text-[var(--text)]">{session.duration_minutes} min</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-400">Scheduled:</span>
-                                    <span className="text-white">{formatSessionTime(session.scheduled_at)}</span>
+                                    <span className="text-[var(--muted)]">Scheduled:</span>
+                                    <span className="text-[var(--text)]">{formatSessionTime(session.scheduled_at)}</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Participants */}
                         {isJoined && (
-                            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
-                                <h3 className="font-semibold text-white mb-3">Participants ({participants.length})</h3>
+                            <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-4">
+                                <h3 className="font-semibold text-[var(--text)] mb-3">Participants ({participants.length})</h3>
                                 <div className="space-y-2">
                                     {participants.map((participant, index) => (
                                         <div key={index} className="flex items-center gap-2">
-                                            <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                                                <span className="text-xs text-white">
+                                            <div className="w-8 h-8 bg-[var(--accent-primary)] rounded-full flex items-center justify-center">
+                                                <span className="text-xs text-[var(--text)]">
                                                     {participant.name?.charAt(0)?.toUpperCase() || 'U'}
                                                 </span>
                                             </div>
-                                            <span className="text-sm text-gray-300">{participant.name}</span>
+                                            <span className="text-sm text-[var(--muted)]">{participant.name}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -379,12 +379,12 @@ export default function Live() {
 
                         {/* Recordings */}
                         {session.status === 'ended' && (
-                            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
-                                <h3 className="font-semibold text-white mb-3">Recordings</h3>
+                            <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-4">
+                                <h3 className="font-semibold text-[var(--text)] mb-3">Recordings</h3>
                                 <div className="space-y-2">
                                     <a
                                         href="#"
-                                        className="block p-3 bg-[#1a1a35] rounded-lg text-sm text-purple-400 hover:text-purple-300 transition"
+                                        className="block p-3 bg-[var(--surface-2)] rounded-lg text-sm text-[var(--accent-primary)] hover:text-[var(--accent-primary)]/80 transition"
                                     >
                                         📹 Session Recording
                                     </a>
@@ -401,12 +401,12 @@ export default function Live() {
     return (
         <div className="max-w-6xl mx-auto space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-white">Live Learning</h1>
-                <p className="text-gray-400 text-sm mt-1">Join live classes and watch recordings</p>
+                <h1 className="text-2xl font-bold text-[var(--text)]">Live Learning</h1>
+                <p className="text-[var(--muted)] text-sm mt-1">Join live classes and watch recordings</p>
             </div>
 
             {/* Tabs */}
-            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-1">
+            <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-1">
                 <div className="flex gap-1">
                     {[
                         { id: 'upcoming', label: 'Upcoming', icon: '📅' },
@@ -418,8 +418,8 @@ export default function Live() {
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition ${
                                 activeTab === tab.id
-                                    ? 'bg-purple-600 text-white'
-                                    : 'text-gray-400 hover:text-white'
+                                    ? 'bg-[var(--accent-primary)] text-[var(--text)]'
+                                    : 'text-[var(--muted)] hover:text-[var(--text)]'
                             }`}
                         >
                             <span>{tab.icon}</span>
@@ -436,20 +436,20 @@ export default function Live() {
             ) : (
                 <>
                     {sessions.length === 0 ? (
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center">
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-8 text-center">
                             <div className="mb-4">
-                                <div className="w-16 h-16 bg-[#1a1a35] rounded-full flex items-center justify-center mx-auto mb-4">
+                                <div className="w-16 h-16 bg-[var(--surface-2)] rounded-full flex items-center justify-center mx-auto mb-4">
                                     <span className="text-2xl">
                                         {activeTab === 'live' ? '🔴' : activeTab === 'recordings' ? '📹' : '📅'}
                                     </span>
                                 </div>
                             </div>
-                            <h3 className="text-lg font-medium text-white mb-2">
+                            <h3 className="text-lg font-medium text-[var(--text)] mb-2">
                                 {activeTab === 'live' ? 'No live sessions' : 
                                  activeTab === 'recordings' ? 'No recordings available' : 
                                  'No upcoming sessions'}
                             </h3>
-                            <p className="text-sm text-gray-400">
+                            <p className="text-sm text-[var(--muted)]">
                                 {activeTab === 'live' ? 'Check back later for live sessions' : 
                                  activeTab === 'recordings' ? 'Recordings will appear here after sessions end' : 
                                  'New sessions will appear here when scheduled'}
@@ -459,13 +459,13 @@ export default function Live() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {activeTab === 'recordings' ? (
                                 recordings.map(session => (
-                                    <div key={session.id} className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
+                                    <div key={session.id} className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-4">
                                         <div className="aspect-video bg-black rounded-lg mb-4 flex items-center justify-center">
                                             <span className="text-3xl">📹</span>
                                         </div>
-                                        <h3 className="font-semibold text-white mb-2">{session.title}</h3>
-                                        <p className="text-sm text-gray-400 mb-3">{session.course_title}</p>
-                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                                        <h3 className="font-semibold text-[var(--text)] mb-2">{session.title}</h3>
+                                        <p className="text-sm text-[var(--muted)] mb-3">{session.course_title}</p>
+                                        <div className="flex items-center justify-between text-xs text-[var(--muted)] mb-3">
                                             <span>{session.instructor_name}</span>
                                             <span>{new Date(session.scheduled_at).toLocaleDateString()}</span>
                                         </div>
@@ -476,7 +476,7 @@ export default function Live() {
                                                     href={recording.url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="block w-full py-2 bg-purple-600/30 border border-purple-500/30 rounded-lg text-center text-purple-300 text-sm hover:bg-purple-600/40 transition"
+                                                    className="block w-full py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-lg text-center text-[var(--accent-primary)]/80 text-sm hover:bg-[var(--accent-primary)]/40 transition"
                                                 >
                                                     📹 Watch Recording
                                                 </a>
@@ -491,11 +491,11 @@ export default function Live() {
                                         <Link
                                             key={session.id}
                                             to={`/student/live/${session.id}`}
-                                            className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4 hover:border-purple-500/50 transition block"
+                                            className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-4 hover:border-purple-500/50 transition block"
                                         >
                                             <div className="aspect-video bg-black rounded-lg mb-4 relative overflow-hidden">
                                                 {session.status === 'live' && (
-                                                    <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
+                                                    <div className="absolute top-2 right-2 bg-red-500 text-[var(--text)] text-xs px-2 py-1 rounded-full animate-pulse">
                                                         LIVE
                                                     </div>
                                                 )}
@@ -505,13 +505,13 @@ export default function Live() {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <h3 className="font-semibold text-white mb-2">{session.title}</h3>
-                                            <p className="text-sm text-gray-400 mb-3">{session.course_title}</p>
+                                            <h3 className="font-semibold text-[var(--text)] mb-2">{session.title}</h3>
+                                            <p className="text-sm text-[var(--muted)] mb-3">{session.course_title}</p>
                                             <div className="flex items-center justify-between">
                                                 <div className={`text-xs px-2 py-1 rounded-full font-medium ${status.bg} ${status.color}`}>
                                                     {status.text}
                                                 </div>
-                                                <span className="text-xs text-gray-500">
+                                                <span className="text-xs text-[var(--muted)]">
                                                     {formatSessionTime(session.scheduled_at)}
                                                 </span>
                                             </div>
@@ -526,3 +526,13 @@ export default function Live() {
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+

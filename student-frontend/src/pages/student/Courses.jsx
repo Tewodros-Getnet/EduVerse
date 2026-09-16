@@ -127,25 +127,25 @@ export default function Courses() {
     return (
         <div className="space-y-6 max-w-6xl mx-auto">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Browse Courses</h1>
-                <div className="text-sm text-gray-400">
+                <h1 className="text-2xl font-bold text-[var(--text)]">Browse Courses</h1>
+                <div className="text-sm text-[var(--muted)]">
                     {courses.length} courses found
                 </div>
             </div>
 
             {/* Enhanced Filters */}
-            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
+            <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
                     <input
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         placeholder="Search courses..."
-                        className="bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 text-sm"
+                        className="bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] text-sm"
                     />
                     <select
                         value={difficulty}
                         onChange={e => setDifficulty(e.target.value)}
-                        className="bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-purple-500 text-sm"
+                        className="bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm"
                     >
                         <option value="">All Levels</option>
                         <option value="beginner">Beginner</option>
@@ -155,7 +155,7 @@ export default function Courses() {
                     <select
                         value={category}
                         onChange={e => setCategory(e.target.value)}
-                        className="bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-purple-500 text-sm"
+                        className="bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm"
                     >
                         <option value="">All Categories</option>
                         {categories.map(cat => (
@@ -165,7 +165,7 @@ export default function Courses() {
                     <select
                         value={priceFilter}
                         onChange={e => setPriceFilter(e.target.value)}
-                        className="bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-purple-500 text-sm"
+                        className="bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm"
                     >
                         <option value="all">All Prices</option>
                         <option value="free">Free</option>
@@ -174,7 +174,7 @@ export default function Courses() {
                     <select
                         value={sortBy}
                         onChange={e => setSortBy(e.target.value)}
-                        className="bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-purple-500 text-sm"
+                        className="bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm"
                     >
                         <option value="newest">Newest</option>
                         <option value="popular">Most Popular</option>
@@ -194,27 +194,27 @@ export default function Courses() {
                     {courses.map(course => {
                         const enrolled = isEnrolled(course.id);
                         return (
-                            <div key={course.id} className="bg-[#12122a] border border-purple-900/30 rounded-2xl overflow-hidden hover:border-purple-500/50 transition">
-                                <div className="h-40 bg-gradient-to-br from-purple-700 to-pink-700 relative">
+                            <div key={course.id} className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl overflow-hidden hover:border-purple-500/50 transition">
+                                <div className="h-40 bg-gradient-to-br from-[var(--accent-primary)]/70 to-[var(--accent-secondary)]/70 relative">
                                     {course.thumbnail_url && (
                                         <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
                                     )}
                                     {enrolled && course.progress_percent !== undefined && (
                                         <div className="absolute top-2 right-2 bg-black/50 rounded-full px-2 py-1">
-                                            <span className="text-xs text-white">{Math.round(course.progress_percent)}% complete</span>
+                                            <span className="text-xs text-[var(--text)]">{Math.round(course.progress_percent)}% complete</span>
                                         </div>
                                     )}
                                 </div>
                                 <div className="p-4">
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className={`text-xs font-medium capitalize ${DIFF_COLORS[course.difficulty_level] || 'text-gray-400'}`}>
+                                        <span className={`text-xs font-medium capitalize ${DIFF_COLORS[course.difficulty_level] || 'text-[var(--muted)]'}`}>
                                             {course.difficulty_level}
                                         </span>
-                                        <span className="text-xs text-gray-500">{course.enrollment_count || 0} students</span>
+                                        <span className="text-xs text-[var(--muted)]">{course.enrollment_count || 0} students</span>
                                     </div>
-                                    <h3 className="font-semibold text-white mb-1">{course.title}</h3>
-                                    <p className="text-xs text-gray-400 mb-3 line-clamp-2">{course.description}</p>
-                                    <p className="text-xs text-gray-500 mb-3">by {course.instructor_name}</p>
+                                    <h3 className="font-semibold text-[var(--text)] mb-1">{course.title}</h3>
+                                    <p className="text-xs text-[var(--muted)] mb-3 line-clamp-2">{course.description}</p>
+                                    <p className="text-xs text-[var(--muted)] mb-3">by {course.instructor_name}</p>
 
                                     {/* Progress bar for enrolled courses */}
                                     {enrolled && course.progress_percent !== undefined && (
@@ -231,7 +231,7 @@ export default function Courses() {
                                     <div className="flex gap-2">
                                         <Link
                                             to={`/student/courses/${course.id}`}
-                                            className="flex-1 py-2 text-center text-sm bg-[#1a1a35] border border-purple-900/40 rounded-xl text-white hover:border-purple-500 transition"
+                                            className="flex-1 py-2 text-center text-sm bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--text)] hover:border-purple-500 transition"
                                         >
                                             {enrolled ? 'Continue' : 'View'}
                                         </Link>
@@ -246,7 +246,7 @@ export default function Courses() {
                                             <button
                                                 onClick={() => enroll(course.id)}
                                                 disabled={enrollingCourse === course.id}
-                                                className="flex-1 py-2 text-sm bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white font-medium hover:opacity-90 transition disabled:opacity-50"
+                                                className="flex-1 py-2 text-sm bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] font-medium hover:opacity-90 transition disabled:opacity-50"
                                             >
                                                 {enrollingCourse === course.id ? 'Enrolling...' :
                                                     course.price > 0 ? `$${course.price}` : 'Free'}
@@ -261,8 +261,8 @@ export default function Courses() {
             )}
 
             {courses.length === 0 && !loading && (
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center">
-                    <p className="text-gray-400 mb-4">No courses found matching your criteria.</p>
+                <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-8 text-center">
+                    <p className="text-[var(--muted)] mb-4">No courses found matching your criteria.</p>
                     <button
                         onClick={() => {
                             setSearch('');
@@ -271,7 +271,7 @@ export default function Courses() {
                             setPriceFilter('all');
                             setSortBy('newest');
                         }}
-                        className="px-4 py-2 bg-purple-600 text-white rounded-xl text-sm hover:bg-purple-700 transition"
+                        className="px-4 py-2 bg-[var(--accent-primary)] text-[var(--text)] rounded-xl text-sm hover:bg-purple-700 transition"
                     >
                         Clear Filters
                     </button>
@@ -290,3 +290,11 @@ export default function Courses() {
         </div>
     );
 }
+
+
+
+
+
+
+
+

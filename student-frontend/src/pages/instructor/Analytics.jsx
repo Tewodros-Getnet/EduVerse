@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../../api/axios';
 
@@ -79,8 +79,8 @@ export default function InstructorAnalytics() {
         }
     };
 
-    // ── Derived computed values ────────────────────────────────────────────────
-    // Overview card sub-labels — computed from real data, not hardcoded
+    // â”€â”€ Derived computed values â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Overview card sub-labels â€” computed from real data, not hardcoded
     const engagementLabel = (pct) => {
         if (pct >= 70) return { text: 'High engagement',     color: 'text-green-400' };
         if (pct >= 40) return { text: 'Moderate engagement', color: 'text-yellow-400' };
@@ -116,11 +116,11 @@ export default function InstructorAnalytics() {
     return (
         <div className="space-y-6 max-w-7xl mx-auto">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Analytics Dashboard</h1>
+                <h1 className="text-2xl font-bold text-[var(--text)]">Analytics Dashboard</h1>
                 <select
                     value={selectedCourse}
                     onChange={(e) => setSelectedCourse(e.target.value)}
-                    className="px-4 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-white text-sm"
+                    className="px-4 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--text)] text-sm"
                 >
                     <option value="all">All Courses</option>
                     {courses.map(course => (
@@ -130,13 +130,13 @@ export default function InstructorAnalytics() {
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex gap-2 bg-[#12122a] border border-purple-900/30 rounded-xl p-1">
+            <div className="flex gap-2 bg-[var(--surface)] border border-purple-900/30 rounded-xl p-1">
                 {['overview', 'performance', 'completion', 'students', 'content'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition ${activeTab === tab
-                                ? 'bg-purple-600 text-white'
+                                ? 'bg-[var(--accent-primary)] text-[var(--text)]'
                                 : 'text-[var(--muted)] hover:text-[var(--text)]'
                             }`}
                     >
@@ -151,34 +151,34 @@ export default function InstructorAnalytics() {
                     {/* Key Metrics */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {/* Total Students */}
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-4">
-                            <h3 className="text-sm text-gray-400 mb-2">Total Students</h3>
-                            <p className="text-2xl font-bold text-white">{formatNumber(performanceData.student_engagement.total_students)}</p>
-                            <p className="text-xs text-gray-500 mt-1">
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-4">
+                            <h3 className="text-sm text-[var(--muted)] mb-2">Total Students</h3>
+                            <p className="text-2xl font-bold text-[var(--text)]">{formatNumber(performanceData.student_engagement.total_students)}</p>
+                            <p className="text-xs text-[var(--muted)] mt-1">
                                 {formatNumber(performanceData.student_engagement.active_learners || 0)} active learners
                             </p>
                         </div>
                         {/* Avg Progress */}
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-4">
-                            <h3 className="text-sm text-gray-400 mb-2">Avg Progress</h3>
-                            <p className="text-2xl font-bold text-white">{formatPercentage(performanceData.student_engagement.avg_student_progress)}</p>
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-4">
+                            <h3 className="text-sm text-[var(--muted)] mb-2">Avg Progress</h3>
+                            <p className="text-2xl font-bold text-[var(--text)]">{formatPercentage(performanceData.student_engagement.avg_student_progress)}</p>
                             {(() => {
                                 const e = engagementLabel(performanceData.student_engagement.avg_student_progress);
                                 return <p className={`text-xs mt-1 ${e.color}`}>{e.text}</p>;
                             })()}
                         </div>
                         {/* Total Revenue */}
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-4">
-                            <h3 className="text-sm text-gray-400 mb-2">Total Revenue</h3>
-                            <p className="text-2xl font-bold text-white">{formatCurrency(performanceData.revenue_analytics.total_revenue)}</p>
-                            <p className="text-xs text-gray-500 mt-1">
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-4">
+                            <h3 className="text-sm text-[var(--muted)] mb-2">Total Revenue</h3>
+                            <p className="text-2xl font-bold text-[var(--text)]">{formatCurrency(performanceData.revenue_analytics.total_revenue)}</p>
+                            <p className="text-xs text-[var(--muted)] mt-1">
                                 {formatNumber(performanceData.revenue_analytics.total_enrollments || 0)} enrollments
                             </p>
                         </div>
-                        {/* Course Completion — use completionData when available, otherwise avg quiz score */}
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-4">
-                            <h3 className="text-sm text-gray-400 mb-2">Course Completion</h3>
-                            <p className="text-2xl font-bold text-white">
+                        {/* Course Completion â€” use completionData when available, otherwise avg quiz score */}
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-4">
+                            <h3 className="text-sm text-[var(--muted)] mb-2">Course Completion</h3>
+                            <p className="text-2xl font-bold text-[var(--text)]">
                                 {completionData
                                     ? formatPercentage(completionData.overall_completion?.overall_completion_rate)
                                     : formatPercentage(performanceData.content_effectiveness.avg_quiz_performance)}
@@ -191,18 +191,18 @@ export default function InstructorAnalytics() {
                     </div>
 
                     {/* Course Performance Overview */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Course Performance</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Course Performance</h3>
                         <div className="space-y-4">
                             {performanceData.course_performance.slice(0, 5).map(course => (
-                                <div key={course.id} className="flex items-center justify-between p-3 bg-[#1a1a35] rounded-lg">
+                                <div key={course.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-lg">
                                     <div>
-                                        <h4 className="font-medium text-white">{course.title}</h4>
-                                        <p className="text-sm text-gray-400">{course.enrollment_count} students enrolled</p>
+                                        <h4 className="font-medium text-[var(--text)]">{course.title}</h4>
+                                        <p className="text-sm text-[var(--muted)]">{course.enrollment_count} students enrolled</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-bold text-purple-400">{formatPercentage(course.avg_progress)}</p>
-                                        <p className="text-xs text-gray-400">avg progress</p>
+                                        <p className="font-bold text-[var(--accent-primary)]">{formatPercentage(course.avg_progress)}</p>
+                                        <p className="text-xs text-[var(--muted)]">avg progress</p>
                                     </div>
                                 </div>
                             ))}
@@ -215,62 +215,62 @@ export default function InstructorAnalytics() {
             {activeTab === 'performance' && performanceData && (
                 <div className="space-y-6">
                     {/* Student Engagement */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Student Engagement</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Student Engagement</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
                                 <div className="text-3xl font-bold text-green-400">{formatNumber(performanceData.student_engagement.highly_engaged)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Highly Engaged (80%+)</p>
+                                <p className="text-sm text-[var(--muted)] mt-1">Highly Engaged (80%+)</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
                                 <div className="text-3xl font-bold text-yellow-400">{formatNumber(performanceData.student_engagement.moderately_engaged)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Moderately Engaged (50-79%)</p>
+                                <p className="text-sm text-[var(--muted)] mt-1">Moderately Engaged (50-79%)</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
                                 <div className="text-3xl font-bold text-red-400">{formatNumber(performanceData.student_engagement.lowly_engaged)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Low Engagement (&lt;50%)</p>
+                                <p className="text-sm text-[var(--muted)] mt-1">Low Engagement (&lt;50%)</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Content Effectiveness */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Content Effectiveness</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Content Effectiveness</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
-                                <div className="text-3xl font-bold text-purple-400">{formatNumber(performanceData.content_effectiveness.total_lessons)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Total Lessons</p>
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
+                                <div className="text-3xl font-bold text-[var(--accent-primary)]">{formatNumber(performanceData.content_effectiveness.total_lessons)}</div>
+                                <p className="text-sm text-[var(--muted)] mt-1">Total Lessons</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
-                                <div className="text-3xl font-bold text-purple-400">{formatNumber(performanceData.content_effectiveness.completed_lessons)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Completed</p>
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
+                                <div className="text-3xl font-bold text-[var(--accent-primary)]">{formatNumber(performanceData.content_effectiveness.completed_lessons)}</div>
+                                <p className="text-sm text-[var(--muted)] mt-1">Completed</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
-                                <div className="text-3xl font-bold text-purple-400">{formatPercentage(performanceData.content_effectiveness.avg_quiz_performance)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Avg Quiz Score</p>
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
+                                <div className="text-3xl font-bold text-[var(--accent-primary)]">{formatPercentage(performanceData.content_effectiveness.avg_quiz_performance)}</div>
+                                <p className="text-sm text-[var(--muted)] mt-1">Avg Quiz Score</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
-                                <div className="text-3xl font-bold text-purple-400">{formatNumber(performanceData.content_effectiveness.total_assignments)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Total Assignments</p>
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
+                                <div className="text-3xl font-bold text-[var(--accent-primary)]">{formatNumber(performanceData.content_effectiveness.total_assignments)}</div>
+                                <p className="text-sm text-[var(--muted)] mt-1">Total Assignments</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Revenue Analytics */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Revenue Analytics</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Revenue Analytics</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
                                 <div className="text-3xl font-bold text-green-400">{formatCurrency(performanceData.revenue_analytics.total_revenue)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Total Revenue</p>
+                                <p className="text-sm text-[var(--muted)] mt-1">Total Revenue</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
-                                <div className="text-3xl font-bold text-purple-400">{formatCurrency(performanceData.revenue_analytics.revenue_per_enrollment)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Revenue per Enrollment</p>
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
+                                <div className="text-3xl font-bold text-[var(--accent-primary)]">{formatCurrency(performanceData.revenue_analytics.revenue_per_enrollment)}</div>
+                                <p className="text-sm text-[var(--muted)] mt-1">Revenue per Enrollment</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
                                 <div className="text-3xl font-bold text-blue-400">{formatNumber(performanceData.revenue_analytics.total_enrollments)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Total Enrollments</p>
+                                <p className="text-sm text-[var(--muted)] mt-1">Total Enrollments</p>
                             </div>
                         </div>
                     </div>
@@ -281,42 +281,42 @@ export default function InstructorAnalytics() {
             {activeTab === 'completion' && completionData && (
                 <div className="space-y-6">
                     {/* Overall Completion */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Overall Completion Rates</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Overall Completion Rates</h3>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
-                                <div className="text-3xl font-bold text-purple-400">{formatNumber(completionData.overall_completion.total_enrollments)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Total Enrollments</p>
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
+                                <div className="text-3xl font-bold text-[var(--accent-primary)]">{formatNumber(completionData.overall_completion.total_enrollments)}</div>
+                                <p className="text-sm text-[var(--muted)] mt-1">Total Enrollments</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
                                 <div className="text-3xl font-bold text-green-400">{formatNumber(completionData.overall_completion.completed_courses)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Completed Courses</p>
+                                <p className="text-sm text-[var(--muted)] mt-1">Completed Courses</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
                                 <div className="text-3xl font-bold text-blue-400">{formatPercentage(completionData.overall_completion.overall_completion_rate)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Completion Rate</p>
+                                <p className="text-sm text-[var(--muted)] mt-1">Completion Rate</p>
                             </div>
-                            <div className="text-center p-4 bg-[#1a1a35] rounded-lg">
-                                <div className="text-3xl font-bold text-purple-400">{formatPercentage(completionData.overall_completion.avg_progress_percent)}</div>
-                                <p className="text-sm text-gray-400 mt-1">Avg Progress</p>
+                            <div className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
+                                <div className="text-3xl font-bold text-[var(--accent-primary)]">{formatPercentage(completionData.overall_completion.avg_progress_percent)}</div>
+                                <p className="text-sm text-[var(--muted)] mt-1">Avg Progress</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Course Completion Breakdown */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Course Completion Breakdown</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Course Completion Breakdown</h3>
                         <div className="space-y-3">
                             {completionData.course_completion_breakdown.map(course => (
-                                <div key={course.id} className="flex items-center justify-between p-3 bg-[#1a1a35] rounded-lg">
+                                <div key={course.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-lg">
                                     <div className="flex-1">
-                                        <h4 className="font-medium text-white">{course.title}</h4>
-                                        <p className="text-sm text-gray-400">{course.enrollments} enrolled • {course.completions} completed</p>
+                                        <h4 className="font-medium text-[var(--text)]">{course.title}</h4>
+                                        <p className="text-sm text-[var(--muted)]">{course.enrollments} enrolled â€¢ {course.completions} completed</p>
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <div className="text-right">
-                                            <p className="font-bold text-purple-400">{formatPercentage(course.completion_rate)}</p>
-                                            <p className="text-xs text-gray-400">completion rate</p>
+                                            <p className="font-bold text-[var(--accent-primary)]">{formatPercentage(course.completion_rate)}</p>
+                                            <p className="text-xs text-[var(--muted)]">completion rate</p>
                                         </div>
                                         <div className="w-32 bg-gray-700 rounded-full h-2">
                                             <div
@@ -332,29 +332,29 @@ export default function InstructorAnalytics() {
 
                     {/* Content Type Completion */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                            <h3 className="text-lg font-semibold text-white mb-4">Lesson Completion</h3>
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                            <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Lesson Completion</h3>
                             {completionData.lesson_completion_rates.map((rate, index) => (
                                 <div key={index} className="flex justify-between items-center mb-2">
-                                    <span className="text-sm text-gray-400">{rate.course_title}</span>
-                                    <span className="text-sm font-bold text-purple-400">{formatPercentage(rate.lesson_completion_rate)}</span>
+                                    <span className="text-sm text-[var(--muted)]">{rate.course_title}</span>
+                                    <span className="text-sm font-bold text-[var(--accent-primary)]">{formatPercentage(rate.lesson_completion_rate)}</span>
                                 </div>
                             ))}
                         </div>
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                            <h3 className="text-lg font-semibold text-white mb-4">Quiz Pass Rates</h3>
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                            <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Quiz Pass Rates</h3>
                             {completionData.quiz_completion_rates.map((rate, index) => (
                                 <div key={index} className="flex justify-between items-center mb-2">
-                                    <span className="text-sm text-gray-400">{rate.course_title}</span>
+                                    <span className="text-sm text-[var(--muted)]">{rate.course_title}</span>
                                     <span className="text-sm font-bold text-green-400">{formatPercentage(rate.quiz_pass_rate)}</span>
                                 </div>
                             ))}
                         </div>
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                            <h3 className="text-lg font-semibold text-white mb-4">Assignment Submission</h3>
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                            <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Assignment Submission</h3>
                             {completionData.assignment_completion_rates.map((rate, index) => (
                                 <div key={index} className="flex justify-between items-center mb-2">
-                                    <span className="text-sm text-gray-400">{rate.course_title}</span>
+                                    <span className="text-sm text-[var(--muted)]">{rate.course_title}</span>
                                     <span className="text-sm font-bold text-blue-400">{formatPercentage(rate.submission_rate)}</span>
                                 </div>
                             ))}
@@ -367,11 +367,11 @@ export default function InstructorAnalytics() {
             {activeTab === 'students' && studentData && (
                 <div className="space-y-6">
                     {/* Top Performers */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Top Performers</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Top Performers</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {studentData.top_performers.map((student, index) => (
-                                <div key={student.id} className="flex items-center gap-4 p-3 bg-[#1a1a35] rounded-lg">
+                                <div key={student.id} className="flex items-center gap-4 p-3 bg-[var(--surface-2)] rounded-lg">
                                     <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden relative">
                                         {student.avatar_url
                                             ? <img src={student.avatar_url} alt={student.name} className="w-full h-full object-cover" />
@@ -380,16 +380,16 @@ export default function InstructorAnalytics() {
                                               </div>
                                         }
                                         {student.avatar_url && (
-                                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">{index + 1}</div>
+                                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-[var(--text)] text-xs font-bold">{index + 1}</div>
                                         )}
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="font-medium text-white">{student.name}</h4>
-                                        <p className="text-sm text-gray-400">{student.email}</p>
+                                        <h4 className="font-medium text-[var(--text)]">{student.name}</h4>
+                                        <p className="text-sm text-[var(--muted)]">{student.email}</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-green-400">{formatPercentage(student.avg_progress)}</p>
-                                        <p className="text-xs text-gray-400">avg progress</p>
+                                        <p className="text-xs text-[var(--muted)]">avg progress</p>
                                     </div>
                                 </div>
                             ))}
@@ -397,11 +397,11 @@ export default function InstructorAnalytics() {
                     </div>
 
                     {/* Struggling Students */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Students Needing Attention</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Students Needing Attention</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {studentData.struggling_students.map((student, index) => (
-                                <div key={student.id} className="flex items-center gap-4 p-3 bg-[#1a1a35] rounded-lg">
+                                <div key={student.id} className="flex items-center gap-4 p-3 bg-[var(--surface-2)] rounded-lg">
                                     <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden relative">
                                         {student.avatar_url
                                             ? <img src={student.avatar_url} alt={student.name} className="w-full h-full object-cover" />
@@ -410,16 +410,16 @@ export default function InstructorAnalytics() {
                                               </div>
                                         }
                                         {student.avatar_url && (
-                                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">!</div>
+                                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[var(--text)] text-xs font-bold">!</div>
                                         )}
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="font-medium text-white">{student.name}</h4>
-                                        <p className="text-sm text-gray-400">{student.email}</p>
+                                        <h4 className="font-medium text-[var(--text)]">{student.name}</h4>
+                                        <p className="text-sm text-[var(--muted)]">{student.email}</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-red-400">{formatPercentage(student.avg_progress)}</p>
-                                        <p className="text-xs text-gray-400">avg progress</p>
+                                        <p className="text-xs text-[var(--muted)]">avg progress</p>
                                     </div>
                                 </div>
                             ))}
@@ -427,12 +427,12 @@ export default function InstructorAnalytics() {
                     </div>
 
                     {/* Progress Distribution */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Progress Distribution</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Progress Distribution</h3>
                         <div className="space-y-3">
                             {studentData.progress_distribution.map((range, index) => (
                                 <div key={index} className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-400 w-20">{range.progress_range}</span>
+                                    <span className="text-sm text-[var(--muted)] w-20">{range.progress_range}</span>
                                     <div className="flex-1 mx-4">
                                         <div className="w-full bg-gray-700 rounded-full h-2">
                                             <div
@@ -442,8 +442,8 @@ export default function InstructorAnalytics() {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2 w-24">
-                                        <span className="text-sm font-bold text-white">{range.student_count}</span>
-                                        <span className="text-sm text-gray-400">({formatPercentage(range.percentage)})</span>
+                                        <span className="text-sm font-bold text-[var(--text)]">{range.student_count}</span>
+                                        <span className="text-sm text-[var(--muted)]">({formatPercentage(range.percentage)})</span>
                                     </div>
                                 </div>
                             ))}
@@ -456,16 +456,16 @@ export default function InstructorAnalytics() {
             {activeTab === 'content' && contentData && (
                 <div className="space-y-6">
                     {/* Content Engagement by Type */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Content Engagement by Type</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Content Engagement by Type</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             {contentData.content_engagement_by_type.map((type, index) => (
-                                <div key={index} className="text-center p-4 bg-[#1a1a35] rounded-lg">
-                                    <div className="text-3xl font-bold text-purple-400">{formatNumber(type.total_items)}</div>
-                                    <p className="text-sm text-gray-400 mt-1 capitalize">{type.content_type.replace('_', ' ')}</p>
+                                <div key={index} className="text-center p-4 bg-[var(--surface-2)] rounded-lg">
+                                    <div className="text-3xl font-bold text-[var(--accent-primary)]">{formatNumber(type.total_items)}</div>
+                                    <p className="text-sm text-[var(--muted)] mt-1 capitalize">{type.content_type.replace('_', ' ')}</p>
                                     <div className="mt-2">
                                         <div className="text-lg font-bold text-green-400">{formatPercentage(type.engagement_rate)}</div>
-                                        <p className="text-xs text-gray-400">engagement rate</p>
+                                        <p className="text-xs text-[var(--muted)]">engagement rate</p>
                                     </div>
                                 </div>
                             ))}
@@ -473,18 +473,18 @@ export default function InstructorAnalytics() {
                     </div>
 
                     {/* Top Performing Lessons */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Top Performing Lessons</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Top Performing Lessons</h3>
                         <div className="space-y-3">
                             {contentData.lesson_analytics.slice(0, 5).map((lesson, index) => (
-                                <div key={lesson.id} className="flex items-center justify-between p-3 bg-[#1a1a35] rounded-lg">
+                                <div key={lesson.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-lg">
                                     <div className="flex-1">
-                                        <h4 className="font-medium text-white">{lesson.title}</h4>
-                                        <p className="text-sm text-gray-400">{lesson.attempts} attempts • {lesson.completions} completed</p>
+                                        <h4 className="font-medium text-[var(--text)]">{lesson.title}</h4>
+                                        <p className="text-sm text-[var(--muted)]">{lesson.attempts} attempts â€¢ {lesson.completions} completed</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-green-400">{formatPercentage(lesson.completion_rate)}</p>
-                                        <p className="text-xs text-gray-400">completion rate</p>
+                                        <p className="text-xs text-[var(--muted)]">completion rate</p>
                                     </div>
                                 </div>
                             ))}
@@ -492,18 +492,18 @@ export default function InstructorAnalytics() {
                     </div>
 
                     {/* Quiz Performance */}
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Quiz Performance</h3>
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Quiz Performance</h3>
                         <div className="space-y-3">
                             {contentData.quiz_analytics.slice(0, 5).map((quiz, index) => (
-                                <div key={quiz.id} className="flex items-center justify-between p-3 bg-[#1a1a35] rounded-lg">
+                                <div key={quiz.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-lg">
                                     <div className="flex-1">
-                                        <h4 className="font-medium text-white">{quiz.title}</h4>
-                                        <p className="text-sm text-gray-400">{quiz.attempts} attempts • {quiz.passes} passed</p>
+                                        <h4 className="font-medium text-[var(--text)]">{quiz.title}</h4>
+                                        <p className="text-sm text-[var(--muted)]">{quiz.attempts} attempts â€¢ {quiz.passes} passed</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-blue-400">{formatPercentage(quiz.pass_rate)}</p>
-                                        <p className="text-xs text-gray-400">pass rate</p>
+                                        <p className="text-xs text-[var(--muted)]">pass rate</p>
                                     </div>
                                 </div>
                             ))}
@@ -514,3 +514,10 @@ export default function InstructorAnalytics() {
         </div>
     );
 }
+
+
+
+
+
+
+

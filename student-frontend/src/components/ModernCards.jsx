@@ -23,8 +23,8 @@ export function CardWithHeader({ title, subtitle, children, action, className = 
         <Card className={className} {...props}>
             <div className="border-b border-gray-200 dark:border-slate-700 p-6 flex items-start justify-between">
                 <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{title}</h3>
-                    {subtitle && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>}
+                    <h3 className="text-lg font-bold text-[var(--text)] dark:text-[var(--text)]">{title}</h3>
+                    {subtitle && <p className="text-sm text-[var(--muted)] dark:text-[var(--muted)] mt-1">{subtitle}</p>}
                 </div>
                 {action && <div>{action}</div>}
             </div>
@@ -34,34 +34,34 @@ export function CardWithHeader({ title, subtitle, children, action, className = 
 }
 
 // Gradient Card (for stats, highlights)
-export function GradientCard({ icon, label, value, color = 'from-indigo-600 to-purple-600', trend, className = '', ...props }) {
+export function GradientCard({ icon, label, value, color = 'from-indigo-600 to-[var(--accent-primary)]/80', trend, className = '', ...props }) {
     return (
         <div
-            className={`bg-gradient-to-br ${color} rounded-2xl shadow-lg p-6 text-white ${className}`}
+            className={`bg-gradient-to-br ${color} rounded-2xl shadow-lg p-6 text-[var(--text)] ${className}`}
             {...props}
         >
             <div className="text-4xl mb-3">{icon}</div>
-            <p className="text-white/80 text-sm font-medium">{label}</p>
+            <p className="text-[var(--text)]/80 text-sm font-medium">{label}</p>
             <p className="text-3xl font-bold my-2">{value}</p>
-            {trend && <p className="text-sm text-white/70">{trend}</p>}
+            {trend && <p className="text-sm text-[var(--text)]/70">{trend}</p>}
         </div>
     );
 }
 
 // Action Card (for quick links, CTAs)
-export function ActionCard({ icon, title, description, onClick, to, color = 'from-indigo-600 to-purple-600', className = '', ...props }) {
+export function ActionCard({ icon, title, description, onClick, to, color = 'from-indigo-600 to-[var(--accent-primary)]/80', className = '', ...props }) {
     const Component = to ? 'a' : 'button';
     const componentProps = to ? { href: to } : { onClick };
 
     return (
         <Component
-            className={`bg-gradient-to-br ${color} text-white rounded-2xl p-6 hover:shadow-lg hover:scale-105 transition-all group text-left cursor-pointer border-none ${className}`}
+            className={`bg-gradient-to-br ${color} text-[var(--text)] rounded-2xl p-6 hover:shadow-lg hover:scale-105 transition-all group text-left cursor-pointer border-none ${className}`}
             {...componentProps}
             {...props}
         >
             <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{icon}</div>
             <h3 className="font-bold mb-1">{title}</h3>
-            <p className="text-sm text-white/80">{description}</p>
+            <p className="text-sm text-[var(--text)]/80">{description}</p>
         </Component>
     );
 }
@@ -71,8 +71,8 @@ export function ProgressCard({ label, value, percentage, color = 'from-indigo-50
     return (
         <div>
             <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</span>
-                <span className="text-sm font-bold text-gray-900 dark:text-white">{value}</span>
+                <span className="text-sm font-medium text-gray-600 dark:text-[var(--muted)]">{label}</span>
+                <span className="text-sm font-bold text-[var(--text)] dark:text-[var(--text)]">{value}</span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
                 <div
@@ -81,7 +81,7 @@ export function ProgressCard({ label, value, percentage, color = 'from-indigo-50
                 ></div>
             </div>
             {detailed && (
-                <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                <div className="mt-2 text-xs text-[var(--muted)] dark:text-[var(--muted)]">
                     {percentage}% complete
                 </div>
             )}
@@ -101,14 +101,14 @@ export function FeatureCard({ icon, title, description, badge, onClick, classNam
                 <div className="text-4xl flex-shrink-0">{icon}</div>
                 <div className="flex-1">
                     <div className="flex items-start justify-between gap-2">
-                        <h3 className="font-bold text-gray-900 dark:text-white">{title}</h3>
+                        <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)]">{title}</h3>
                         {badge && (
                             <span className="text-xs px-2 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 flex-shrink-0">
                                 {badge}
                             </span>
                         )}
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{description}</p>
+                    <p className="text-sm text-gray-600 dark:text-[var(--muted)] mt-1">{description}</p>
                 </div>
             </div>
         </Card>
@@ -131,8 +131,8 @@ export function CourseCard({ course, progress, enrolled, onEnroll, className = '
 
             {/* Content */}
             <div className="p-6">
-                <h3 className="font-bold text-gray-900 dark:text-white line-clamp-2 mb-2">{course.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{course.instructor}</p>
+                <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)] line-clamp-2 mb-2">{course.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-[var(--muted)] mb-4">{course.instructor}</p>
 
                 {enrolled && progress !== undefined ? (
                     <>
@@ -148,7 +148,7 @@ export function CourseCard({ course, progress, enrolled, onEnroll, className = '
                 {/* Button */}
                 <button
                     onClick={onEnroll}
-                    className="w-full mt-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium text-sm hover:opacity-90 transition"
+                    className="w-full mt-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] font-medium text-sm hover:opacity-90 transition"
                 >
                     {enrolled ? 'Continue Learning' : 'Enroll Now'}
                 </button>
@@ -162,13 +162,13 @@ export function UserCard({ user, role, stats, className = '', ...props }) {
     return (
         <Card className={`p-6 ${className}`} {...props}>
             <div className="flex items-start gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-[var(--text)] text-2xl font-bold flex-shrink-0">
                     {user.name?.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1">
-                    <h3 className="font-bold text-gray-900 dark:text-white">{user.name}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{role}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{user.email}</p>
+                    <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)]">{user.name}</h3>
+                    <p className="text-sm text-gray-600 dark:text-[var(--muted)]">{role}</p>
+                    <p className="text-xs text-[var(--muted)] dark:text-[var(--muted)] mt-1">{user.email}</p>
                 </div>
             </div>
 
@@ -179,7 +179,7 @@ export function UserCard({ user, role, stats, className = '', ...props }) {
                         {stats.map((stat, idx) => (
                             <div key={idx}>
                                 <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{stat.value}</p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">{stat.label}</p>
+                                <p className="text-xs text-[var(--muted)] dark:text-[var(--muted)]">{stat.label}</p>
                             </div>
                         ))}
                     </div>
@@ -192,7 +192,7 @@ export function UserCard({ user, role, stats, className = '', ...props }) {
 // Status Badge Card
 export function StatusCard({ icon, status, message, type = 'info', className = '', ...props }) {
     const colors = {
-        success: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800',
+        success: 'bg-emerald-50 dark:bg-emerald-900/20 border-slate-200 dark:border-slate-800',
         warning: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800',
         error: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
         info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
@@ -224,8 +224,8 @@ export function EmptyStateCard({ icon, title, description, action, className = '
     return (
         <Card className={`p-12 text-center ${className}`} {...props}>
             <div className="text-6xl mb-4">{icon}</div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{title}</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">{description}</p>
+            <h3 className="text-lg font-bold text-[var(--text)] dark:text-[var(--text)] mb-2">{title}</h3>
+            <p className="text-gray-600 dark:text-[var(--muted)] mb-6">{description}</p>
             {action && <div>{action}</div>}
         </Card>
     );
@@ -257,7 +257,7 @@ export function ListCard({ items, renderItem, title, className = '', ...props })
                         </div>
                     ))
                 ) : (
-                    <p className="text-center text-gray-500 dark:text-gray-400 py-4">No items</p>
+                    <p className="text-center text-[var(--muted)] dark:text-[var(--muted)] py-4">No items</p>
                 )}
             </div>
         </CardWithHeader>
@@ -278,3 +278,6 @@ export default {
     SkeletonCard,
     ListCard,
 };
+
+
+

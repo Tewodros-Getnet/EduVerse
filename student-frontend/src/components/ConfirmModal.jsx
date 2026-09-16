@@ -15,8 +15,8 @@ export default function ConfirmModal({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
             <div className="w-full max-w-lg rounded-3xl bg-[var(--surface)] border border-[var(--border)] shadow-2xl p-6">
                 <div className="mb-4">
-                    <h2 className="text-xl font-semibold text-white">{title}</h2>
-                    <p className="mt-2 text-sm text-gray-300">{message}</p>
+                    <h2 className="text-xl font-semibold text-[var(--text)]">{title}</h2>
+                    <p className="mt-2 text-sm text-[var(--muted)]">{message}</p>
                 </div>
 
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
@@ -30,7 +30,7 @@ export default function ConfirmModal({
                     <button
                         type="button"
                         onClick={onConfirm}
-                        className="w-full rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90 sm:w-auto"
+                        className="w-full rounded-2xl bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] px-4 py-3 text-sm font-semibold text-[var(--text)] transition hover:opacity-90 sm:w-auto"
                     >
                         {confirmLabel}
                     </button>
@@ -39,3 +39,6 @@ export default function ConfirmModal({
         </div>
     );
 }
+
+
+

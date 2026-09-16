@@ -16,6 +16,31 @@
   --card-hover: #f8fafc;
   --scrollbar-track: #e2e8f0;
   --scrollbar-thumb: #7c3aed;
+
+  /* Accent colors */
+  --accent-primary: #7c3aed;
+  --accent-secondary: #ec4899;
+  --accent-tertiary: #06b6d4;
+
+  /* Status colors */
+  --status-success: #22c55e;
+  --status-warning: #eab308;
+  --status-error: #ef4444;
+  --status-info: #3b82f6;
+
+  /* Notification type colors */
+  --notify-enrollment: #22c55e;
+  --notify-assignment: #3b82f6;
+  --notify-review: #eab308;
+  --notify-reminder: #f97316;
+  --notify-revenue: #7c3aed;
+  --notify-announcement: #06b6d4;
+  --notify-live: #ef4444;
+  --notify-system: #ef4444;
+  --notify-broadcast: #7c3aed;
+  --notify-user-report: #f97316;
+  --notify-course-review: #22c55e;
+  --notify-security: #06b6d4;
 }
 
 :root.dark {
@@ -32,6 +57,31 @@
   --card-hover: #1a1a35;
   --scrollbar-track: #12122a;
   --scrollbar-thumb: #7c3aed;
+
+  /* Accent colors (same as light) */
+  --accent-primary: #7c3aed;
+  --accent-secondary: #ec4899;
+  --accent-tertiary: #06b6d4;
+
+  /* Status colors (same as light) */
+  --status-success: #22c55e;
+  --status-warning: #eab308;
+  --status-error: #ef4444;
+  --status-info: #3b82f6;
+
+  /* Notification type colors (same as light) */
+  --notify-enrollment: #22c55e;
+  --notify-assignment: #3b82f6;
+  --notify-review: #eab308;
+  --notify-reminder: #f97316;
+  --notify-revenue: #7c3aed;
+  --notify-announcement: #06b6d4;
+  --notify-live: #ef4444;
+  --notify-system: #ef4444;
+  --notify-broadcast: #7c3aed;
+  --notify-user-report: #f97316;
+  --notify-course-review: #22c55e;
+  --notify-security: #06b6d4;
 }
 
 html {

@@ -121,7 +121,7 @@ export default function InstructorProfile() {
                             {avatarSrc ? (
                                 <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
                             ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold">
+                                <div className="w-full h-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center text-[var(--text)] text-3xl font-bold">
                                     {initials}
                                 </div>
                             )}
@@ -129,7 +129,7 @@ export default function InstructorProfile() {
                         <button
                             onClick={handleAvatarClick}
                             disabled={avatarLoading}
-                            className="absolute bottom-0 right-0 w-8 h-8 bg-purple-600 hover:bg-purple-500 rounded-full flex items-center justify-center text-white shadow-lg transition disabled:opacity-60"
+                            className="absolute bottom-0 right-0 w-8 h-8 bg-[var(--accent-primary)] hover:bg-purple-500 rounded-full flex items-center justify-center text-[var(--text)] shadow-lg transition disabled:opacity-60"
                             title="Change profile picture"
                         >
                             {avatarLoading
@@ -150,7 +150,7 @@ export default function InstructorProfile() {
                     <div className="flex-1 text-center sm:text-left">
                         <h2 className="text-xl font-bold text-[var(--text)]">{user?.name}</h2>
                         <p className="text-sm text-[var(--muted)]">{user?.email}</p>
-                        <span className="inline-block mt-2 px-3 py-0.5 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 capitalize">
+                        <span className="inline-block mt-2 px-3 py-0.5 rounded-full text-xs font-semibold bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80 capitalize">
                             {user?.role}
                         </span>
                         {user?.bio && (
@@ -173,7 +173,7 @@ export default function InstructorProfile() {
             {/* Edit profile */}
             <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
                 <h3 className="font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
-                    <User className="w-4 h-4 text-purple-400" /> Personal Information
+                    <User className="w-4 h-4 text-[var(--accent-primary)]" /> Personal Information
                 </h3>
                 <form onSubmit={handleProfileSave} className="space-y-4">
                     <div>
@@ -213,7 +213,7 @@ export default function InstructorProfile() {
                         <button
                             type="submit"
                             disabled={formLoading}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-xl transition disabled:opacity-60"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-[var(--accent-primary)] hover:bg-purple-500 text-[var(--text)] text-sm font-medium rounded-xl transition disabled:opacity-60"
                         >
                             {formLoading
                                 ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -232,7 +232,7 @@ export default function InstructorProfile() {
             {/* Change password */}
             <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
                 <h3 className="font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-purple-400" /> Change Password
+                    <Lock className="w-4 h-4 text-[var(--accent-primary)]" /> Change Password
                 </h3>
                 <form onSubmit={handlePasswordChange} className="space-y-4">
                     {[
@@ -275,7 +275,7 @@ export default function InstructorProfile() {
                     <button
                         type="submit"
                         disabled={pwLoading}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-xl transition disabled:opacity-60"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-[var(--accent-primary)] hover:bg-purple-500 text-[var(--text)] text-sm font-medium rounded-xl transition disabled:opacity-60"
                     >
                         {pwLoading
                             ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -293,7 +293,7 @@ function StatPill({ icon: Icon, label, value, color }) {
     const colors = {
         blue: 'bg-blue-500/10 text-blue-400',
         green: 'bg-green-500/10 text-green-400',
-        purple: 'bg-purple-500/10 text-purple-400',
+        purple: 'bg-purple-500/10 text-[var(--accent-primary)]',
         yellow: 'bg-yellow-500/10 text-yellow-400',
     };
     return (
@@ -327,3 +327,8 @@ function PasswordStrength({ password }) {
         </div>
     );
 }
+
+
+
+
+

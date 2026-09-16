@@ -105,13 +105,13 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
     };
 
     return (
-        <div className="bg-gradient-to-br from-[#1a1a35] to-[#12122a] rounded-2xl p-6 mb-4 border border-purple-900/30 shadow-xl">
-            <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-6">
+        <div className="bg-gradient-to-br from-[var(--surface-2)] to-[var(--surface)] rounded-2xl p-6 mb-4 border border-purple-900/30 shadow-xl">
+            <h3 className="text-xl font-bold bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] bg-clip-text text-transparent mb-6">
                 {lesson ? '✏️ Edit Lesson' : '📚 Create New Lesson'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                    <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    <label className="block text-sm font-semibold text-[var(--muted)] mb-2">
                         Lesson Title *
                     </label>
                     <input
@@ -119,14 +119,14 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                        className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition-all"
                         placeholder="Enter lesson title"
                         required
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    <label className="block text-sm font-semibold text-[var(--muted)] mb-2">
                         Content Type
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -136,8 +136,8 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                                 type="button"
                                 onClick={() => setFormData({ ...formData, content_type: type })}
                                 className={`px-4 py-3 rounded-xl text-sm font-medium transition-all ${formData.content_type === type
-                                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/25'
-                                    : 'bg-[#0d0d1a] border border-purple-900/40 text-gray-400 hover:border-purple-500/50 hover:text-white'
+                                    ? 'bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 text-[var(--text)] shadow-lg shadow-purple-500/25'
+                                    : 'bg-[var(--bg)] border border-[var(--border)]/40 text-[var(--muted)] hover:border-purple-500/50 hover:text-[var(--text)]'
                                     }`}
                             >
                                 {type === 'text' && '📝 Text'}
@@ -150,8 +150,8 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                 </div>
 
                 {(formData.content_type === 'video' || formData.content_type === 'mixed') && (
-                    <div className="bg-[#0d0d1a] rounded-xl p-4 border border-purple-900/30">
-                        <label className="block text-sm font-semibold text-gray-300 mb-3">
+                    <div className="bg-[var(--bg)] rounded-xl p-4 border border-purple-900/30">
+                        <label className="block text-sm font-semibold text-[var(--muted)] mb-3">
                             🎬 Video Content
                         </label>
                         <div className="space-y-3">
@@ -161,14 +161,14 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                                     name="video_url"
                                     value={formData.video_url}
                                     onChange={handleChange}
-                                    className="flex-1 bg-[#1a1a35] border border-purple-900/40 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500 transition"
+                                    className="flex-1 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-lg px-4 py-2.5 text-[var(--text)] placeholder-[var(--muted)] text-sm focus:outline-none focus:border-[var(--accent-primary)] transition"
                                     placeholder="https://youtube.com/watch?v=... or Cloudinary video URL"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => videoInputRef.current?.click()}
                                     disabled={uploadingVideo}
-                                    className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
+                                    className="px-5 py-2.5 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-lg text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
                                 >
                                     {uploadingVideo ? '⏳ Uploading...' : '📤 Upload'}
                                 </button>
@@ -191,8 +191,8 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                 )}
 
                 {(formData.content_type === 'pdf' || formData.content_type === 'mixed') && (
-                    <div className="bg-[#0d0d1a] rounded-xl p-4 border border-purple-900/30">
-                        <label className="block text-sm font-semibold text-gray-300 mb-3">
+                    <div className="bg-[var(--bg)] rounded-xl p-4 border border-purple-900/30">
+                        <label className="block text-sm font-semibold text-[var(--muted)] mb-3">
                             📄 PDF Document
                         </label>
                         <div className="space-y-3">
@@ -202,14 +202,14 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                                     name="pdf_url"
                                     value={formData.pdf_url}
                                     onChange={handleChange}
-                                    className="flex-1 bg-[#1a1a35] border border-purple-900/40 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500 transition"
+                                    className="flex-1 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-lg px-4 py-2.5 text-[var(--text)] placeholder-[var(--muted)] text-sm focus:outline-none focus:border-[var(--accent-primary)] transition"
                                     placeholder="https://example.com/document.pdf"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => pdfInputRef.current?.click()}
                                     disabled={uploadingPdf}
-                                    className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
+                                    className="px-5 py-2.5 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-lg text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
                                 >
                                     {uploadingPdf ? '⏳ Uploading...' : '📤 Upload'}
                                 </button>
@@ -232,8 +232,8 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                 )}
 
                 {(formData.content_type === 'text' || formData.content_type === 'mixed') && (
-                    <div className="bg-[#0d0d1a] rounded-xl p-4 border border-purple-900/30">
-                        <label className="block text-sm font-semibold text-gray-300 mb-3">
+                    <div className="bg-[var(--bg)] rounded-xl p-4 border border-purple-900/30">
+                        <label className="block text-sm font-semibold text-[var(--muted)] mb-3">
                             📝 Text Content
                         </label>
                         <textarea
@@ -241,14 +241,14 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                             value={formData.text_content}
                             onChange={handleChange}
                             rows={6}
-                            className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
+                            className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
                             placeholder="Enter your lesson content here..."
                         />
                     </div>
                 )}
 
                 <div>
-                    <label className="block text-sm font-semibold text-gray-300 mb-2">
+                    <label className="block text-sm font-semibold text-[var(--muted)] mb-2">
                         ⏱️ Duration (minutes)
                     </label>
                     <input
@@ -256,7 +256,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                         name="duration_minutes"
                         value={formData.duration_minutes}
                         onChange={handleChange}
-                        className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                        className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition-all"
                         placeholder="e.g., 30"
                         min="1"
                     />
@@ -265,14 +265,14 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                 <div className="flex gap-3 pt-4">
                     <button
                         type="submit"
-                        className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
+                        className="flex-1 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-xl text-[var(--text)] font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
                     >
                         {lesson ? '💾 Update Lesson' : '✨ Create Lesson'}
                     </button>
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="flex-1 py-3 bg-[#0d0d1a] border border-gray-600/40 rounded-xl text-gray-300 font-semibold hover:bg-gray-800/50 hover:text-white transition"
+                        className="flex-1 py-3 bg-[var(--bg)] border border-gray-600/40 rounded-xl text-[var(--muted)] font-semibold hover:bg-gray-800/50 hover:text-[var(--text)] transition"
                     >
                         ← Cancel
                     </button>
@@ -281,3 +281,9 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
         </div>
     );
 }
+
+
+
+
+
+

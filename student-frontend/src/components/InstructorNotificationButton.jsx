@@ -144,7 +144,7 @@ export default function InstructorNotificationButton() {
             {/* Notification Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 text-gray-400 hover:text-white transition-colors duration-200 group"
+                className="relative p-2 text-[var(--muted)] hover:text-[var(--text)] transition-colors duration-200 group"
             >
                 {unreadCount > 0 ? (
                     <BellRing className="w-5 h-5 animate-pulse" />
@@ -154,7 +154,7 @@ export default function InstructorNotificationButton() {
                 
                 {/* Notification Badge */}
                 {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-gradient-to-r from-green-500 to-blue-500 text-white text-xs font-bold rounded-full flex items-center justify-center px-1 shadow-lg animate-bounce">
+                    <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-gradient-to-r from-green-500 to-blue-500 text-[var(--text)] text-xs font-bold rounded-full flex items-center justify-center px-1 shadow-lg animate-bounce">
                         {unreadCount > 99 ? '99+' : unreadCount}
                     </span>
                 )}
@@ -165,23 +165,23 @@ export default function InstructorNotificationButton() {
 
             {/* Notification Dropdown */}
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-96 bg-[#1a1a35] border border-purple-900/40 rounded-2xl shadow-2xl z-50 overflow-hidden">
+                <div className="absolute right-0 mt-2 w-96 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-2xl shadow-2xl z-50 overflow-hidden">
                     {/* Header */}
-                    <div className="p-4 border-b border-purple-900/40">
+                    <div className="p-4 border-b border-[var(--border)]/40">
                         <div className="flex items-center justify-between mb-3">
-                            <h3 className="text-lg font-semibold text-white">Instructor Notifications</h3>
+                            <h3 className="text-lg font-semibold text-[var(--text)]">Instructor Notifications</h3>
                             <div className="flex items-center gap-2">
                                 {unreadCount > 0 && (
                                     <button
                                         onClick={markAllAsRead}
-                                        className="p-1 text-xs text-purple-400 hover:text-white hover:bg-purple-600/20 rounded-lg transition-all"
+                                        className="p-1 text-xs text-[var(--accent-primary)] hover:text-[var(--text)] hover:bg-[var(--accent-primary)]/20 rounded-lg transition-all"
                                     >
                                         <Check className="w-4 h-4" />
                                     </button>
                                 )}
                                 <button
                                     onClick={() => setIsOpen(false)}
-                                    className="p-1 text-gray-400 hover:text-white hover:bg-gray-600/20 rounded-lg transition-all"
+                                    className="p-1 text-[var(--muted)] hover:text-[var(--text)] hover:bg-gray-600/20 rounded-lg transition-all"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
@@ -189,20 +189,20 @@ export default function InstructorNotificationButton() {
                         </div>
                         
                         {/* Tabs */}
-                        <div className="flex gap-1 p-1 bg-[#12122a] rounded-lg">
+                        <div className="flex gap-1 p-1 bg-[var(--surface)] rounded-lg">
                             {['all', 'unread', 'enrollments', 'assignments', 'revenue'].map(tab => (
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
                                     className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all capitalize ${
                                         activeTab === tab
-                                            ? 'bg-purple-600 text-white shadow-lg'
-                                            : 'text-gray-400 hover:text-white hover:bg-purple-600/20'
+                                            ? 'bg-[var(--accent-primary)] text-[var(--text)] shadow-lg'
+                                            : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--accent-primary)]/20'
                                     }`}
                                 >
                                     {tab}
                                     {tab === 'unread' && unreadCount > 0 && (
-                                        <span className="ml-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                                        <span className="ml-1 bg-red-500 text-[var(--text)] text-xs px-1.5 py-0.5 rounded-full">
                                             {unreadCount}
                                         </span>
                                     )}
@@ -218,7 +218,7 @@ export default function InstructorNotificationButton() {
                                 <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
                             </div>
                         ) : filteredNotifications.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center p-8 text-gray-400">
+                            <div className="flex flex-col items-center justify-center p-8 text-[var(--muted)]">
                                 <Bell className="w-12 h-12 mb-3 opacity-50" />
                                 <p className="text-sm">No notifications</p>
                                 <p className="text-xs mt-1">You're all caught up!</p>
@@ -228,14 +228,14 @@ export default function InstructorNotificationButton() {
                                 {filteredNotifications.map(notification => (
                                     <div
                                         key={notification.id}
-                                        className={`p-4 hover:bg-[#12122a] transition-colors cursor-pointer ${
-                                            !notification.read ? 'bg-purple-600/10' : ''
+                                        className={`p-4 hover:bg-[var(--surface)] transition-colors cursor-pointer ${
+                                            !notification.read ? 'bg-[var(--accent-primary)]/10' : ''
                                         }`}
                                         onClick={() => !notification.read && markAsRead(notification.id)}
                                     >
                                         <div className="flex items-start gap-3">
                                             {/* Icon */}
-                                            <div className={`w-10 h-10 ${getNotificationColor(notification.type)} rounded-full flex items-center justify-center text-white flex-shrink-0`}>
+                                            <div className={`w-10 h-10 ${getNotificationColor(notification.type)} rounded-full flex items-center justify-center text-[var(--text)] flex-shrink-0`}>
                                                 {getNotificationIcon(notification.type)}
                                             </div>
                                             
@@ -243,13 +243,13 @@ export default function InstructorNotificationButton() {
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex-1">
-                                                        <p className="text-sm text-white font-medium line-clamp-2">
+                                                        <p className="text-sm text-[var(--text)] font-medium line-clamp-2">
                                                             {notification.title}
                                                         </p>
-                                                        <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                                                        <p className="text-xs text-[var(--muted)] mt-1 line-clamp-2">
                                                             {notification.message}
                                                         </p>
-                                                        <p className="text-xs text-gray-500 mt-2">
+                                                        <p className="text-xs text-[var(--muted)] mt-2">
                                                             {formatTime(notification.created_at)}
                                                         </p>
                                                     </div>
@@ -264,7 +264,7 @@ export default function InstructorNotificationButton() {
                                                                 e.stopPropagation();
                                                                 deleteNotification(notification.id);
                                                             }}
-                                                            className="p-1 text-gray-500 hover:text-red-400 hover:bg-red-600/20 rounded transition-all opacity-0 group-hover:opacity-100"
+                                                            className="p-1 text-[var(--muted)] hover:text-red-400 hover:bg-red-600/20 rounded transition-all opacity-0 group-hover:opacity-100"
                                                         >
                                                             <X className="w-3 h-3" />
                                                         </button>
@@ -279,7 +279,7 @@ export default function InstructorNotificationButton() {
                     </div>
 
                     {/* Footer */}
-                    <div className="p-3 border-t border-purple-900/40">
+                    <div className="p-3 border-t border-[var(--border)]/40">
                         <button
                             onClick={() => {
                                 setIsOpen(false);
@@ -289,7 +289,7 @@ export default function InstructorNotificationButton() {
                                     toast.success('Test notifications generated');
                                 });
                             }}
-                            className="w-full py-2 text-sm text-purple-400 hover:text-white hover:bg-purple-600/20 rounded-lg transition-all"
+                            className="w-full py-2 text-sm text-[var(--accent-primary)] hover:text-[var(--text)] hover:bg-[var(--accent-primary)]/20 rounded-lg transition-all"
                         >
                             Generate Test Notifications
                         </button>
@@ -299,3 +299,10 @@ export default function InstructorNotificationButton() {
         </div>
     );
 }
+
+
+
+
+
+
+

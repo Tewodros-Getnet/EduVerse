@@ -7,7 +7,7 @@ import api from '../../api/axios';
 const EXAM_TYPES = ['exam', 'midterm', 'final'];
 
 const TYPE_COLORS = {
-    exam:    'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    exam:    'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80 border-[var(--accent-primary)]/30',
     midterm: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
     final:   'bg-red-500/20    text-red-300    border-red-500/30',
     project: 'bg-green-500/20  text-green-300  border-green-500/30',
@@ -40,8 +40,8 @@ const Assessments = () => {
         const map = {
             completed: { bg: 'bg-green-500/20',  text: 'text-green-400',  label: 'Completed' },
             upcoming:  { bg: 'bg-blue-500/20',   text: 'text-blue-400',   label: 'Upcoming'  },
-            available: { bg: 'bg-purple-500/20', text: 'text-purple-400', label: 'Available' },
-            closed:    { bg: 'bg-gray-500/20',   text: 'text-gray-400',   label: 'Closed'    },
+            available: { bg: 'bg-[var(--accent-primary)]/20', text: 'text-[var(--accent-primary)]', label: 'Available' },
+            closed:    { bg: 'bg-gray-500/20',   text: 'text-[var(--muted)]',   label: 'Closed'    },
         };
         const { bg, text, label } = map[status] || map.upcoming;
         return <span className={`px-2 py-1 ${bg} ${text} rounded-full text-xs font-medium`}>{label}</span>;
@@ -59,7 +59,7 @@ const Assessments = () => {
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
-            <h1 className="text-2xl font-bold text-white">Assessments</h1>
+            <h1 className="text-2xl font-bold text-[var(--text)]">Assessments</h1>
 
             {/* Filter tabs */}
             <div className="flex gap-2 flex-wrap">
@@ -67,8 +67,8 @@ const Assessments = () => {
                     <button key={f} onClick={() => setFilter(f)}
                         className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition ${
                             filter === f
-                                ? 'bg-purple-600 text-white'
-                                : 'bg-[#12122a] text-gray-400 border border-purple-900/30 hover:text-white'
+                                ? 'bg-[var(--accent-primary)] text-[var(--text)]'
+                                : 'bg-[var(--surface)] text-[var(--muted)] border border-purple-900/30 hover:text-[var(--text)]'
                         }`}>
                         {f}
                     </button>
@@ -76,8 +76,8 @@ const Assessments = () => {
             </div>
 
             {filtered.length === 0 ? (
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center text-gray-400">
-                    <p className="text-lg font-medium text-white mb-2">No assessments found</p>
+                <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-8 text-center text-[var(--muted)]">
+                    <p className="text-lg font-medium text-[var(--text)] mb-2">No assessments found</p>
                     <p className="text-sm">Your instructor will schedule assessments for your enrolled courses</p>
                 </div>
             ) : (
@@ -89,23 +89,23 @@ const Assessments = () => {
                         const isWindow   = status === 'available';
 
                         return (
-                            <div key={assessment.id} className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-5">
+                            <div key={assessment.id} className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-5">
                                 <div className="flex items-start justify-between mb-3">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3 flex-wrap mb-2">
-                                            <h3 className="font-semibold text-white">{assessment.title}</h3>
+                                            <h3 className="font-semibold text-[var(--text)]">{assessment.title}</h3>
                                             <span className={`text-xs px-2 py-1 rounded-full border capitalize ${TYPE_COLORS[assessment.type] || TYPE_COLORS.exam}`}>
                                                 {assessment.type}
                                             </span>
                                             {getStatusBadge(status)}
                                         </div>
                                         {assessment.description && (
-                                            <p className="text-sm text-gray-400 mb-2">{assessment.description}</p>
+                                            <p className="text-sm text-[var(--muted)] mb-2">{assessment.description}</p>
                                         )}
-                                        <p className="text-xs text-purple-400 mb-3">
+                                        <p className="text-xs text-[var(--accent-primary)] mb-3">
                                             📚 {assessment.course_name || assessment.courseName}
                                         </p>
-                                        <div className="flex items-center gap-4 text-xs text-gray-400">
+                                        <div className="flex items-center gap-4 text-xs text-[var(--muted)]">
                                             <span>📅 {new Date(assessment.scheduled_date).toLocaleString()}</span>
                                             <span>⏱️ {assessment.duration_minutes} min</span>
                                             {isExamType && <span>🎯 Pass: {assessment.passing_score || 60}%</span>}
@@ -121,7 +121,7 @@ const Assessments = () => {
                                             }`}>
                                                 {assessment.score}%
                                             </div>
-                                            <div className="text-xs text-gray-400">Score</div>
+                                            <div className="text-xs text-[var(--muted)]">Score</div>
                                         </div>
                                     )}
                                 </div>
@@ -129,14 +129,14 @@ const Assessments = () => {
                                 {/* Remarks / Feedback */}
                                 {assessment.submitted && assessment.remarks && (
                                     <div className="mt-3 pt-3 border-t border-purple-900/30">
-                                        <p className="text-xs text-purple-300 font-medium mb-1">Instructor Remarks:</p>
-                                        <p className="text-sm text-gray-300">{assessment.remarks}</p>
+                                        <p className="text-xs text-[var(--accent-primary)]/80 font-medium mb-1">Instructor Remarks:</p>
+                                        <p className="text-sm text-[var(--muted)]">{assessment.remarks}</p>
                                     </div>
                                 )}
                                 {assessment.submitted && assessment.feedback && (
                                     <div className="mt-2">
                                         <p className="text-xs text-blue-300 font-medium mb-1">Feedback:</p>
-                                        <p className="text-sm text-gray-300">{assessment.feedback}</p>
+                                        <p className="text-sm text-[var(--muted)]">{assessment.feedback}</p>
                                     </div>
                                 )}
 
@@ -151,7 +151,7 @@ const Assessments = () => {
                                                 </p>
                                                 <button
                                                     onClick={() => navigate(`/student/exam/${assessment.id}`)}
-                                                    className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
+                                                    className="px-6 py-2.5 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-xl text-[var(--text)] text-sm font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
                                                 >
                                                     🚀 Start Exam
                                                 </button>
@@ -163,7 +163,7 @@ const Assessments = () => {
                                             </p>
                                         ) : (
                                             /* Not an exam type (project) or not in window */
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-xs text-[var(--muted)]">
                                                 {status === 'upcoming'
                                                     ? `Starts ${new Date(assessment.scheduled_date).toLocaleString()}`
                                                     : status === 'closed'
@@ -185,3 +185,12 @@ const Assessments = () => {
 };
 
 export default Assessments;
+
+
+
+
+
+
+
+
+

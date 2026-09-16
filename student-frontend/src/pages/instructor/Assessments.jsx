@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../../api/axios';
 import ConfirmModal from '../../components/ConfirmModal';
@@ -15,7 +15,7 @@ const TYPE_LABELS = {
 };
 
 const TYPE_COLORS = {
-    exam:    'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    exam:    'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80 border-[var(--accent-primary)]/30',
     midterm: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
     final:   'bg-red-500/20    text-red-300    border-red-500/30',
     project: 'bg-green-500/20  text-green-300  border-green-500/30',
@@ -80,7 +80,7 @@ const InstructorAssessments = () => {
         } catch { toast.error('Failed to load courses'); }
     };
 
-    // ── Create ─────────────────────────────────────────────────────────────
+    // â”€â”€ Create â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const handleCreateAssessment = async (e) => {
         e.preventDefault();
         try {
@@ -94,7 +94,7 @@ const InstructorAssessments = () => {
         }
     };
 
-    // ── Delete ─────────────────────────────────────────────────────────────
+    // â”€â”€ Delete â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const handleDeleteAssessment = (id) => {
         openConfirm({
             title: 'Delete assessment',
@@ -111,7 +111,7 @@ const InstructorAssessments = () => {
         });
     };
 
-    // ── Results modal ──────────────────────────────────────────────────────
+    // â”€â”€ Results modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const handleViewResults = async (assessment) => {
         setSelectedAssessment(assessment);
         setResultsLoading(true);
@@ -140,7 +140,7 @@ const InstructorAssessments = () => {
         const input = gradeInputs[studentId];
         if (input.score === '' || input.score === null) { toast.error('Please enter a score'); return; }
         const score = parseInt(input.score);
-        if (isNaN(score) || score < 0 || score > 100) { toast.error('Score must be 0–100'); return; }
+        if (isNaN(score) || score < 0 || score > 100) { toast.error('Score must be 0â€“100'); return; }
         setSavingGrade(studentId);
         try {
             await api.post(`/assessments/${selectedAssessment.id}/results`, {
@@ -153,7 +153,7 @@ const InstructorAssessments = () => {
         finally { setSavingGrade(null); }
     };
 
-    // ── Question editor ────────────────────────────────────────────────────
+    // â”€â”€ Question editor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const openQuestionsModal = async (assessment) => {
         setEditingAssessment(assessment);
         setPassingScore(assessment.passing_score || 60);
@@ -215,7 +215,7 @@ const InstructorAssessments = () => {
         } finally { setSavingQuestions(false); }
     };
 
-    // ── Edit assessment ────────────────────────────────────────────────────
+    // â”€â”€ Edit assessment â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const [editingId,   setEditingId]   = useState(null);
     const [editForm,    setEditForm]    = useState({});
     const [savingEdit,  setSavingEdit]  = useState(false);
@@ -260,10 +260,10 @@ const InstructorAssessments = () => {
         <div className="space-y-6 max-w-5xl mx-auto">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Assessments</h1>
+                <h1 className="text-2xl font-bold text-[var(--text)]">Assessments</h1>
                 <button
                     onClick={() => setShowCreateForm(true)}
-                    className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition"
+                    className="px-4 py-2 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition"
                 >
                     + Create Assessment
                 </button>
@@ -271,21 +271,21 @@ const InstructorAssessments = () => {
 
             {/* Create Form */}
             {showCreateForm && (
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6">
-                    <h2 className="font-semibold text-white mb-4">Create New Assessment</h2>
+                <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-6">
+                    <h2 className="font-semibold text-[var(--text)] mb-4">Create New Assessment</h2>
                     <form onSubmit={handleCreateAssessment} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Title</label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">Title</label>
                                 <input type="text" value={formData.title} required
                                     onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm" />
                             </div>
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Course</label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">Course</label>
                                 <select value={formData.courseId} required
                                     onChange={e => setFormData({ ...formData, courseId: e.target.value })}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm">
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm">
                                     <option value="">Select a course</option>
                                     {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
                                 </select>
@@ -293,40 +293,40 @@ const InstructorAssessments = () => {
                         </div>
                         <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Type</label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">Type</label>
                                 <select value={formData.type} required
                                     onChange={e => setFormData({ ...formData, type: e.target.value })}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm">
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm">
                                     {ALL_TYPES.map(t => (
                                         <option key={t} value={t}>{TYPE_LABELS[t]}</option>
                                     ))}
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Duration (min)</label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">Duration (min)</label>
                                 <input type="number" value={formData.duration} min="1" required
                                     onChange={e => setFormData({ ...formData, duration: parseInt(e.target.value) })}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm" />
                             </div>
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Scheduled Date</label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">Scheduled Date</label>
                                 <input type="datetime-local" value={formData.startDate} required
                                     onChange={e => setFormData({ ...formData, startDate: e.target.value })}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm" />
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-400 mb-1">Description</label>
+                            <label className="block text-sm text-[var(--muted)] mb-1">Description</label>
                             <textarea value={formData.description} rows={3} placeholder="Describe what this assessment covers..."
                                 onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm resize-none" />
+                                className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm resize-none" />
                         </div>
                         <div className="flex gap-3">
-                            <button type="submit" className="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition">
+                            <button type="submit" className="px-5 py-2.5 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition">
                                 Create Assessment
                             </button>
                             <button type="button" onClick={() => setShowCreateForm(false)}
-                                className="px-5 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition">
+                                className="px-5 py-2.5 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition">
                                 Cancel
                             </button>
                         </div>
@@ -341,29 +341,29 @@ const InstructorAssessments = () => {
                     const hasQ = assessment.has_questions;
                     const upcoming = new Date(assessment.scheduled_date) > new Date();
                     return (
-                        <div key={assessment.id} className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-5">
+                        <div key={assessment.id} className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-5">
                             {/* Card header */}
                             <div className="flex items-start justify-between mb-2">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap mb-1">
-                                        <h3 className="font-semibold text-white">{assessment.title}</h3>
+                                        <h3 className="font-semibold text-[var(--text)]">{assessment.title}</h3>
                                         <span className={`text-xs px-2 py-0.5 rounded-full border capitalize ${TYPE_COLORS[assessment.type] || TYPE_COLORS.exam}`}>
                                             {assessment.type}
                                         </span>
                                         {isExamType && (
                                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${hasQ ? 'bg-green-500/20 text-green-300' : 'bg-orange-500/20 text-orange-300'}`}>
-                                                {hasQ ? '✓ Questions added' : '⚠ No questions yet'}
+                                                {hasQ ? 'âœ“ Questions added' : 'âš  No questions yet'}
                                             </span>
                                         )}
                                     </div>
-                                    <p className="text-xs text-gray-400">{assessment.course_title}</p>
+                                    <p className="text-xs text-[var(--muted)]">{assessment.course_title}</p>
                                 </div>
                                 <span className={`text-xs px-2 py-1 rounded-full font-medium flex-shrink-0 ${upcoming ? 'bg-blue-500/20 text-blue-300' : 'bg-green-500/20 text-green-300'}`}>
                                     {upcoming ? 'Upcoming' : 'Past'}
                                 </span>
                             </div>
 
-                            <p className="text-sm text-gray-300 mb-3 line-clamp-2">{assessment.description}</p>
+                            <p className="text-sm text-[var(--muted)] mb-3 line-clamp-2">{assessment.description}</p>
 
                             <div className="flex items-center gap-4 text-xs text-[var(--muted)] mb-4">
                                 <span>{new Date(assessment.scheduled_date).toLocaleString()}</span>
@@ -373,29 +373,29 @@ const InstructorAssessments = () => {
 
                             {/* Actions */}
                             <div className="flex gap-2 flex-wrap">
-                                {/* Questions button — only for exam types */}
+                                {/* Questions button â€” only for exam types */}
                                 {isExamType && (
                                     <button
                                         onClick={() => openQuestionsModal(assessment)}
                                         className={`flex-1 py-2 rounded-xl text-sm font-medium transition ${
                                             hasQ
-                                                ? 'bg-blue-600/20 border border-blue-500/30 text-blue-300 hover:bg-blue-600/30'
-                                                : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90'
+                                                ? 'bg-blue-600/20 border border-[var(--accent-tertiary)]/30 text-blue-300 hover:bg-blue-600/30'
+                                                : 'bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 text-[var(--text)] hover:opacity-90'
                                         }`}
                                     >
-                                        {hasQ ? '✏️ Edit Questions' : '+ Add Questions'}
+                                        {hasQ ? 'âœï¸ Edit Questions' : '+ Add Questions'}
                                     </button>
                                 )}
                                 <button
                                     onClick={() => openEdit(assessment)}
-                                    className="px-3 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition"
+                                    className="px-3 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition"
                                     title="Edit assessment details"
                                 >
-                                    ✏️
+                                    âœï¸
                                 </button>
                                 <button
                                     onClick={() => handleViewResults(assessment)}
-                                    className="flex-1 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-purple-400 text-sm hover:bg-purple-600/20 transition"
+                                    className="flex-1 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--accent-primary)] text-sm hover:bg-[var(--accent-primary)]/20 transition"
                                 >
                                     Results
                                 </button>
@@ -412,11 +412,11 @@ const InstructorAssessments = () => {
             </div>
 
             {assessments.length === 0 && (
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center">
-                    <p className="text-white font-medium mb-2">No assessments yet</p>
+                <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-8 text-center">
+                    <p className="text-[var(--text)] font-medium mb-2">No assessments yet</p>
                     <p className="text-[var(--muted)] text-sm mb-4">Create your first exam or midterm for your students</p>
                     <button onClick={() => setShowCreateForm(true)}
-                        className="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition">
+                        className="px-5 py-2.5 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition">
                         Create Your First Assessment
                     </button>
                 </div>
@@ -428,27 +428,27 @@ const InstructorAssessments = () => {
                 onConfirm={confirmDialog.onConfirm} onCancel={closeConfirm}
             />
 
-            {/* ── Question Editor Modal ────────────────────────────────── */}
+            {/* â”€â”€ Question Editor Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
             {showQuestionsModal && editingAssessment && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-3xl my-4">
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl w-full max-w-3xl my-4">
                         {/* Header */}
                         <div className="flex items-center justify-between p-6 border-b border-purple-900/30">
                             <div>
-                                <h2 className="text-xl font-bold text-white">Exam Questions</h2>
-                                <p className="text-sm text-gray-400 mt-0.5">{editingAssessment.title}</p>
+                                <h2 className="text-xl font-bold text-[var(--text)]">Exam Questions</h2>
+                                <p className="text-sm text-[var(--muted)] mt-0.5">{editingAssessment.title}</p>
                             </div>
-                            <button onClick={() => setShowQuestionsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <button onClick={() => setShowQuestionsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">âœ•</button>
                         </div>
 
                         <div className="p-6 space-y-6">
                             {/* Passing score */}
-                            <div className="flex items-center gap-4 bg-[#1a1a35] rounded-xl p-4">
-                                <label className="text-sm text-gray-300 font-medium whitespace-nowrap">Passing Score (%)</label>
+                            <div className="flex items-center gap-4 bg-[var(--surface-2)] rounded-xl p-4">
+                                <label className="text-sm text-[var(--muted)] font-medium whitespace-nowrap">Passing Score (%)</label>
                                 <input type="number" min="1" max="100" value={passingScore}
                                     onChange={e => setPassingScore(parseInt(e.target.value) || 60)}
-                                    className="w-24 bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-purple-500 text-center" />
-                                <span className="text-xs text-gray-400">Total points: {totalPoints(questions)}</span>
+                                    className="w-24 bg-[var(--bg)] border border-[var(--border)]/40 rounded-lg px-3 py-1.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] text-center" />
+                                <span className="text-xs text-[var(--muted)]">Total points: {totalPoints(questions)}</span>
                             </div>
 
                             {/* Loading */}
@@ -460,10 +460,10 @@ const InstructorAssessments = () => {
                                 <>
                                     {/* Question list */}
                                     {questions.map((q, qi) => (
-                                        <div key={qi} className="bg-[#1a1a35] border border-purple-900/30 rounded-xl p-5 space-y-4">
+                                        <div key={qi} className="bg-[var(--surface-2)] border border-purple-900/30 rounded-xl p-5 space-y-4">
                                             {/* Q header */}
                                             <div className="flex items-center justify-between">
-                                                <span className="text-sm font-semibold text-purple-300">Question {qi + 1}</span>
+                                                <span className="text-sm font-semibold text-[var(--accent-primary)]/80">Question {qi + 1}</span>
                                                 <button onClick={() => removeQuestion(qi)} className="text-red-400 hover:text-red-300 text-xs">Remove</button>
                                             </div>
 
@@ -473,33 +473,33 @@ const InstructorAssessments = () => {
                                                 onChange={e => updateQuestion(qi, 'question', e.target.value)}
                                                 placeholder="Enter question text..."
                                                 rows={2}
-                                                className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500 resize-none"
+                                                className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-lg px-3 py-2 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] resize-none"
                                             />
 
                                             {/* Type + Points row */}
                                             <div className="grid grid-cols-2 gap-3">
                                                 <div>
-                                                    <label className="block text-xs text-gray-400 mb-1">Question Type</label>
+                                                    <label className="block text-xs text-[var(--muted)] mb-1">Question Type</label>
                                                     <select value={q.question_type}
                                                         onChange={e => updateQuestion(qi, 'question_type', e.target.value)}
-                                                        className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500">
+                                                        className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-lg px-3 py-2 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]">
                                                         <option value="mcq">Multiple Choice</option>
                                                         <option value="true_false">True / False</option>
                                                         <option value="short_answer">Short Answer</option>
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs text-gray-400 mb-1">Points</label>
+                                                    <label className="block text-xs text-[var(--muted)] mb-1">Points</label>
                                                     <input type="number" min="1" value={q.points}
                                                         onChange={e => updateQuestion(qi, 'points', parseInt(e.target.value) || 1)}
-                                                        className="w-full bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                                        className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-lg px-3 py-2 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                                                 </div>
                                             </div>
 
                                             {/* MCQ options */}
                                             {q.question_type === 'mcq' && (
                                                 <div className="space-y-2">
-                                                    <label className="block text-xs text-gray-400">Options — select the correct answer</label>
+                                                    <label className="block text-xs text-[var(--muted)]">Options â€” select the correct answer</label>
                                                     {(q.options || ['', '', '', '']).map((opt, oi) => (
                                                         <div key={oi} className="flex items-center gap-2">
                                                             <input type="radio" name={`correct-${qi}`}
@@ -510,7 +510,7 @@ const InstructorAssessments = () => {
                                                                 value={opt}
                                                                 onChange={e => updateOption(qi, oi, e.target.value)}
                                                                 placeholder={`Option ${oi + 1}`}
-                                                                className="flex-1 bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                                                className="flex-1 bg-[var(--bg)] border border-[var(--border)]/40 rounded-lg px-3 py-1.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                                                         </div>
                                                     ))}
                                                 </div>
@@ -519,15 +519,15 @@ const InstructorAssessments = () => {
                                             {/* True/False */}
                                             {q.question_type === 'true_false' && (
                                                 <div>
-                                                    <label className="block text-xs text-gray-400 mb-2">Correct Answer</label>
+                                                    <label className="block text-xs text-[var(--muted)] mb-2">Correct Answer</label>
                                                     <div className="flex gap-3">
                                                         {['True', 'False'].map(val => (
                                                             <button key={val} type="button"
                                                                 onClick={() => updateQuestion(qi, 'correct_answer', val)}
                                                                 className={`px-6 py-2 rounded-lg text-sm font-medium transition ${
                                                                     q.correct_answer === val
-                                                                        ? 'bg-purple-600 text-white'
-                                                                        : 'bg-[#0d0d1a] border border-purple-900/40 text-[var(--muted)] hover:text-[var(--text)]'
+                                                                        ? 'bg-[var(--accent-primary)] text-[var(--text)]'
+                                                                        : 'bg-[var(--bg)] border border-[var(--border)]/40 text-[var(--muted)] hover:text-[var(--text)]'
                                                                 }`}>
                                                                 {val}
                                                             </button>
@@ -536,10 +536,10 @@ const InstructorAssessments = () => {
                                                 </div>
                                             )}
 
-                                            {/* Short answer — no correct answer, instructor grades manually */}
+                                            {/* Short answer â€” no correct answer, instructor grades manually */}
                                             {q.question_type === 'short_answer' && (
                                                 <p className="text-xs text-yellow-400 bg-yellow-500/10 rounded-lg px-3 py-2">
-                                                    ⚠️ Short answer questions require manual grading after submission.
+                                                    âš ï¸ Short answer questions require manual grading after submission.
                                                 </p>
                                             )}
                                         </div>
@@ -547,7 +547,7 @@ const InstructorAssessments = () => {
 
                                     {/* Add question button */}
                                     <button onClick={addQuestion}
-                                        className="w-full py-3 border border-dashed border-purple-700/50 rounded-xl text-purple-400 text-sm hover:bg-purple-600/10 transition">
+                                        className="w-full py-3 border border-dashed border-purple-700/50 rounded-xl text-[var(--accent-primary)] text-sm hover:bg-[var(--accent-primary)]/10 transition">
                                         + Add Question
                                     </button>
                                 </>
@@ -556,11 +556,11 @@ const InstructorAssessments = () => {
                             {/* Footer buttons */}
                             <div className="flex gap-3 pt-2 border-t border-purple-900/30">
                                 <button onClick={handleSaveQuestions} disabled={savingQuestions}
-                                    className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:opacity-90 transition disabled:opacity-50">
+                                    className="flex-1 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-xl text-[var(--text)] font-semibold hover:opacity-90 transition disabled:opacity-50">
                                     {savingQuestions ? 'Saving...' : `Save ${questions.length} Question${questions.length > 1 ? 's' : ''}`}
                                 </button>
                                 <button onClick={() => setShowQuestionsModal(false)}
-                                    className="px-6 py-3 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-[var(--muted)] hover:text-[var(--text)] transition">
+                                    className="px-6 py-3 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] hover:text-[var(--text)] transition">
                                     Cancel
                                 </button>
                             </div>
@@ -569,16 +569,16 @@ const InstructorAssessments = () => {
                 </div>
             )}
 
-            {/* ── Results Modal ──────────────────────────────────────────── */}
+            {/* â”€â”€ Results Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
             {showResultsModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
                         <div className="flex items-center justify-between p-6 border-b border-purple-900/30">
                             <div>
-                                <h2 className="text-xl font-bold text-white">Assessment Results</h2>
-                                {selectedAssessment && <p className="text-sm text-gray-400 mt-0.5">{selectedAssessment.title}</p>}
+                                <h2 className="text-xl font-bold text-[var(--text)]">Assessment Results</h2>
+                                {selectedAssessment && <p className="text-sm text-[var(--muted)] mt-0.5">{selectedAssessment.title}</p>}
                             </div>
-                            <button onClick={() => setShowResultsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <button onClick={() => setShowResultsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">âœ•</button>
                         </div>
 
                         <div className="p-6 overflow-y-auto max-h-[60vh]">
@@ -591,25 +591,25 @@ const InstructorAssessments = () => {
                                     {assessmentResults.filter(r => r.score !== null).length > 0 && (
                                         <div className="grid grid-cols-3 gap-4 mb-2">
                                             {[
-                                                { label: 'Graded', value: `${assessmentResults.filter(r => r.score !== null).length}`, color: 'text-white' },
+                                                { label: 'Graded', value: `${assessmentResults.filter(r => r.score !== null).length}`, color: 'text-[var(--text)]' },
                                                 { label: 'Average', value: `${Math.round(assessmentResults.filter(r => r.score !== null).reduce((s, r) => s + r.score, 0) / assessmentResults.filter(r => r.score !== null).length)}%`, color: 'text-green-400' },
                                                 { label: 'Highest', value: `${Math.max(...assessmentResults.filter(r => r.score !== null).map(r => r.score))}%`, color: 'text-blue-400' },
                                             ].map(s => (
-                                                <div key={s.label} className="bg-[#1a1a35] border border-purple-900/40 rounded-xl p-4 text-center">
+                                                <div key={s.label} className="bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl p-4 text-center">
                                                     <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-                                                    <div className="text-sm text-gray-400">{s.label}</div>
+                                                    <div className="text-sm text-[var(--muted)]">{s.label}</div>
                                                 </div>
                                             ))}
                                         </div>
                                     )}
 
                                     {enrolledStudents.length === 0 ? (
-                                        <p className="text-center text-gray-400 py-12">No students enrolled yet.</p>
+                                        <p className="text-center text-[var(--muted)] py-12">No students enrolled yet.</p>
                                     ) : (
-                                        <div className="bg-[#1a1a35] border border-purple-900/40 rounded-xl overflow-hidden">
-                                            <div className="px-4 py-3 border-b border-purple-900/40 flex items-center justify-between">
-                                                <h3 className="font-semibold text-white">Students ({enrolledStudents.length})</h3>
-                                                <span className="text-xs text-gray-400">Enter scores 0–100</span>
+                                        <div className="bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl overflow-hidden">
+                                            <div className="px-4 py-3 border-b border-[var(--border)]/40 flex items-center justify-between">
+                                                <h3 className="font-semibold text-[var(--text)]">Students ({enrolledStudents.length})</h3>
+                                                <span className="text-xs text-[var(--muted)]">Enter scores 0â€“100</span>
                                             </div>
                                             <div className="divide-y divide-purple-900/20">
                                                 {enrolledStudents.map(student => {
@@ -622,12 +622,12 @@ const InstructorAssessments = () => {
                                                                 <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center">
                                                                     {student.avatar_url
                                                                         ? <img src={student.avatar_url} alt={student.name} className="w-full h-full object-cover" />
-                                                                        : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs text-white font-bold">{student.name[0].toUpperCase()}</div>
+                                                                        : <div className="w-full h-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center text-xs text-[var(--text)] font-bold">{student.name[0].toUpperCase()}</div>
                                                                     }
                                                                 </div>
                                                                 <div className="min-w-0">
-                                                                    <p className="text-white font-medium truncate">{student.name}</p>
-                                                                    <p className="text-xs text-gray-400 truncate">{student.email}</p>
+                                                                    <p className="text-[var(--text)] font-medium truncate">{student.name}</p>
+                                                                    <p className="text-xs text-[var(--muted)] truncate">{student.email}</p>
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center gap-2 flex-shrink-0">
@@ -635,16 +635,16 @@ const InstructorAssessments = () => {
                                                                     <input type="number" min="0" max="100" placeholder="Score"
                                                                         value={input.score}
                                                                         onChange={e => setGradeInputs(p => ({ ...p, [student.id]: { ...p[student.id], score: e.target.value } }))}
-                                                                        className="w-20 bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-purple-500 text-center" />
-                                                                    <span className="text-gray-500 text-sm">%</span>
+                                                                        className="w-20 bg-[var(--bg)] border border-[var(--border)]/40 rounded-lg px-2 py-1.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] text-center" />
+                                                                    <span className="text-[var(--muted)] text-sm">%</span>
                                                                 </div>
                                                                 <input type="text" placeholder="Remarks (optional)"
                                                                     value={input.remarks}
                                                                     onChange={e => setGradeInputs(p => ({ ...p, [student.id]: { ...p[student.id], remarks: e.target.value } }))}
-                                                                    className="w-36 bg-[#0d0d1a] border border-purple-900/40 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                                                    className="w-36 bg-[var(--bg)] border border-[var(--border)]/40 rounded-lg px-2 py-1.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                                                                 <button onClick={() => handleSaveGrade(student.id)} disabled={savingGrade === student.id}
-                                                                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition disabled:opacity-50 ${isGraded ? 'bg-blue-600/20 border border-blue-500/30 text-blue-300 hover:bg-blue-600/30' : 'bg-green-600/20 border border-green-500/30 text-green-300 hover:bg-green-600/30'}`}>
-                                                                    {savingGrade === student.id ? '⏳' : isGraded ? 'Update' : 'Save'}
+                                                                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition disabled:opacity-50 ${isGraded ? 'bg-blue-600/20 border border-[var(--accent-tertiary)]/30 text-blue-300 hover:bg-blue-600/30' : 'bg-green-600/20 border border-green-500/30 text-green-300 hover:bg-green-600/30'}`}>
+                                                                    {savingGrade === student.id ? 'â³' : isGraded ? 'Update' : 'Save'}
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -660,56 +660,56 @@ const InstructorAssessments = () => {
                 </div>
             )}
 
-            {/* ── Edit Assessment Modal ──────────────────────────────────── */}
+            {/* â”€â”€ Edit Assessment Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
             {editingId && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl w-full max-w-lg">
+                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl w-full max-w-lg">
                         <div className="flex items-center justify-between p-6 border-b border-purple-900/30">
-                            <h2 className="text-lg font-bold text-white">Edit Assessment</h2>
-                            <button onClick={() => setEditingId(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <h2 className="text-lg font-bold text-[var(--text)]">Edit Assessment</h2>
+                            <button onClick={() => setEditingId(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">âœ•</button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Title</label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">Title</label>
                                 <input value={editForm.title}
                                     onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm text-gray-400 mb-1">Type</label>
+                                    <label className="block text-sm text-[var(--muted)] mb-1">Type</label>
                                     <select value={editForm.type}
                                         onChange={e => setEditForm(f => ({ ...f, type: e.target.value }))}
-                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500">
+                                        className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]">
                                         {ALL_TYPES.map(t => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm text-gray-400 mb-1">Duration (min)</label>
+                                    <label className="block text-sm text-[var(--muted)] mb-1">Duration (min)</label>
                                     <input type="number" min="1" value={editForm.duration}
                                         onChange={e => setEditForm(f => ({ ...f, duration: parseInt(e.target.value) || 60 }))}
-                                        className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                        className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Scheduled Date</label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">Scheduled Date</label>
                                 <input type="datetime-local" value={editForm.startDate}
                                     onChange={e => setEditForm(f => ({ ...f, startDate: e.target.value }))}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                             </div>
                             <div>
-                                <label className="block text-sm text-gray-400 mb-1">Description</label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">Description</label>
                                 <textarea rows={3} value={editForm.description}
                                     onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
-                                    className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 resize-none" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] resize-none" />
                             </div>
                             <div className="flex gap-3 pt-2">
                                 <button onClick={handleSaveEdit} disabled={savingEdit}
-                                    className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50">
-                                    {savingEdit ? '⏳ Saving...' : '✓ Save Changes'}
+                                    className="flex-1 py-2.5 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50">
+                                    {savingEdit ? 'â³ Saving...' : 'âœ“ Save Changes'}
                                 </button>
                                 <button onClick={() => setEditingId(null)}
-                                    className="px-5 py-2.5 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition">
+                                    className="px-5 py-2.5 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition">
                                     Cancel
                                 </button>
                             </div>
@@ -722,3 +722,17 @@ const InstructorAssessments = () => {
 };
 
 export default InstructorAssessments;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

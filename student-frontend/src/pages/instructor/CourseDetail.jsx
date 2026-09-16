@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
@@ -274,7 +274,7 @@ export default function InstructorCourseDetail() {
     if (!course) {
         return (
             <div className="text-center py-8">
-                <p className="text-gray-400">Course not found</p>
+                <p className="text-[var(--muted)]">Course not found</p>
             </div>
         );
     }
@@ -284,9 +284,9 @@ export default function InstructorCourseDetail() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">{course.title}</h1>
-                    <p className="text-gray-400 mt-1">{course.description}</p>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
+                    <h1 className="text-2xl font-bold text-[var(--text)]">{course.title}</h1>
+                    <p className="text-[var(--muted)] mt-1">{course.description}</p>
+                    <div className="flex items-center gap-4 mt-2 text-sm text-[var(--muted)]">
                         <span>{course.category}</span>
                         <span>{course.difficulty_level}</span>
                         <span>{students.length} students</span>
@@ -295,7 +295,7 @@ export default function InstructorCourseDetail() {
                 <div className="flex gap-3">
                     <button
                         onClick={() => navigate('/instructor/courses')}
-                        className="px-4 py-2 bg-[#1a1a35] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition"
+                        className="px-4 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition"
                     >
                         Back
                     </button>
@@ -309,13 +309,13 @@ export default function InstructorCourseDetail() {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1 bg-[#1a1a35] rounded-xl p-1">
+            <div className="flex gap-1 bg-[var(--surface-2)] rounded-xl p-1">
                 {['overview', 'lessons', 'students', 'assignments', 'assessments', 'notes'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition capitalize ${activeTab === tab
-                            ? 'bg-purple-600 text-white'
+                            ? 'bg-[var(--accent-primary)] text-[var(--text)]'
                             : 'text-[var(--muted)] hover:text-[var(--text)]'
                             }`}
                     >
@@ -325,36 +325,36 @@ export default function InstructorCourseDetail() {
             </div>
 
             {/* Content */}
-            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6">
+            <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-6">
                 {activeTab === 'overview' && (
                     <div className="space-y-6">
                         <div>
-                            <h3 className="text-lg font-semibold text-white mb-3">Course Overview</h3>
+                            <h3 className="text-lg font-semibold text-[var(--text)] mb-3">Course Overview</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="bg-[#1a1a35] rounded-xl p-4">
-                                    <div className="text-sm text-gray-400 mb-1">Status</div>
-                                    <div className="text-white font-medium">{course.status}</div>
+                                <div className="bg-[var(--surface-2)] rounded-xl p-4">
+                                    <div className="text-sm text-[var(--muted)] mb-1">Status</div>
+                                    <div className="text-[var(--text)] font-medium">{course.status}</div>
                                 </div>
-                                <div className="bg-[#1a1a35] rounded-xl p-4">
-                                    <div className="text-sm text-gray-400 mb-1">Created</div>
-                                    <div className="text-white font-medium">
+                                <div className="bg-[var(--surface-2)] rounded-xl p-4">
+                                    <div className="text-sm text-[var(--muted)] mb-1">Created</div>
+                                    <div className="text-[var(--text)] font-medium">
                                         {new Date(course.created_at).toLocaleDateString()}
                                     </div>
                                 </div>
-                                <div className="bg-[#1a1a35] rounded-xl p-4">
-                                    <div className="text-sm text-gray-400 mb-1">Total Students</div>
-                                    <div className="text-white font-medium">{students.length}</div>
+                                <div className="bg-[var(--surface-2)] rounded-xl p-4">
+                                    <div className="text-sm text-[var(--muted)] mb-1">Total Students</div>
+                                    <div className="text-[var(--text)] font-medium">{students.length}</div>
                                 </div>
-                                <div className="bg-[#1a1a35] rounded-xl p-4">
-                                    <div className="text-sm text-gray-400 mb-1">Assignments</div>
-                                    <div className="text-white font-medium">{assignments.length}</div>
+                                <div className="bg-[var(--surface-2)] rounded-xl p-4">
+                                    <div className="text-sm text-[var(--muted)] mb-1">Assignments</div>
+                                    <div className="text-[var(--text)] font-medium">{assignments.length}</div>
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold text-white mb-3">Description</h3>
-                            <p className="text-gray-300">{course.description}</p>
+                            <h3 className="text-lg font-semibold text-[var(--text)] mb-3">Description</h3>
+                            <p className="text-[var(--muted)]">{course.description}</p>
                         </div>
                     </div>
                 )}
@@ -362,10 +362,10 @@ export default function InstructorCourseDetail() {
                 {activeTab === 'lessons' && (
                     <div>
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-white">Course Lessons ({lessons.length})</h3>
+                            <h3 className="text-lg font-semibold text-[var(--text)]">Course Lessons ({lessons.length})</h3>
                             <button
                                 onClick={() => openLessonForm()}
-                                className="px-4 py-2 bg-purple-600/30 border border-purple-500/30 rounded-xl text-purple-300 text-sm hover:bg-purple-600/40 transition"
+                                className="px-4 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-[var(--accent-primary)]/80 text-sm hover:bg-[var(--accent-primary)]/40 transition"
                             >
                                 Add Lesson
                             </button>
@@ -384,20 +384,20 @@ export default function InstructorCourseDetail() {
 
                         <div className="space-y-3">
                             {lessons.map((lesson, index) => (
-                                <div key={lesson.id} className="bg-[#1a1a35] rounded-xl p-4">
+                                <div key={lesson.id} className="bg-[var(--surface-2)] rounded-xl p-4">
                                     <div className="flex items-center justify-between">
                                         <div className="flex-1">
                                             <div className="flex items-center gap-3">
-                                                <span className="w-8 h-8 bg-purple-600/30 rounded-full flex items-center justify-center text-purple-300 text-sm font-medium">
+                                                <span className="w-8 h-8 bg-[var(--accent-primary)]/30 rounded-full flex items-center justify-center text-[var(--accent-primary)]/80 text-sm font-medium">
                                                     {index + 1}
                                                 </span>
                                                 <div>
-                                                    <h4 className="font-medium text-white">{lesson.title}</h4>
-                                                    <div className="flex items-center gap-4 text-sm text-gray-400 mt-1">
-                                                        <span>📹 {lesson.content_type || 'text'}</span>
-                                                        {lesson.duration_minutes && <span>⏱️ {lesson.duration_minutes}min</span>}
-                                                        {lesson.video_url && <span>🎥 Video</span>}
-                                                        {lesson.pdf_url && <span>📄 PDF</span>}
+                                                    <h4 className="font-medium text-[var(--text)]">{lesson.title}</h4>
+                                                    <div className="flex items-center gap-4 text-sm text-[var(--muted)] mt-1">
+                                                        <span>ðŸ“¹ {lesson.content_type || 'text'}</span>
+                                                        {lesson.duration_minutes && <span>â±ï¸ {lesson.duration_minutes}min</span>}
+                                                        {lesson.video_url && <span>ðŸŽ¥ Video</span>}
+                                                        {lesson.pdf_url && <span>ðŸ“„ PDF</span>}
                                                     </div>
                                                 </div>
                                             </div>
@@ -405,7 +405,7 @@ export default function InstructorCourseDetail() {
                                         <div className="flex gap-2">
                                             <button
                                                 onClick={() => openLessonForm(lesson)}
-                                                className="px-3 py-1 bg-blue-600/30 border border-blue-500/30 rounded-lg text-blue-300 text-sm hover:bg-blue-600/40 transition"
+                                                className="px-3 py-1 bg-blue-600/30 border border-[var(--accent-tertiary)]/30 rounded-lg text-blue-300 text-sm hover:bg-blue-600/40 transition"
                                             >
                                                 Edit
                                             </button>
@@ -420,11 +420,11 @@ export default function InstructorCourseDetail() {
                                 </div>
                             ))}
                             {lessons.length === 0 && (
-                                <div className="text-center py-8 text-gray-400">
+                                <div className="text-center py-8 text-[var(--muted)]">
                                     <p>No lessons created yet</p>
                                     <button
                                         onClick={() => openLessonForm()}
-                                        className="mt-4 px-4 py-2 bg-purple-600/30 border border-purple-500/30 rounded-xl text-purple-300 text-sm hover:bg-purple-600/40 transition"
+                                        className="mt-4 px-4 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-[var(--accent-primary)]/80 text-sm hover:bg-[var(--accent-primary)]/40 transition"
                                     >
                                         Create First Lesson
                                     </button>
@@ -436,26 +436,26 @@ export default function InstructorCourseDetail() {
 
                 {activeTab === 'students' && (
                     <div>
-                        <h3 className="text-lg font-semibold text-white mb-4">Enrolled Students ({students.length})</h3>
+                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Enrolled Students ({students.length})</h3>
                         <div className="space-y-3">
                             {students.map(student => (
-                                <div key={student.id} className="flex items-center justify-between p-3 bg-[#1a1a35] rounded-xl">
+                                <div key={student.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-xl">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                        <div className="w-8 h-8 bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-[var(--text)] text-sm font-bold">
                                             {student.name?.[0]?.toUpperCase()}
                                         </div>
                                         <div>
-                                            <p className="font-medium text-white">{student.name}</p>
-                                            <p className="text-xs text-gray-400">{student.email}</p>
+                                            <p className="font-medium text-[var(--text)]">{student.name}</p>
+                                            <p className="text-xs text-[var(--muted)]">{student.email}</p>
                                         </div>
                                     </div>
-                                    <div className="text-sm text-gray-400">
+                                    <div className="text-sm text-[var(--muted)]">
                                         Enrolled: {new Date(student.enrolled_at).toLocaleDateString()}
                                     </div>
                                 </div>
                             ))}
                             {students.length === 0 && (
-                                <p className="text-gray-400 text-center py-8">No students enrolled yet</p>
+                                <p className="text-[var(--muted)] text-center py-8">No students enrolled yet</p>
                             )}
                         </div>
                     </div>
@@ -464,57 +464,57 @@ export default function InstructorCourseDetail() {
                 {activeTab === 'assignments' && (
                     <div>
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-white">Assignments ({assignments.length})</h3>
+                            <h3 className="text-lg font-semibold text-[var(--text)]">Assignments ({assignments.length})</h3>
                             <button
                                 onClick={() => setShowAssignmentForm(v => !v)}
-                                className="px-4 py-2 bg-purple-600/30 border border-purple-500/30 rounded-xl text-purple-300 text-sm hover:bg-purple-600/40 transition"
+                                className="px-4 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-[var(--accent-primary)]/80 text-sm hover:bg-[var(--accent-primary)]/40 transition"
                             >
                                 {showAssignmentForm ? 'Cancel' : '+ Add Assignment'}
                             </button>
                         </div>
 
                         {showAssignmentForm && (
-                            <form onSubmit={handleCreateAssignment} className="bg-[#1a1a35] rounded-xl p-4 mb-4 space-y-3">
+                            <form onSubmit={handleCreateAssignment} className="bg-[var(--surface-2)] rounded-xl p-4 mb-4 space-y-3">
                                 <input
                                     required
                                     placeholder="Assignment title"
                                     value={assignmentForm.title}
                                     onChange={e => setAssignmentForm(f => ({ ...f, title: e.target.value }))}
-                                    className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                    className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]"
                                 />
                                 <textarea
                                     placeholder="Description"
                                     value={assignmentForm.description}
                                     onChange={e => setAssignmentForm(f => ({ ...f, description: e.target.value }))}
                                     rows={3}
-                                    className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 resize-none"
+                                    className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] resize-none"
                                 />
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label className="block text-xs text-gray-400 mb-1">Due Date</label>
+                                        <label className="block text-xs text-[var(--muted)] mb-1">Due Date</label>
                                         <input
                                             required
                                             type="datetime-local"
                                             value={assignmentForm.due_date}
                                             onChange={e => setAssignmentForm(f => ({ ...f, due_date: e.target.value }))}
-                                            className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                            className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs text-gray-400 mb-1">Max Points</label>
+                                        <label className="block text-xs text-[var(--muted)] mb-1">Max Points</label>
                                         <input
                                             type="number"
                                             min="1"
                                             value={assignmentForm.max_points}
                                             onChange={e => setAssignmentForm(f => ({ ...f, max_points: parseInt(e.target.value) || 100 }))}
-                                            className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                            className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]"
                                         />
                                     </div>
                                 </div>
                                 <button
                                     type="submit"
                                     disabled={savingAssignment}
-                                    className="px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
+                                    className="px-5 py-2 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
                                 >
                                     {savingAssignment ? 'Creating...' : 'Create Assignment'}
                                 </button>
@@ -523,42 +523,42 @@ export default function InstructorCourseDetail() {
 
                         <div className="space-y-3">
                             {assignments.map(assignment => (
-                                <div key={assignment.id} className="flex items-center justify-between p-3 bg-[#1a1a35] rounded-xl">
+                                <div key={assignment.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-xl">
                                     <div>
-                                        <p className="font-medium text-white">{assignment.title}</p>
-                                        <p className="text-xs text-gray-400">Due: {new Date(assignment.due_date).toLocaleDateString()} · {assignment.max_points} pts</p>
+                                        <p className="font-medium text-[var(--text)]">{assignment.title}</p>
+                                        <p className="text-xs text-[var(--muted)]">Due: {new Date(assignment.due_date).toLocaleDateString()} Â· {assignment.max_points} pts</p>
                                     </div>
                                     <button
                                         onClick={() => fetchSubmissions(assignment.id)}
-                                        className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-sm transition"
+                                        className="px-3 py-1 bg-[var(--accent-primary)] hover:bg-purple-700 rounded-lg text-[var(--text)] text-sm transition"
                                     >
                                         View Submissions
                                     </button>
                                 </div>
                             ))}
                             {assignments.length === 0 && (
-                                <p className="text-gray-400 text-center py-8">No assignments created yet</p>
+                                <p className="text-[var(--muted)] text-center py-8">No assignments created yet</p>
                             )}
                         </div>
 
                         {/* Submissions panel */}
                         {viewingSubmissions && (
-                            <div className="mt-4 bg-[#1a1a35] rounded-xl p-4">
+                            <div className="mt-4 bg-[var(--surface-2)] rounded-xl p-4">
                                 <div className="flex justify-between items-center mb-3">
-                                    <h4 className="font-semibold text-white">Submissions ({submissions.length})</h4>
+                                    <h4 className="font-semibold text-[var(--text)]">Submissions ({submissions.length})</h4>
                                     <button onClick={() => setViewingSubmissions(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-sm">Close</button>
                                 </div>
                                 {submissions.length === 0 ? (
-                                    <p className="text-gray-400 text-sm">No submissions yet</p>
+                                    <p className="text-[var(--muted)] text-sm">No submissions yet</p>
                                 ) : (
                                     <div className="space-y-2">
                                         {submissions.map(sub => (
-                                            <div key={sub.id} className="p-3 bg-[#12122a] rounded-lg">
+                                            <div key={sub.id} className="p-3 bg-[var(--surface)] rounded-lg">
                                                 <div className="flex justify-between items-start">
                                                     <div>
-                                                        <p className="text-white text-sm font-medium">{sub.student_name}</p>
-                                                        <p className="text-xs text-gray-400">{sub.student_email}</p>
-                                                        <p className="text-xs text-gray-500 mt-1">{sub.content || 'No text submission'}</p>
+                                                        <p className="text-[var(--text)] text-sm font-medium">{sub.student_name}</p>
+                                                        <p className="text-xs text-[var(--muted)]">{sub.student_email}</p>
+                                                        <p className="text-xs text-[var(--muted)] mt-1">{sub.content || 'No text submission'}</p>
                                                     </div>
                                                     <span className={`text-xs px-2 py-1 rounded-full ${sub.score !== null ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'}`}>
                                                         {sub.score !== null ? `${sub.score} pts` : 'Ungraded'}
@@ -576,38 +576,38 @@ export default function InstructorCourseDetail() {
                 {activeTab === 'assessments' && (
                     <div>
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-white">Assessments ({assessments.length})</h3>
+                            <h3 className="text-lg font-semibold text-[var(--text)]">Assessments ({assessments.length})</h3>
                             <button
                                 onClick={() => setShowAssessmentForm(v => !v)}
-                                className="px-4 py-2 bg-purple-600/30 border border-purple-500/30 rounded-xl text-purple-300 text-sm hover:bg-purple-600/40 transition"
+                                className="px-4 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-[var(--accent-primary)]/80 text-sm hover:bg-[var(--accent-primary)]/40 transition"
                             >
                                 {showAssessmentForm ? 'Cancel' : '+ Add Assessment'}
                             </button>
                         </div>
 
                         {showAssessmentForm && (
-                            <form onSubmit={handleCreateAssessment} className="bg-[#1a1a35] rounded-xl p-4 mb-4 space-y-3">
+                            <form onSubmit={handleCreateAssessment} className="bg-[var(--surface-2)] rounded-xl p-4 mb-4 space-y-3">
                                 <input
                                     required
                                     placeholder="Assessment title"
                                     value={assessmentForm.title}
                                     onChange={e => setAssessmentForm(f => ({ ...f, title: e.target.value }))}
-                                    className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                    className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]"
                                 />
                                 <textarea
                                     placeholder="Description"
                                     value={assessmentForm.description}
                                     onChange={e => setAssessmentForm(f => ({ ...f, description: e.target.value }))}
                                     rows={2}
-                                    className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 resize-none"
+                                    className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] resize-none"
                                 />
                                 <div className="grid grid-cols-3 gap-3">
                                     <div>
-                                        <label className="block text-xs text-gray-400 mb-1">Type</label>
+                                        <label className="block text-xs text-[var(--muted)] mb-1">Type</label>
                                         <select
                                             value={assessmentForm.type}
                                             onChange={e => setAssessmentForm(f => ({ ...f, type: e.target.value }))}
-                                            className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                            className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-3 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]"
                                         >
                                             <option value="exam">Exam</option>
                                             <option value="midterm">Midterm</option>
@@ -616,30 +616,30 @@ export default function InstructorCourseDetail() {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-xs text-gray-400 mb-1">Scheduled Date</label>
+                                        <label className="block text-xs text-[var(--muted)] mb-1">Scheduled Date</label>
                                         <input
                                             required
                                             type="datetime-local"
                                             value={assessmentForm.scheduled_date}
                                             onChange={e => setAssessmentForm(f => ({ ...f, scheduled_date: e.target.value }))}
-                                            className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                            className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-3 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs text-gray-400 mb-1">Duration (min)</label>
+                                        <label className="block text-xs text-[var(--muted)] mb-1">Duration (min)</label>
                                         <input
                                             type="number"
                                             min="1"
                                             value={assessmentForm.duration_minutes}
                                             onChange={e => setAssessmentForm(f => ({ ...f, duration_minutes: parseInt(e.target.value) || 120 }))}
-                                            className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                            className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-3 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]"
                                         />
                                     </div>
                                 </div>
                                 <button
                                     type="submit"
                                     disabled={savingAssessment}
-                                    className="px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
+                                    className="px-5 py-2 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
                                 >
                                     {savingAssessment ? 'Creating...' : 'Create Assessment'}
                                 </button>
@@ -648,18 +648,18 @@ export default function InstructorCourseDetail() {
 
                         <div className="space-y-3">
                             {assessments.map(assessment => (
-                                <div key={assessment.id} className="bg-[#1a1a35] rounded-xl p-3">
+                                <div key={assessment.id} className="bg-[var(--surface-2)] rounded-xl p-3">
                                     {editingAssessment === assessment.id ? (
                                         // Inline edit form
                                         <div className="space-y-3">
                                             <input value={editAssessmentForm.title}
                                                 onChange={e => setEditAssessmentForm(f => ({ ...f, title: e.target.value }))}
                                                 placeholder="Title"
-                                                className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                                className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                                             <div className="grid grid-cols-3 gap-2">
                                                 <select value={editAssessmentForm.type}
                                                     onChange={e => setEditAssessmentForm(f => ({ ...f, type: e.target.value }))}
-                                                    className="bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500">
+                                                    className="bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-3 py-2 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]">
                                                     <option value="exam">Exam</option>
                                                     <option value="midterm">Midterm</option>
                                                     <option value="final">Final</option>
@@ -667,19 +667,19 @@ export default function InstructorCourseDetail() {
                                                 </select>
                                                 <input type="datetime-local" value={editAssessmentForm.scheduled_date}
                                                     onChange={e => setEditAssessmentForm(f => ({ ...f, scheduled_date: e.target.value }))}
-                                                    className="bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                                    className="bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-3 py-2 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                                                 <input type="number" min="1" value={editAssessmentForm.duration_minutes}
                                                     onChange={e => setEditAssessmentForm(f => ({ ...f, duration_minutes: parseInt(e.target.value) || 60 }))}
                                                     placeholder="Duration (min)"
-                                                    className="bg-[#12122a] border border-purple-900/40 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-purple-500" />
+                                                    className="bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-3 py-2 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                                             </div>
                                             <div className="flex gap-2">
                                                 <button onClick={() => handleSaveAssessment(assessment.id)} disabled={savingEditAssessment}
-                                                    className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm hover:opacity-90 transition disabled:opacity-50">
-                                                    {savingEditAssessment ? 'Saving...' : '✓ Save'}
+                                                    className="px-4 py-2 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm hover:opacity-90 transition disabled:opacity-50">
+                                                    {savingEditAssessment ? 'Saving...' : 'âœ“ Save'}
                                                 </button>
                                                 <button onClick={() => setEditingAssessment(null)}
-                                                    className="px-4 py-2 bg-[#12122a] border border-purple-900/40 rounded-xl text-gray-400 text-sm hover:text-white transition">
+                                                    className="px-4 py-2 bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition">
                                                     Cancel
                                                 </button>
                                             </div>
@@ -688,14 +688,14 @@ export default function InstructorCourseDetail() {
                                         // Display row
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="font-medium text-white">{assessment.title}</p>
-                                                <p className="text-xs text-gray-400 capitalize">
-                                                    {assessment.type} · {assessment.duration_minutes} min · {new Date(assessment.scheduled_date).toLocaleDateString()}
+                                                <p className="font-medium text-[var(--text)]">{assessment.title}</p>
+                                                <p className="text-xs text-[var(--muted)] capitalize">
+                                                    {assessment.type} Â· {assessment.duration_minutes} min Â· {new Date(assessment.scheduled_date).toLocaleDateString()}
                                                 </p>
                                             </div>
                                             <div className="flex gap-2">
                                                 <button onClick={() => handleEditAssessment(assessment)}
-                                                    className="px-3 py-1.5 bg-blue-600/20 border border-blue-500/30 rounded-lg text-blue-300 text-xs hover:bg-blue-600/30 transition">
+                                                    className="px-3 py-1.5 bg-blue-600/20 border border-[var(--accent-tertiary)]/30 rounded-lg text-blue-300 text-xs hover:bg-blue-600/30 transition">
                                                     Edit
                                                 </button>
                                                 <button onClick={() => handleDeleteAssessment(assessment.id)}
@@ -708,7 +708,7 @@ export default function InstructorCourseDetail() {
                                 </div>
                             ))}
                             {assessments.length === 0 && (
-                                <p className="text-gray-400 text-center py-8">No assessments created yet</p>
+                                <p className="text-[var(--muted)] text-center py-8">No assessments created yet</p>
                             )}
                         </div>
                     </div>
@@ -716,23 +716,23 @@ export default function InstructorCourseDetail() {
                 {activeTab === 'notes' && (
                     <div>
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-white">Course Notes ({notes.length})</h3>
+                            <h3 className="text-lg font-semibold text-[var(--text)]">Course Notes ({notes.length})</h3>
                             <button
                                 onClick={() => setShowNoteForm(v => !v)}
-                                className="px-4 py-2 bg-purple-600/30 border border-purple-500/30 rounded-xl text-purple-300 text-sm hover:bg-purple-600/40 transition"
+                                className="px-4 py-2 bg-[var(--accent-primary)]/30 border border-[var(--accent-primary)]/30 rounded-xl text-[var(--accent-primary)]/80 text-sm hover:bg-[var(--accent-primary)]/40 transition"
                             >
                                 {showNoteForm ? 'Cancel' : '+ Add Note'}
                             </button>
                         </div>
 
                         {showNoteForm && (
-                            <form onSubmit={handleCreateNote} className="bg-[#1a1a35] rounded-xl p-4 mb-4 space-y-3">
+                            <form onSubmit={handleCreateNote} className="bg-[var(--surface-2)] rounded-xl p-4 mb-4 space-y-3">
                                 <input
                                     required
                                     placeholder="Note title"
                                     value={noteForm.title}
                                     onChange={e => setNoteForm(f => ({ ...f, title: e.target.value }))}
-                                    className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                                    className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]"
                                 />
                                 <textarea
                                     required
@@ -740,9 +740,9 @@ export default function InstructorCourseDetail() {
                                     value={noteForm.content}
                                     onChange={e => setNoteForm(f => ({ ...f, content: e.target.value }))}
                                     rows={4}
-                                    className="w-full bg-[#12122a] border border-purple-900/40 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 resize-none"
+                                    className="w-full bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)] resize-none"
                                 />
-                                <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                                <label className="flex items-center gap-2 text-sm text-[var(--muted)] cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={noteForm.is_public}
@@ -754,7 +754,7 @@ export default function InstructorCourseDetail() {
                                 <button
                                     type="submit"
                                     disabled={savingNote}
-                                    className="px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
+                                    className="px-5 py-2 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
                                 >
                                     {savingNote ? 'Saving...' : 'Publish Note'}
                                 </button>
@@ -763,12 +763,12 @@ export default function InstructorCourseDetail() {
 
                         <div className="space-y-3">
                             {notes.map(note => (
-                                <div key={note.id} className="bg-[#1a1a35] rounded-xl p-4">
+                                <div key={note.id} className="bg-[var(--surface-2)] rounded-xl p-4">
                                     <div className="flex items-start justify-between mb-2">
                                         <div>
-                                            <h4 className="font-medium text-white">{note.title}</h4>
-                                            <p className="text-xs text-gray-500 mt-0.5">
-                                                {new Date(note.created_at).toLocaleDateString()} ·{' '}
+                                            <h4 className="font-medium text-[var(--text)]">{note.title}</h4>
+                                            <p className="text-xs text-[var(--muted)] mt-0.5">
+                                                {new Date(note.created_at).toLocaleDateString()} Â·{' '}
                                                 <span className={note.is_public ? 'text-green-400' : 'text-yellow-400'}>
                                                     {note.is_public ? 'Public' : 'Private'}
                                                 </span>
@@ -781,11 +781,11 @@ export default function InstructorCourseDetail() {
                                             Delete
                                         </button>
                                     </div>
-                                    <p className="text-sm text-gray-300 whitespace-pre-wrap">{note.content}</p>
+                                    <p className="text-sm text-[var(--muted)] whitespace-pre-wrap">{note.content}</p>
                                 </div>
                             ))}
                             {notes.length === 0 && (
-                                <p className="text-gray-400 text-center py-8">No notes yet. Add notes for your students.</p>
+                                <p className="text-[var(--muted)] text-center py-8">No notes yet. Add notes for your students.</p>
                             )}
                         </div>
                     </div>
@@ -804,3 +804,14 @@ export default function InstructorCourseDetail() {
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -3,7 +3,7 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 
 const ROLE_COLORS = {
-    student: 'bg-purple-500/20 text-purple-300',
+    student: 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80',
     instructor: 'bg-blue-500/20 text-blue-300',
     admin: 'bg-green-500/20 text-green-300',
 };
@@ -56,8 +56,8 @@ export default function Users() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">User Management</h1>
-                    <p className="text-gray-400 text-sm mt-1">{total} total users</p>
+                    <h1 className="text-2xl font-bold text-[var(--text)]">User Management</h1>
+                    <p className="text-[var(--muted)] text-sm mt-1">{total} total users</p>
                 </div>
             </div>
 
@@ -68,12 +68,12 @@ export default function Users() {
                     placeholder="Search users..."
                     value={search}
                     onChange={e => { setSearch(e.target.value); setPage(1); }}
-                    className="bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 text-sm w-64"
+                    className="bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-2 text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] text-sm w-64"
                 />
                 <select
                     value={roleFilter}
                     onChange={e => { setRoleFilter(e.target.value); setPage(1); }}
-                    className="bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-2 text-white focus:outline-none focus:border-purple-500 text-sm"
+                    className="bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] text-sm"
                 >
                     <option value="">All Roles</option>
                     <option value="student">Students</option>
@@ -87,32 +87,32 @@ export default function Users() {
                 <table className="w-full">
                     <thead>
                         <tr className="border-b border-[var(--border)]">
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">User</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Role</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Status</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Joined</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Actions</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">User</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Role</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Status</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Joined</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan={5} className="text-center py-10 text-gray-500">Loading...</td>
+                                <td colSpan={5} className="text-center py-10 text-[var(--muted)]">Loading...</td>
                             </tr>
                         ) : users.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="text-center py-10 text-gray-500">No users found</td>
+                                <td colSpan={5} className="text-center py-10 text-[var(--muted)]">No users found</td>
                             </tr>
                         ) : users.map(user => (
                             <tr key={user.id} className="border-b border-[var(--border)] hover:bg-[var(--surface-2)] transition">
                                 <td className="px-5 py-3">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                        <div className="w-8 h-8 bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-[var(--text)] text-sm font-bold">
                                             {user.name?.[0]?.toUpperCase()}
                                         </div>
                                         <div>
-                                            <p className="text-sm font-medium text-white">{user.name}</p>
-                                            <p className="text-xs text-gray-500">{user.email}</p>
+                                            <p className="text-sm font-medium text-[var(--text)]">{user.name}</p>
+                                            <p className="text-xs text-[var(--muted)]">{user.email}</p>
                                         </div>
                                     </div>
                                 </td>
@@ -126,7 +126,7 @@ export default function Users() {
                                         {user.is_active ? 'Active' : 'Inactive'}
                                     </span>
                                 </td>
-                                <td className="px-5 py-3 text-sm text-gray-400">
+                                <td className="px-5 py-3 text-sm text-[var(--muted)]">
                                     {new Date(user.created_at).toLocaleDateString()}
                                 </td>
                                 <td className="px-5 py-3">
@@ -153,19 +153,19 @@ export default function Users() {
 
             {/* Pagination */}
             <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-400">Page {page}</p>
+                <p className="text-sm text-[var(--muted)]">Page {page}</p>
                 <div className="flex gap-2">
                     <button
                         onClick={() => setPage(p => Math.max(1, p - 1))}
                         disabled={page === 1}
-                        className="px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-white disabled:opacity-40 hover:border-purple-500 transition"
+                        className="px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] disabled:opacity-40 hover:border-purple-500 transition"
                     >
                         Previous
                     </button>
                     <button
                         onClick={() => setPage(p => p + 1)}
                         disabled={users.length < 15}
-                        className="px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-white disabled:opacity-40 hover:border-purple-500 transition"
+                        className="px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] disabled:opacity-40 hover:border-purple-500 transition"
                     >
                         Next
                     </button>
@@ -174,3 +174,10 @@ export default function Users() {
         </div>
     );
 }
+
+
+
+
+
+
+

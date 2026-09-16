@@ -67,7 +67,7 @@ export default function AllAssignments() {
     const STATUS_CONFIG = {
         pending:   { label: 'Pending',   classes: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' },
         overdue:   { label: 'Overdue',   classes: 'bg-red-500/20    text-red-300    border-red-500/30'    },
-        submitted: { label: 'Submitted', classes: 'bg-blue-500/20   text-blue-300   border-blue-500/30'   },
+        submitted: { label: 'Submitted', classes: 'bg-blue-500/20   text-blue-300   border-[var(--accent-tertiary)]/30'   },
         graded:    { label: 'Graded',    classes: 'bg-green-500/20  text-green-300  border-green-500/30'  },
     };
 
@@ -96,7 +96,7 @@ export default function AllAssignments() {
     }, {});
 
     // ── Render ─────────────────────────────────────────────────────────────
-    if (loading) return <div className="text-center py-20 text-gray-400">Loading assignments...</div>;
+    if (loading) return <div className="text-center py-20 text-[var(--muted)]">Loading assignments...</div>;
 
     if (assignments.length === 0) {
         return (
@@ -104,12 +104,12 @@ export default function AllAssignments() {
                 <h1 className="text-2xl font-bold text-[var(--text)] mb-6">All Assignments</h1>
                 <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 text-center text-[var(--muted)]">
                     <div className="flex justify-center mb-3">
-                        <ClipboardList className="w-10 h-10 text-gray-400" />
+                        <ClipboardList className="w-10 h-10 text-[var(--muted)]" />
                     </div>
-                    <p className="text-white font-medium mb-2">No assignments yet</p>
+                    <p className="text-[var(--text)] font-medium mb-2">No assignments yet</p>
                     <p className="text-sm mb-4">Enroll in a course to start receiving assignments</p>
                     <Link to="/student/courses"
-                        className="px-4 py-2 bg-purple-600 rounded-xl text-white text-sm hover:bg-purple-700 transition">
+                        className="px-4 py-2 bg-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm hover:bg-purple-700 transition">
                         Browse Courses
                     </Link>
                 </div>
@@ -120,8 +120,8 @@ export default function AllAssignments() {
     return (
         <div className="max-w-4xl mx-auto space-y-6">
             <div className="flex items-center justify-between flex-wrap gap-3">
-                <h1 className="text-2xl font-bold text-white">All Assignments</h1>
-                <p className="text-sm text-gray-400">{assignments.length} total</p>
+                <h1 className="text-2xl font-bold text-[var(--text)]">All Assignments</h1>
+                <p className="text-sm text-[var(--muted)]">{assignments.length} total</p>
             </div>
 
             {/* Summary stat pills */}
@@ -132,7 +132,7 @@ export default function AllAssignments() {
                             onClick={() => setFilter(filter === key ? 'all' : key)}
                             className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
                                 filter === key
-                                    ? cfg.classes + ' ring-2 ring-offset-1 ring-offset-[#0d0d1a]'
+                                    ? cfg.classes + ' ring-2 ring-offset-1 ring-offset-[var(--bg)]'
                                     : cfg.classes
                             }`}>
                             {cfg.label}: {counts[key]}
@@ -176,7 +176,7 @@ export default function AllAssignments() {
                                     <div className="flex-1 min-w-0">
                                         {/* Title + badge */}
                                         <div className="flex items-center gap-2 flex-wrap mb-1">
-                                            <h3 className="font-semibold text-white">{assignment.title}</h3>
+                                            <h3 className="font-semibold text-[var(--text)]">{assignment.title}</h3>
                                             <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${cfg.classes}`}>
                                                 {cfg.label}
                                                 {status === 'graded' && sub?.score !== null &&
@@ -185,17 +185,17 @@ export default function AllAssignments() {
                                         </div>
 
                                         {/* Course */}
-                                        <p className="text-xs text-purple-400 mb-2 flex items-center gap-1">
+                                        <p className="text-xs text-[var(--accent-primary)] mb-2 flex items-center gap-1">
                                             <BookOpen className="w-3 h-3" /> {assignment.course_title}
                                         </p>
 
                                         {/* Description snippet */}
                                         {assignment.description && (
-                                            <p className="text-xs text-gray-400 mb-2 line-clamp-2">{assignment.description}</p>
+                                            <p className="text-xs text-[var(--muted)] mb-2 line-clamp-2">{assignment.description}</p>
                                         )}
 
                                         {/* Meta row */}
-                                        <div className="flex items-center gap-4 text-xs text-gray-400 flex-wrap">
+                                        <div className="flex items-center gap-4 text-xs text-[var(--muted)] flex-wrap">
                                             <span className={new Date(assignment.due_date) < new Date() && !sub ? 'text-red-400' : ''} title="Due date">
                                                 <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {getDaysUntilDue(assignment.due_date)}</span>
                                             </span>
@@ -209,7 +209,7 @@ export default function AllAssignments() {
                                         {sub?.feedback && (
                                             <div className="mt-2 text-xs text-blue-300 flex items-start gap-1">
                                                 <MessageCircle className="w-3 h-3 flex-shrink-0 mt-0.5" />
-                                                <span className="text-gray-400 line-clamp-1">{sub.feedback}</span>
+                                                <span className="text-[var(--muted)] line-clamp-1">{sub.feedback}</span>
                                             </div>
                                         )}
                                     </div>
@@ -223,7 +223,7 @@ export default function AllAssignments() {
                                             }`}>
                                                 {Math.round((sub.score / assignment.max_points) * 100)}%
                                             </div>
-                                            <div className="text-xs text-gray-400">{sub.score}/{assignment.max_points}</div>
+                                            <div className="text-xs text-[var(--muted)]">{sub.score}/{assignment.max_points}</div>
                                         </div>
                                     )}
                                 </div>
@@ -235,8 +235,8 @@ export default function AllAssignments() {
                                             status === 'pending' || status === 'overdue'
                                                 ? status === 'overdue'
                                                     ? 'bg-red-600/30 border border-red-500/30 text-red-300 hover:bg-red-600/40'
-                                                    : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90'
-                                                : 'bg-[var(--surface-2)] border border-[var(--border)] text-purple-600 dark:text-purple-400 hover:bg-[var(--surface-3)]'
+                                                    : 'bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] text-[var(--text)] hover:opacity-90'
+                                                : 'bg-[var(--surface-2)] border border-[var(--border)] text-[var(--accent-primary)]/80 dark:text-[var(--accent-primary)] hover:bg-[var(--surface-3)]'
                                         }`}>
                                         {status === 'pending'   && 'Submit Assignment →'}
                                         {status === 'overdue'   && 'Submit (Late) →'}
@@ -252,3 +252,8 @@ export default function AllAssignments() {
         </div>
     );
 }
+
+
+
+
+

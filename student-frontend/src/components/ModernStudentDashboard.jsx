@@ -101,7 +101,7 @@ export default function ModernStudentDashboard() {
                 <button
                     type="button"
                     onClick={() => fetchDashboardData()}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium hover:opacity-90 transition"
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] text-sm font-medium hover:opacity-90 transition"
                 >
                     Try again
                 </button>
@@ -120,7 +120,7 @@ export default function ModernStudentDashboard() {
                 <select
                     value={timeRange}
                     onChange={e => setTimeRange(e.target.value)}
-                    className="px-4 py-2 rounded-xl text-sm border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="px-4 py-2 rounded-xl text-sm border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-[var(--text)] dark:text-[var(--text)] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                     <option value="week">This week</option>
                     <option value="month">This month</option>
@@ -130,7 +130,7 @@ export default function ModernStudentDashboard() {
             </div>
 
             {/* Welcome Section */}
-            <div className={`bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl shadow-lg p-8 text-white relative overflow-hidden transform transition-all duration-1000 ${
+            <div className={`bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 rounded-3xl shadow-lg p-8 text-[var(--text)] relative overflow-hidden transform transition-all duration-1000 ${
                 animationsLoaded ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
             }`}>
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-5 rounded-full -mr-20 -mt-20 animate-pulse"></div>
@@ -154,13 +154,13 @@ export default function ModernStudentDashboard() {
                     icon={Target}
                     label="Overall Progress"
                     value={`${overallProgress}%`}
-                    color="from-purple-500 to-purple-600"
+                    color="from-[var(--accent-primary)] to-[var(--accent-primary)]/80"
                 />
                 <StatCard
                     icon={Star}
                     label="Average Grade"
                     value={`${averageGrade}%`}
-                    color="from-emerald-500 to-emerald-600"
+                    color="from-green-500 to-green-600"
                 />
                 <StatCard
                     icon={Flame}
@@ -186,13 +186,13 @@ export default function ModernStudentDashboard() {
                                     <Bot className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">AI recommendation</h3>
-                                    <p className="text-gray-600 dark:text-gray-300 mb-4">
+                                    <h3 className="text-lg font-bold text-[var(--text)] dark:text-[var(--text)] mb-2">AI recommendation</h3>
+                                    <p className="text-gray-600 dark:text-[var(--muted)] mb-4">
                                         {dashData.recommendation?.message || 'Browse a suggested course to keep your momentum.'}
                                     </p>
                                     <Link
                                         to={nextExploreId ? `/student/courses/${nextExploreId}` : '/student/courses'}
-                                        className="inline-block px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90 transition"
+                                        className="inline-block px-6 py-2 bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] rounded-lg font-medium hover:opacity-90 transition"
                                     >
                                         {nextExploreId ? 'View suggested course' : 'Browse courses'}
                                     </Link>
@@ -204,7 +204,7 @@ export default function ModernStudentDashboard() {
                     {/* Continue Learning */}
                     <div>
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Continue Learning</h2>
+                            <h2 className="text-2xl font-bold text-[var(--text)] dark:text-[var(--text)]">Continue Learning</h2>
                             <Link to="/student/courses" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 text-sm font-medium">
                                 View All →
                             </Link>
@@ -217,10 +217,10 @@ export default function ModernStudentDashboard() {
                             </div>
                         ) : (
                             <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 text-center border border-gray-200 dark:border-slate-700">
-                                <p className="text-gray-500 dark:text-gray-400 mb-4">No courses yet</p>
+                                <p className="text-[var(--muted)] dark:text-[var(--muted)] mb-4">No courses yet</p>
                                 <Link
                                     to="/student/courses"
-                                    className="inline-block px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90 transition"
+                                    className="inline-block px-6 py-2 bg-gradient-to-r from-indigo-600 to-[var(--accent-primary)]/80 text-[var(--text)] rounded-lg font-medium hover:opacity-90 transition"
                                 >
                                     Browse Courses
                                 </Link>
@@ -231,7 +231,7 @@ export default function ModernStudentDashboard() {
                     {/* Upcoming Live Classes */}
                     {dashData?.sessions && dashData.sessions.length > 0 && (
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Upcoming Live Classes</h2>
+                            <h2 className="text-2xl font-bold text-[var(--text)] dark:text-[var(--text)] mb-4">Upcoming Live Classes</h2>
                             <div className="space-y-3">
                                 {dashData.sessions.map(session => (
                                     <div
@@ -249,16 +249,16 @@ export default function ModernStudentDashboard() {
                                                     : <Clock className="w-5 h-5" />}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-gray-900 dark:text-white">{session.title}</p>
-                                                <p className="text-sm text-gray-500 dark:text-gray-400">{new Date(session.scheduled_at).toLocaleString()}</p>
+                                                <p className="font-bold text-[var(--text)] dark:text-[var(--text)]">{session.title}</p>
+                                                <p className="text-sm text-[var(--muted)] dark:text-[var(--muted)]">{new Date(session.scheduled_at).toLocaleString()}</p>
                                             </div>
                                         </div>
                                         <Link
                                             to={`/student/live/${session.id}`}
                                             className={`px-4 py-2 rounded-lg font-medium transition ${
                                                 session.status === 'live'
-                                                    ? 'bg-red-500 text-white hover:bg-red-600'
-                                                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                                                    ? 'bg-red-500 text-[var(--text)] hover:bg-red-600'
+                                                    : 'bg-blue-500 text-[var(--text)] hover:bg-blue-600'
                                             }`}
                                         >
                                             {session.status === 'live' ? 'Join Now' : 'View'}
@@ -276,7 +276,7 @@ export default function ModernStudentDashboard() {
                 }`}>
                     {/* Quick Actions */}
                     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 space-y-3">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-4">Quick Access</h3>
+                        <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)] mb-4">Quick Access</h3>
                         <QuickActionButton icon={Brain} label="AI Tutor" to="/student/ai-tutor" />
                         <QuickActionButton icon={ClipboardList} label="Assignments" to="/student/assignments" />
                         <QuickActionButton icon={Target} label="Take Quiz" to="/student/courses" />
@@ -286,7 +286,7 @@ export default function ModernStudentDashboard() {
                     {/* Recent Activity */}
                     {dashData?.activities && dashData.activities.length > 0 && (
                         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
+                            <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)] mb-4">Recent Activity</h3>
                             <div className="space-y-3 max-h-64 overflow-y-auto">
                                 {dashData.activities.slice(0, 5).map((activity, idx) => {
                                     const ActivityIcon = getActivityIcon(activity.activity_type || activity.type);
@@ -296,10 +296,10 @@ export default function ModernStudentDashboard() {
                                                 <ActivityIcon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                                <p className="text-sm font-medium text-[var(--text)] dark:text-[var(--text)] truncate">
                                                     {activity.title || activity.description || 'Activity'}
                                                 </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                <p className="text-xs text-[var(--muted)] dark:text-[var(--muted)]">
                                                     {formatTime(activity.timestamp || activity.created_at)}
                                                 </p>
                                             </div>
@@ -311,12 +311,12 @@ export default function ModernStudentDashboard() {
                     )}
 
                     {/* Learning Tips */}
-                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-6 border border-emerald-200 dark:border-emerald-800">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                            <Lightbulb className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+                        <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)] mb-3 flex items-center gap-2">
+                            <Lightbulb className="w-4 h-4 text-green-600 dark:text-green-400" />
                             Learning Tip
                         </h3>
-                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                        <p className="text-sm text-gray-700 dark:text-[var(--muted)]">
                             Take short breaks every 25 minutes while studying. It helps improve retention and keeps you focused!
                         </p>
                     </div>
@@ -367,13 +367,13 @@ function StatCard({ icon: Icon, label, value, color }) {
         : animatedValue;
 
     return (
-        <div className={`bg-gradient-to-br ${color} rounded-2xl shadow-lg p-6 text-white transform transition-all duration-700 ${
+        <div className={`bg-gradient-to-br ${color} rounded-2xl shadow-lg p-6 text-[var(--text)] transform transition-all duration-700 ${
             isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 opacity-0 scale-95'
         } hover:scale-105 hover:shadow-xl transition-all duration-300`}>
             <div className="mb-3">
-                <Icon className="w-8 h-8 text-white/90" />
+                <Icon className="w-8 h-8 text-[var(--text)]/90" />
             </div>
-            <p className="text-white/80 text-sm font-medium">{label}</p>
+            <p className="text-[var(--text)]/80 text-sm font-medium">{label}</p>
             <p className="text-4xl font-bold transition-all duration-300">{displayValue}</p>
         </div>
     );
@@ -394,21 +394,21 @@ function CourseCard({ course }) {
                 </div>
                 <div className="relative h-full flex items-end p-4">
                     {course.category === 'Programming'
-                        ? <Code2 className="w-8 h-8 text-white/80" />
-                        : <BookOpen className="w-8 h-8 text-white/80" />
+                        ? <Code2 className="w-8 h-8 text-[var(--text)]/80" />
+                        : <BookOpen className="w-8 h-8 text-[var(--text)]/80" />
                     }
                 </div>
             </div>
 
             {/* Content */}
             <div className="p-4">
-                <h3 className="font-bold text-gray-900 dark:text-white line-clamp-2 mb-2">{course.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{course.instructor_name}</p>
+                <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)] line-clamp-2 mb-2">{course.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-[var(--muted)] mb-4">{course.instructor_name}</p>
 
                 {/* Progress Bar */}
                 <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Progress</span>
+                        <span className="text-xs font-medium text-gray-600 dark:text-[var(--muted)]">Progress</span>
                         <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">{progress}%</span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
@@ -432,7 +432,7 @@ function QuickActionButton({ icon: Icon, label, to }) {
             <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Icon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
             </div>
-            <span className="font-medium text-gray-900 dark:text-white">{label}</span>
+            <span className="font-medium text-[var(--text)] dark:text-[var(--text)]">{label}</span>
         </Link>
     );
 }
@@ -464,3 +464,7 @@ function formatTime(timestamp) {
     if (diffDays < 7) return `${diffDays}d ago`;
     return date.toLocaleDateString();
 }
+
+
+
+

@@ -33,7 +33,7 @@ export default function Login() {
                 </button>
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">E</div>
+                        <div className="w-10 h-10 bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-xl flex items-center justify-center text-[var(--text)] font-bold text-lg">E</div>
                         <span className="text-2xl font-bold text-[var(--text)]">EduVerse</span>
                     </div>
                     <h1 className="text-3xl font-bold text-[var(--text)] mt-4">Admin Panel</h1>
@@ -48,7 +48,7 @@ export default function Login() {
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] w-5 h-5" />
                                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                                     placeholder="admin@eduverse.com" required
-                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-purple-500 transition" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] transition" />
                             </div>
                         </div>
                         <div>
@@ -58,7 +58,7 @@ export default function Login() {
                                 <input type={showPw ? 'text' : 'password'} value={password}
                                     onChange={e => setPassword(e.target.value)}
                                     placeholder="••••••••" required
-                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-12 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-purple-500 transition" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-12 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] transition" />
                                 <button type="button" onClick={() => setShowPw(!showPw)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--text)] transition">
                                     {showPw ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -66,7 +66,7 @@ export default function Login() {
                             </div>
                         </div>
                         <button type="submit" disabled={loading}
-                            className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-400 hover:opacity-90 transition disabled:opacity-50">
+                            className="w-full py-3 rounded-xl font-semibold text-[var(--text)] bg-gradient-to-r from-green-500 to-cyan-400 hover:opacity-90 transition disabled:opacity-50">
                             {loading ? 'Signing in...' : 'Sign In as Admin'}
                         </button>
                     </form>
@@ -78,3 +78,5 @@ export default function Login() {
         </div>
     );
 }
+
+

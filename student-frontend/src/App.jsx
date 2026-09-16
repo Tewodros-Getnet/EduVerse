@@ -103,7 +103,7 @@ export default function App() {
     return (
         <AuthProvider>
             <ThemeProvider>
-                <Toaster position="top-right" toastOptions={{ style: { background: '#1a1a35', color: '#fff', border: '1px solid #7c3aed' } }} />
+                <Toaster position="top-right" toastOptions={{ style: { background: 'var(--surface-2)', color: '#fff', border: '1px solid #7c3aed' } }} />
                 <AppRoutes />
             </ThemeProvider>
         </AuthProvider>

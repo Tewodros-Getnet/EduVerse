@@ -97,7 +97,7 @@ export default function Analytics() {
             {
                 label: 'Total users',
                 value: overview?.total_users != null ? overview.total_users.toLocaleString() : '—',
-                gradient: 'from-blue-500 to-cyan-400',
+                gradient: 'from-[var(--accent-tertiary)] to-[var(--accent-tertiary)]/80',
                 icon: <Users className="w-6 h-6" />,
                 hint: `${overview?.active_users ?? 0} active`,
             },
@@ -152,7 +152,7 @@ export default function Analytics() {
                             onClick={() => setPeriod(p)}
                             className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
                                 period === p
-                                    ? 'bg-indigo-600 text-white shadow-md'
+                                    ? 'bg-indigo-600 text-[var(--text)] shadow-md'
                                     : 'bg-[var(--surface-2)] text-[var(--muted)] border border-[var(--border)] hover:text-[var(--text)]'
                             }`}
                         >
@@ -166,7 +166,7 @@ export default function Analytics() {
                 {statCards.map((card) => (
                     <div
                         key={card.label}
-                        className={`bg-gradient-to-br ${card.gradient} rounded-2xl p-5 text-white shadow-lg`}
+                        className={`bg-gradient-to-br ${card.gradient} rounded-2xl p-5 text-[var(--text)] shadow-lg`}
                     >
                         <div className="text-2xl mb-2">{card.icon}</div>
                         <div className="text-2xl sm:text-3xl font-bold">{card.value}</div>
@@ -298,3 +298,5 @@ export default function Analytics() {
         </div>
     );
 }
+
+

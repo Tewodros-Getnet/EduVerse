@@ -57,14 +57,14 @@ export default function Login() {
                 </button>
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center gap-2 mb-4 group cursor-pointer">
-                        <GraduationCap className="w-8 h-8 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
-                        <span className="text-2xl font-bold text-[var(--text)] group-hover:text-purple-400 transition-colors duration-300">EduVerse</span>
+                        <GraduationCap className="w-8 h-8 text-[var(--accent-primary)] group-hover:scale-110 transition-transform duration-300" />
+                        <span className="text-2xl font-bold text-[var(--text)] group-hover:text-[var(--accent-primary)] transition-colors duration-300">EduVerse</span>
                     </div>
                     <h1 className="text-3xl font-bold text-[var(--text)] animate-gradient-text">Welcome Back</h1>
                     <p className="text-[var(--muted)] mt-1">Sign in to continue your learning journey</p>
                 </div>
 
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 space-y-5 shadow-xl shadow-black/10 hover:border-purple-500/30 transition-colors duration-300">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 space-y-5 shadow-xl shadow-black/10 hover:border-[var(--accent-primary)]/30 transition-colors duration-300">
                     <div>
                         <label className="block text-sm font-medium text-[var(--muted)] mb-2">Email Address</label>
                         <div className="relative">
@@ -72,7 +72,7 @@ export default function Login() {
                             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                                 onKeyDown={handleKey}
                                 placeholder="you@example.com" required
-                                className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-purple-500 focus:shadow-lg focus:shadow-purple-500/20 transition-all duration-300" />
+                                className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:shadow-lg focus:shadow-[var(--accent-primary)]/20 transition-all duration-300" />
                         </div>
                     </div>
                     <div>
@@ -82,7 +82,7 @@ export default function Login() {
                             <input type={showPw ? 'text' : 'password'} value={password}
                                 onChange={e => setPassword(e.target.value)} onKeyDown={handleKey}
                                 placeholder="••••••••" required
-                                className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-purple-500 focus:shadow-lg focus:shadow-purple-500/20 transition-all duration-300" />
+                                className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl pl-10 pr-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--accent-primary)] focus:shadow-lg focus:shadow-[var(--accent-primary)]/20 transition-all duration-300" />
                         </div>
                         <div className="mt-2 flex items-center">
                             <input
@@ -92,7 +92,7 @@ export default function Login() {
                                 onChange={(e) => setShowPw(e.target.checked)}
                                 className="w-4 h-4 text-purple-500 bg-[var(--surface-2)] border-[var(--border)] rounded focus:ring-purple-500 focus:ring-2"
                             />
-                            <label htmlFor="showPassword" className="ml-2 text-sm text-[var(--muted)] cursor-pointer hover:text-purple-400 transition-colors duration-300">
+                            <label htmlFor="showPassword" className="ml-2 text-sm text-[var(--muted)] cursor-pointer hover:text-[var(--accent-primary)] transition-colors duration-300">
                                 Show Password
                             </label>
                         </div>
@@ -100,12 +100,12 @@ export default function Login() {
 
                     <div className="grid grid-cols-2 gap-3">
                         <button onClick={() => handleLogin('student')} disabled={loading}
-                            className="py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 text-sm flex items-center justify-center gap-2">
+                            className="py-3 rounded-xl font-semibold text-[var(--text)] bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 text-sm flex items-center justify-center gap-2">
                             <GraduationCap className="w-4 h-4" />
                             {loading ? '...' : 'Student Sign In'}
                         </button>
                         <button onClick={() => handleLogin('instructor')} disabled={loading}
-                            className="py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 text-sm flex items-center justify-center gap-2">
+                            className="py-3 rounded-xl font-semibold text-[var(--text)] bg-gradient-to-r from-[var(--accent-tertiary)] to-[var(--accent-tertiary)]/80 hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 text-sm flex items-center justify-center gap-2">
                             <BookUser className="w-4 h-4" />
                             {loading ? '...' : 'Instructor Sign In'}
                         </button>
@@ -113,7 +113,7 @@ export default function Login() {
 
                     <p className="text-center text-sm text-[var(--muted)]">
                         Don't have an account?{' '}
-                        <Link to="/register" className="text-pink-400 hover:text-pink-300 hover:underline transition-all duration-300 font-medium">Sign up</Link>
+                        <Link to="/register" className="text-[var(--accent-secondary)] hover:text-[var(--accent-secondary)]/80 hover:underline transition-all duration-300 font-medium">Sign up</Link>
                     </p>
                 </div>
 
@@ -124,3 +124,12 @@ export default function Login() {
         </div>
     );
 }
+
+
+
+
+
+
+
+
+

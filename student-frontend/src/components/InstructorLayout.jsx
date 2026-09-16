@@ -48,8 +48,8 @@ export default function InstructorLayout() {
                         <Menu className="w-5 h-5" />
                     </button>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                        <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
-                            <GraduationCap className="w-4 h-4 text-white" />
+                        <div className="w-8 h-8 rounded-lg bg-[var(--accent-primary)] flex items-center justify-center">
+                            <GraduationCap className="w-4 h-4 text-[var(--text)]" />
                         </div>
                         <span className="font-bold text-[var(--text)] hidden sm:block">EduVerse Instructor</span>
                     </div>
@@ -59,7 +59,7 @@ export default function InstructorLayout() {
                                 className={({ isActive }) =>
                                     `px-3 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap ${
                                         isActive
-                                            ? 'bg-purple-600/20 text-purple-400 dark:text-purple-300'
+                                            ? 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)] dark:text-[var(--accent-primary)]/80'
                                             : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
                                     }`
                                 }>
@@ -79,26 +79,26 @@ export default function InstructorLayout() {
                         <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-purple-500/40 flex-shrink-0">
                             {user?.avatar_url
                                 ? <img src={user.avatar_url} alt="avatar" className="w-full h-full object-cover" />
-                                : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">{user?.name?.[0]?.toUpperCase()}</div>
+                                : <div className="w-full h-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center text-[var(--text)] text-sm font-bold">{user?.name?.[0]?.toUpperCase()}</div>
                             }
                         </div>
-                        <span className="text-sm text-gray-300 hidden lg:block">{user?.name}</span>
+                        <span className="text-sm text-[var(--muted)] hidden lg:block">{user?.name}</span>
                     </button>
                     {menuOpen && (
                         <div className="absolute right-0 top-full mt-2 w-52 bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-xl z-50 py-1">
                             <div className="px-4 py-2.5 border-b border-[var(--border)]">
-                                <p className="text-sm font-medium text-white">{user?.name}</p>
-                                <p className="text-xs text-gray-400">{user?.email}</p>
+                                <p className="text-sm font-medium text-[var(--text)]">{user?.name}</p>
+                                <p className="text-xs text-[var(--muted)]">{user?.email}</p>
                             </div>
                             <Link
                                 to="/instructor/profile"
                                 onClick={() => setMenuOpen(false)}
-                                className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-purple-600/20 hover:text-white transition flex items-center gap-2"
+                                className="w-full text-left px-4 py-2.5 text-sm text-[var(--muted)] hover:bg-[var(--accent-primary)]/20 hover:text-[var(--text)] transition flex items-center gap-2"
                             >
                                 <UserCircle className="w-4 h-4" /> My Profile
                             </Link>
                             <button onClick={handleLogout}
-                                className="w-full text-left px-4 py-2.5 text-sm text-[var(--muted)] hover:bg-purple-600/20 hover:text-[var(--text)] transition flex items-center gap-2">
+                                className="w-full text-left px-4 py-2.5 text-sm text-[var(--muted)] hover:bg-[var(--accent-primary)]/20 hover:text-[var(--text)] transition flex items-center gap-2">
                                 <LogOut className="w-4 h-4" /> Logout
                             </button>
                         </div>
@@ -114,7 +114,7 @@ export default function InstructorLayout() {
                                 className={({ isActive }) =>
                                     `block px-4 py-2.5 rounded-xl text-sm font-medium transition ${
                                         isActive
-                                            ? 'bg-purple-600/20 text-purple-400'
+                                            ? 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]'
                                             : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
                                     }`
                                 }>
@@ -131,3 +131,10 @@ export default function InstructorLayout() {
         </div>
     );
 }
+
+
+
+
+
+
+

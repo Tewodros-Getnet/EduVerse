@@ -138,7 +138,7 @@ export default function CourseManagement() {
                     </div>
                     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
                         <h3 className="text-sm font-medium text-[var(--muted)]">Total Enrollments</h3>
-                        <p className="text-2xl font-bold text-blue-500 mt-2">{stats.total_enrollments}</p>
+                        <p className="text-2xl font-bold text-[var(--accent-tertiary)] mt-2">{stats.total_enrollments}</p>
                     </div>
                 </div>
             )}
@@ -219,7 +219,7 @@ export default function CourseManagement() {
                                             course.status === 'published' ? 'bg-green-500/20 text-green-400' :
                                             course.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
                                             course.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
-                                            'bg-gray-500/20 text-gray-400'
+                                            'bg-gray-500/20 text-[var(--muted)]'
                                         }`}>
                                             {course.status}
                                         </span>
@@ -324,7 +324,7 @@ export default function CourseManagement() {
                         <div className="flex space-x-3">
                             <button
                                 onClick={handleRejectCourse}
-                                className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition font-medium"
+                                className="flex-1 bg-red-600 text-[var(--text)] py-2 rounded-lg hover:bg-red-700 transition font-medium"
                             >
                                 Reject Course
                             </button>
@@ -449,3 +449,5 @@ export default function CourseManagement() {
         </div>
     );
 }
+
+
