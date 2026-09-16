@@ -65,10 +65,10 @@ export default function AllAssignments() {
     };
 
     const STATUS_CONFIG = {
-        pending:   { label: 'Pending',   classes: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' },
-        overdue:   { label: 'Overdue',   classes: 'bg-red-500/20    text-red-300    border-red-500/30'    },
-        submitted: { label: 'Submitted', classes: 'bg-blue-500/20   text-blue-300   border-[var(--accent-tertiary)]/30'   },
-        graded:    { label: 'Graded',    classes: 'bg-green-500/20  text-green-300  border-green-500/30'  },
+        pending:   { label: 'Pending',   classes: 'bg-[var(--status-warning)]/20 text-[var(--status-warning)] border-[var(--status-warning)]/30' },
+        overdue:   { label: 'Overdue',   classes: 'bg-[var(--status-error)]/20    text-[var(--status-error)]    border-[var(--status-error)]/30'    },
+        submitted: { label: 'Submitted', classes: 'bg-[var(--status-info)]/20   text-[var(--status-info)]   border-[var(--status-info)]/30'   },
+        graded:    { label: 'Graded',    classes: 'bg-[var(--status-success)]/20  text-[var(--status-success)]  border-[var(--status-success)]/30'  },
     };
 
     const getDaysUntilDue = (dueDate) => {

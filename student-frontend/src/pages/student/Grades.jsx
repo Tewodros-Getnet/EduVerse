@@ -136,9 +136,9 @@ export default function Grades() {
                                 displayGrades.map((grade, i) => (
                                     <tr key={i} className="border-b border-purple-900/20 hover:bg-purple-900/10 transition">
                                         <td className="px-6 py-4">
-                                            <span className={`text-xs px-3 py-1.5 rounded-full font-bold uppercase tracking-wide ${grade.type === 'quiz' ? 'bg-blue-600/20 text-blue-300 border border-[var(--accent-tertiary)]/30' :
-                                                grade.type === 'assignment' ? 'bg-green-600/20 text-green-300 border border-green-500/30' :
-                                                    'bg-yellow-600/20 text-yellow-300 border border-yellow-500/30'
+                                            <span className={`text-xs px-3 py-1.5 rounded-full font-bold uppercase tracking-wide ${grade.type === 'quiz' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)] border border-[var(--status-info)]/30' :
+                                                grade.type === 'assignment' ? 'bg-[var(--status-success)]/20 text-[var(--status-success)] border border-[var(--status-success)]/30' :
+                                                    'bg-[var(--status-warning)]/20 text-[var(--status-warning)] border border-[var(--status-warning)]/30'
                                                 }`}>
                                                 {grade.type}
                                             </span>
@@ -146,7 +146,7 @@ export default function Grades() {
                                         <td className="px-6 py-4 text-sm font-medium text-[var(--text)]">{grade.name}</td>
                                         <td className="px-6 py-4 text-sm text-[var(--muted)]">{grade.course}</td>
                                         <td className="px-6 py-4">
-                                            <span className={`text-sm font-bold ${grade.score >= 80 ? 'text-green-400' : grade.score >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
+                                            <span className={`text-sm font-bold ${grade.score >= 80 ? 'text-[var(--status-success)]' : grade.score >= 60 ? 'text-[var(--status-warning)]' : 'text-[var(--status-error)]'}`}>
                                                 {grade.score}%
                                                 {grade.type === 'assignment' && grade.maxPoints !== 100 && (
                                                     <span className="text-xs font-normal text-[var(--muted)] ml-1">
