@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Brain, BookOpen, FileText, Target, Pencil, X, Send } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
@@ -124,13 +125,13 @@ export default function FloatingAIAssistant() {
             {/* Floating Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`fixed bottom-20 right-4 md:bottom-6 md:right-6 w-14 h-14 rounded-full shadow-lg transition-all duration-300 z-40 flex items-center justify-center text-2xl hover:scale-110 ${isOpen
+                className={`fixed bottom-20 right-4 md:bottom-6 md:right-6 w-14 h-14 rounded-full shadow-lg transition-all duration-300 z-40 flex items-center justify-center hover:scale-110 ${isOpen
                         ? 'bg-gradient-to-br from-indigo-600 to-purple-600'
                         : 'bg-gradient-to-br from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600'
                     }`}
                 title="AI Tutor Assistant"
             >
-                🧠
+                <Brain className="w-6 h-6 text-white" />
             </button>
 
             {/* Chat Window */}
@@ -144,9 +145,10 @@ export default function FloatingAIAssistant() {
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="text-white hover:text-indigo-100 transition text-xl leading-none"
+                            className="text-white hover:text-indigo-100 transition"
+                            aria-label="Close chat"
                         >
-                            ←
+                            <X className="w-5 h-5" />
                         </button>
                     </div>
 
@@ -191,30 +193,30 @@ export default function FloatingAIAssistant() {
                     {messages.length <= 2 && !loading && (
                         <div className="border-t border-gray-200 dark:border-slate-700 p-3 bg-gray-50 dark:bg-slate-800">
                             <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Quick actions:</p>
-                            <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-2 gap-2">
                                 <button
                                     onClick={() => handleQuickAction('explain')}
-                                    className="text-xs px-2 py-1.5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition"
+                                    className="text-xs px-2 py-1.5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition flex items-center justify-center gap-1"
                                 >
-                                    📖 Explain
+                                    <BookOpen className="w-3 h-3" /> Explain
                                 </button>
                                 <button
                                     onClick={() => handleQuickAction('summary')}
-                                    className="text-xs px-2 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition"
+                                    className="text-xs px-2 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition flex items-center justify-center gap-1"
                                 >
-                                    📝 Summary
+                                    <FileText className="w-3 h-3" /> Summary
                                 </button>
                                 <button
                                     onClick={() => handleQuickAction('next')}
-                                    className="text-xs px-2 py-1.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition"
+                                    className="text-xs px-2 py-1.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition flex items-center justify-center gap-1"
                                 >
-                                    🎯 Next Step
+                                    <Target className="w-3 h-3" /> Next Step
                                 </button>
                                 <button
                                     onClick={() => handleQuickAction('practice')}
-                                    className="text-xs px-2 py-1.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg hover:bg-orange-200 dark:hover:bg-orange-900/50 transition"
+                                    className="text-xs px-2 py-1.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg hover:bg-orange-200 dark:hover:bg-orange-900/50 transition flex items-center justify-center gap-1"
                                 >
-                                    ✏️ Practice
+                                    <Pencil className="w-3 h-3" /> Practice
                                 </button>
                             </div>
                         </div>
@@ -234,9 +236,9 @@ export default function FloatingAIAssistant() {
                             <button
                                 type="submit"
                                 disabled={loading || !input.trim()}
-                                className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                             >
-                                ↑
+                                <Send className="w-4 h-4" />
                             </button>
                         </div>
                     </form>

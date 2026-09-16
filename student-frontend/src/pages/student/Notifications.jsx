@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FileText, Target, BarChart2, Megaphone, Clock, Radio, BookOpen, Trash2, Bell } from 'lucide-react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -101,16 +102,16 @@ export default function Notifications() {
     };
 
     const getNotificationIcon = (type) => {
-        switch (type) {
-            case 'assignment': return '📝';
-            case 'quiz': return '🎯';
-            case 'grade': return '📊';
-            case 'announcement': return '📢';
-            case 'reminder': return '⏰';
-            case 'live_session': return '🔴';
-            case 'course_update': return '📚';
-            default: return '🔔';
-        }
+        const icons = {
+            assignment: FileText,
+            quiz: Target,
+            grade: BarChart2,
+            announcement: Megaphone,
+            reminder: Clock,
+            live_session: Radio,
+            course_update: BookOpen,
+        };
+        return icons[type] || Bell;
     };
 
     const getNotificationColor = (type, read) => {
@@ -159,8 +160,8 @@ export default function Notifications() {
 
                 <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6">
                     <div className="flex items-start gap-4 mb-6">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${getNotificationColor(selectedNotification.type, selectedNotification.read)}`}>
-                            {getNotificationIcon(selectedNotification.type)}
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${getNotificationColor(selectedNotification.type, selectedNotification.read)}`}>
+                            {React.createElement(getNotificationIcon(selectedNotification.type), { className: 'w-6 h-6 text-white' })}
                         </div>
                         <div className="flex-1">
                             <h2 className="text-xl font-bold text-white mb-2">{selectedNotification.title}</h2>
@@ -281,7 +282,7 @@ export default function Notifications() {
                         <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center">
                             <div className="mb-4">
                                 <div className="w-16 h-16 bg-[#1a1a35] rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <span className="text-2xl">🔔</span>
+                                    <Bell className="w-6 h-6 text-gray-400" />
                                 </div>
                             </div>
                             <h3 className="text-lg font-medium text-white mb-2">
@@ -311,7 +312,7 @@ export default function Notifications() {
                                 >
                                     <div className="flex items-start gap-3">
                                         <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${getNotificationColor(notification.type, notification.read)}`}>
-                                            <span className="text-lg">{getNotificationIcon(notification.type)}</span>
+                                            {React.createElement(getNotificationIcon(notification.type), { className: 'w-5 h-5 text-white' })}
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-start justify-between gap-2 mb-2">
@@ -348,9 +349,10 @@ export default function Notifications() {
                                                             e.stopPropagation();
                                                             deleteNotification(notification.id);
                                                         }}
-                                                        className="p-1 hover:bg-red-600/20 rounded transition"
+                                                        className="p-1 hover:bg-red-600/20 rounded transition text-red-400 hover:text-red-300"
+                                                        aria-label="Delete notification"
                                                     >
-                                                        <span className="text-xs">🗑️</span>
+                                                        <Trash2 className="w-4 h-4" />
                                                     </button>
                                                 </div>
                                             </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Clapperboard, ClipboardList, Sparkles, UserCircle } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Clapperboard, ClipboardList, Sparkles, UserCircle, Menu, GraduationCap, Sun, Moon, ChevronDown, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import FloatingAIAssistant from './FloatingAIAssistant';
@@ -44,9 +44,11 @@ export default function StudentLayout() {
         <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
             <header className="bg-[var(--surface)] border-b border-[var(--border)] px-4 md:px-6 py-3 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
-                    <button onClick={() => setMobileNavOpen(prev => !prev)} className="text-gray-400 hover:text-white transition lg:hidden flex-shrink-0 text-2xl">☰</button>
+                    <button onClick={() => setMobileNavOpen(prev => !prev)} className="text-[var(--muted)] hover:text-[var(--text)] transition lg:hidden flex-shrink-0" aria-label="Toggle navigation">
+                        <Menu className="w-6 h-6" />
+                    </button>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-xl">🎓</span>
+                        <GraduationCap className="w-6 h-6 text-purple-400" />
                         <span className="font-bold text-[var(--text)] hidden sm:block">EduVerse</span>
                     </div>
                     <nav className="hidden lg:flex gap-1 flex-1 overflow-x-auto">
@@ -61,8 +63,8 @@ export default function StudentLayout() {
                     </nav>
                 </div>
                 <div className="flex items-center gap-2 md:gap-3 relative flex-shrink-0">
-                    <button onClick={toggleTheme} className="px-2 md:px-3 py-2 rounded-xl bg-[var(--surface-2)] text-xs md:text-sm text-[var(--text)] border border-[var(--border)] hover:bg-[var(--surface)] transition">
-                        {theme === 'dark' ? '☀️' : '🌙'}
+                    <button onClick={toggleTheme} className="p-2 rounded-xl bg-[var(--surface-2)] text-[var(--muted)] border border-[var(--border)] hover:bg-[var(--surface)] hover:text-[var(--text)] transition" aria-label="Toggle theme">
+                        {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
                     <button onClick={() => setMenuOpen(!menuOpen)}
                         className="flex items-center gap-2 cursor-pointer">
@@ -72,8 +74,8 @@ export default function StudentLayout() {
                                 : <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">{user?.name?.[0]?.toUpperCase()}</div>
                             }
                         </div>
-                        <span className="text-sm text-gray-300 hidden lg:block">{user?.name}</span>
-                        <span className="text-gray-400 text-xs hidden lg:block">▾</span>
+                        <span className="text-sm text-[var(--muted)] hidden lg:block">{user?.name}</span>
+                        <ChevronDown className="w-3 h-3 text-[var(--muted)] hidden lg:block" />
                     </button>
                     {menuOpen && (
                         <div className="absolute right-0 top-12 bg-[#1a1a35] border border-purple-900/40 rounded-xl shadow-xl z-50 min-w-[180px] py-1">
@@ -90,7 +92,7 @@ export default function StudentLayout() {
                             </Link>
                             <button onClick={handleLogout}
                                 className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-900/20 transition flex items-center gap-2">
-                                🚪 Logout
+                                <LogOut className="w-4 h-4" /> Logout
                             </button>
                         </div>
                     )}

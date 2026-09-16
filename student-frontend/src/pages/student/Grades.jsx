@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BarChart2, Target, FileText, ClipboardList, FileCheck } from 'lucide-react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -80,19 +81,21 @@ export default function Grades() {
     return (
         <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">📊 My Grades</h1>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">My Grades</h1>
             </div>
 
             {/* GPA Summary */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: 'Avg Score', value: `${grades.overallGPA}%`, icon: '🎯', color: 'from-purple-600 to-pink-600' },
-                    { label: 'Quizzes', value: grades.quizzes.length, icon: '📝', color: 'from-blue-600 to-cyan-500' },
-                    { label: 'Assignments', value: grades.assignments.length, icon: '📋', color: 'from-green-600 to-emerald-500' },
-                    { label: 'Assessments', value: grades.assessments.length, icon: '📑', color: 'from-yellow-600 to-orange-500' },
+                    { label: 'Avg Score', value: `${grades.overallGPA}%`, Icon: BarChart2, color: 'from-purple-600 to-pink-600' },
+                    { label: 'Quizzes', value: grades.quizzes.length, Icon: Target, color: 'from-blue-600 to-cyan-500' },
+                    { label: 'Assignments', value: grades.assignments.length, Icon: ClipboardList, color: 'from-green-600 to-emerald-500' },
+                    { label: 'Assessments', value: grades.assessments.length, Icon: FileCheck, color: 'from-yellow-600 to-orange-500' },
                 ].map(s => (
                     <div key={s.label} className={`bg-gradient-to-br ${s.color} rounded-2xl p-5 text-white shadow-lg shadow-purple-500/25 hover:shadow-xl transition-all duration-300`}>
-                        <div className="text-3xl mb-2">{s.icon}</div>
+                        <div className="mb-2">
+                            <s.Icon className="w-6 h-6 text-white/80" />
+                        </div>
                         <div className="text-3xl font-bold">{s.value}</div>
                         <div className="text-sm opacity-90 mt-1 font-medium">{s.label}</div>
                     </div>

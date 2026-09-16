@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bell, BellRing, Check, Settings, X } from 'lucide-react';
+import { Bell, BellRing, Check, Settings, X, FileText, Target, BarChart2, Megaphone, Clock, Radio, BookOpen } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -78,22 +78,16 @@ export default function NotificationButton() {
     };
 
     const getNotificationIcon = (type) => {
-        switch (type) {
-            case 'assignment':
-                return '📝';
-            case 'quiz':
-                return '🎯';
-            case 'grade':
-                return '📊';
-            case 'announcement':
-                return '📢';
-            case 'reminder':
-                return '⏰';
-            case 'live_session':
-                return '🎥';
-            default:
-                return '🔔';
-        }
+        const icons = {
+            assignment: FileText,
+            quiz: Target,
+            grade: BarChart2,
+            announcement: Megaphone,
+            reminder: Clock,
+            live_session: Radio,
+            default: Bell,
+        };
+        return icons[type] || icons.default;
     };
 
     const getNotificationColor = (type) => {
@@ -231,8 +225,8 @@ export default function NotificationButton() {
                                     >
                                         <div className="flex items-start gap-3">
                                             {/* Icon */}
-                                            <div className={`w-10 h-10 ${getNotificationColor(notification.type)} rounded-full flex items-center justify-center text-white flex-shrink-0`}>
-                                                {getNotificationIcon(notification.type)}
+                                            <div className={`w-10 h-10 ${getNotificationColor(notification.type)} rounded-full flex items-center justify-center flex-shrink-0`}>
+                                                {React.createElement(getNotificationIcon(notification.type), { className: 'w-5 h-5 text-white' })}
                                             </div>
                                             
                                             {/* Content */}

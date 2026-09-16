@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { GraduationCap, Eye, EyeOff, BookUser } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Register() {
@@ -38,7 +39,7 @@ export default function Register() {
             <div className="w-full max-w-md animate-fade-in-up">
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center gap-2 mb-4 group cursor-pointer">
-                        <span className="text-3xl group-hover:scale-110 transition-transform duration-300">🎓</span>
+                        <GraduationCap className="w-8 h-8 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
                         <span className="text-2xl font-bold text-white group-hover:text-purple-300 transition-colors duration-300">EduVerse</span>
                     </div>
                     <h1 className="text-3xl font-bold text-white animate-gradient-text">Create Account</h1>
@@ -67,8 +68,8 @@ export default function Register() {
                                     placeholder="Min. 6 characters" required minLength={6}
                                     className="w-full bg-[#1a1a35] border border-purple-900/40 rounded-xl px-4 pr-12 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:shadow-lg focus:shadow-purple-500/20 transition-all duration-300" />
                                 <button type="button" onClick={() => setShowPw(!showPw)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white hover:scale-110 transition-all duration-300 text-sm">
-                                    {showPw ? '🙈' : '👁️'}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white hover:scale-110 transition-all duration-300">
+                                    {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                 </button>
                             </div>
                         </div>
@@ -77,8 +78,9 @@ export default function Register() {
                             <div className="grid grid-cols-2 gap-3">
                                 {['student', 'instructor'].map(role => (
                                     <button key={role} type="button" onClick={() => setForm(f => ({ ...f, role }))}
-                                        className={`py-3 rounded-xl font-medium text-sm capitalize transition-all duration-300 ${form.role === role ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white scale-105 shadow-lg shadow-purple-500/30' : 'bg-[#1a1a35] text-gray-400 border border-purple-900/40 hover:border-purple-500 hover:scale-105'}`}>
-                                        {role === 'student' ? '🎓 Student' : '👨‍🏫 Instructor'}
+                                        className={`py-3 rounded-xl font-medium text-sm capitalize transition-all duration-300 flex items-center justify-center gap-2 ${form.role === role ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white scale-105 shadow-lg shadow-purple-500/30' : 'bg-[#1a1a35] text-gray-400 border border-purple-900/40 hover:border-purple-500 hover:scale-105'}`}>
+                                        {role === 'student' ? <GraduationCap className="w-4 h-4" /> : <BookUser className="w-4 h-4" />}
+                                        {role === 'student' ? 'Student' : 'Instructor'}
                                     </button>
                                 ))}
                             </div>

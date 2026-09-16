@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { GraduationCap, Mail } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -115,11 +116,11 @@ export default function VerifyOTP() {
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center gap-2 mb-4">
-                        <span className="text-3xl">🎓</span>
+                        <GraduationCap className="w-8 h-8 text-purple-400" />
                         <span className="text-2xl font-bold text-white">EduVerse</span>
                     </div>
                     <div className="w-16 h-16 bg-purple-600/20 border-2 border-purple-500/40 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-3xl">📧</span>
+                        <Mail className="w-8 h-8 text-purple-400" />
                     </div>
                     <h1 className="text-2xl font-bold text-white mb-2">Verify your email</h1>
                     <p className="text-gray-400 text-sm">

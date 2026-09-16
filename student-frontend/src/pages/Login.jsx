@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { GraduationCap, Mail, Lock, Sun, Moon, BookUser } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Login() {
@@ -50,12 +51,13 @@ export default function Login() {
     return (
         <div className={`min-h-screen bg-[var(--bg)] text-[var(--text)] flex items-center justify-center p-4 transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             <div className="w-full max-w-md relative animate-fade-in-up">
-                <button onClick={toggleTheme} className="absolute right-0 top-0 mt-2 rounded-full bg-[var(--surface-2)] border border-[var(--border)] px-3 py-2 text-sm text-[var(--text)] transition hover:bg-[var(--surface)] hover:scale-105 transform">
+                <button onClick={toggleTheme} className="absolute right-0 top-0 mt-2 rounded-full bg-[var(--surface-2)] border border-[var(--border)] px-3 py-2 text-sm text-[var(--text)] transition hover:bg-[var(--surface)] hover:scale-105 transform flex items-center gap-1.5">
+                    {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                 </button>
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center gap-2 mb-4 group cursor-pointer">
-                        <span className="text-3xl group-hover:scale-110 transition-transform duration-300">🎓</span>
+                        <GraduationCap className="w-8 h-8 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
                         <span className="text-2xl font-bold text-[var(--text)] group-hover:text-purple-400 transition-colors duration-300">EduVerse</span>
                     </div>
                     <h1 className="text-3xl font-bold text-[var(--text)] animate-gradient-text">Welcome Back</h1>
@@ -66,7 +68,7 @@ export default function Login() {
                     <div>
                         <label className="block text-sm font-medium text-[var(--muted)] mb-2">Email Address</label>
                         <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm">✉</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]"><Mail className="w-4 h-4" /></span>
                             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                                 onKeyDown={handleKey}
                                 placeholder="you@example.com" required
@@ -76,7 +78,7 @@ export default function Login() {
                     <div>
                         <label className="block text-sm font-medium text-[var(--muted)] mb-2">Password</label>
                         <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm">🔒</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]"><Lock className="w-4 h-4" /></span>
                             <input type={showPw ? 'text' : 'password'} value={password}
                                 onChange={e => setPassword(e.target.value)} onKeyDown={handleKey}
                                 placeholder="••••••••" required
@@ -98,12 +100,14 @@ export default function Login() {
 
                     <div className="grid grid-cols-2 gap-3">
                         <button onClick={() => handleLogin('student')} disabled={loading}
-                            className="py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 text-sm">
-                            {loading ? '...' : '🎓 Student Sign In'}
+                            className="py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 text-sm flex items-center justify-center gap-2">
+                            <GraduationCap className="w-4 h-4" />
+                            {loading ? '...' : 'Student Sign In'}
                         </button>
                         <button onClick={() => handleLogin('instructor')} disabled={loading}
-                            className="py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 text-sm">
-                            {loading ? '...' : ' Instructor Sign In'}
+                            className="py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 text-sm flex items-center justify-center gap-2">
+                            <BookUser className="w-4 h-4" />
+                            {loading ? '...' : 'Instructor Sign In'}
                         </button>
                     </div>
 

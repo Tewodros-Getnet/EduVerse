@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ClipboardList, BookOpen, Calendar, Star, FileCheck, MessageCircle } from 'lucide-react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -102,7 +103,9 @@ export default function AllAssignments() {
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-2xl font-bold text-white mb-6">All Assignments</h1>
                 <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center text-gray-400">
-                    <div className="text-4xl mb-3">📋</div>
+                    <div className="flex justify-center mb-3">
+                        <ClipboardList className="w-10 h-10 text-gray-400" />
+                    </div>
                     <p className="text-white font-medium mb-2">No assignments yet</p>
                     <p className="text-sm mb-4">Enroll in a course to start receiving assignments</p>
                     <Link to="/student/courses"
@@ -182,7 +185,9 @@ export default function AllAssignments() {
                                         </div>
 
                                         {/* Course */}
-                                        <p className="text-xs text-purple-400 mb-2">📚 {assignment.course_title}</p>
+                                        <p className="text-xs text-purple-400 mb-2 flex items-center gap-1">
+                                            <BookOpen className="w-3 h-3" /> {assignment.course_title}
+                                        </p>
 
                                         {/* Description snippet */}
                                         {assignment.description && (
@@ -191,19 +196,20 @@ export default function AllAssignments() {
 
                                         {/* Meta row */}
                                         <div className="flex items-center gap-4 text-xs text-gray-400 flex-wrap">
-                                            <span className={new Date(assignment.due_date) < new Date() && !sub ? 'text-red-400' : ''}>
-                                                📅 {getDaysUntilDue(assignment.due_date)}
+                                            <span className={new Date(assignment.due_date) < new Date() && !sub ? 'text-red-400' : ''} title="Due date">
+                                                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {getDaysUntilDue(assignment.due_date)}</span>
                                             </span>
-                                            <span>⭐ {assignment.max_points} pts</span>
+                                            <span title="Points" className="flex items-center gap-1"><Star className="w-3 h-3" /> {assignment.max_points} pts</span>
                                             {sub && (
-                                                <span>📝 Submitted {new Date(sub.submitted_at).toLocaleDateString()}</span>
+                                                <span title="Submitted" className="flex items-center gap-1"><FileCheck className="w-3 h-3" /> Submitted {new Date(sub.submitted_at).toLocaleDateString()}</span>
                                             )}
                                         </div>
 
                                         {/* Feedback preview */}
                                         {sub?.feedback && (
-                                            <div className="mt-2 text-xs text-blue-300">
-                                                💬 <span className="text-gray-400 line-clamp-1">{sub.feedback}</span>
+                                            <div className="mt-2 text-xs text-blue-300 flex items-start gap-1">
+                                                <MessageCircle className="w-3 h-3 flex-shrink-0 mt-0.5" />
+                                                <span className="text-gray-400 line-clamp-1">{sub.feedback}</span>
                                             </div>
                                         )}
                                     </div>

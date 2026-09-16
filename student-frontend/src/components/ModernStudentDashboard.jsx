@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import {
+    BookOpen, Target, Star, Flame, Bot, Radio, Clock,
+    Brain, FileText, TrendingUp, CheckCircle, Pin,
+    Lightbulb, Code2, ClipboardList, BarChart2
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
@@ -130,7 +135,7 @@ export default function ModernStudentDashboard() {
             }`}>
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-5 rounded-full -mr-20 -mt-20 animate-pulse"></div>
                 <div className="relative z-10">
-                    <h1 className="text-4xl font-bold mb-2 animate-fade-in">Welcome back, {user?.name?.split(' ')[0]}! 👋</h1>
+                    <h1 className="text-4xl font-bold mb-2 animate-fade-in">Welcome back, {user?.name?.split(' ')[0]}!</h1>
                     <p className="text-indigo-100 text-lg animate-fade-in animation-delay-300">You're making great progress. Keep up the momentum!</p>
                 </div>
             </div>
@@ -140,25 +145,25 @@ export default function ModernStudentDashboard() {
                 animationsLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}>
                 <StatCard
-                    icon="📚"
+                    icon={BookOpen}
                     label="Courses Enrolled"
                     value={dashData?.analytics?.courses?.length || 0}
-                    color="from-blue-500 to-cyan-400"
+                    color="from-indigo-500 to-indigo-600"
                 />
                 <StatCard
-                    icon="🎯"
+                    icon={Target}
                     label="Overall Progress"
                     value={`${overallProgress}%`}
-                    color="from-purple-500 to-pink-500"
+                    color="from-purple-500 to-purple-600"
                 />
                 <StatCard
-                    icon="⭐"
+                    icon={Star}
                     label="Average Grade"
                     value={`${averageGrade}%`}
-                    color="from-emerald-500 to-teal-500"
+                    color="from-emerald-500 to-emerald-600"
                 />
                 <StatCard
-                    icon="🔥"
+                    icon={Flame}
                     label="Learning Streak"
                     value={streak > 0 ? `${streak} day${streak === 1 ? '' : 's'}` : 'Start today'}
                     color="from-orange-500 to-rose-500"
@@ -177,7 +182,9 @@ export default function ModernStudentDashboard() {
                     {(dashData?.recommendation?.message || (dashData?.suggestedCourses?.length > 0)) && (
                         <div className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-8 hover:shadow-md transition-all">
                             <div className="flex items-start gap-4">
-                                <div className="text-4xl">🤖</div>
+                                <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center flex-shrink-0">
+                                    <Bot className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                                </div>
                                 <div className="flex-1">
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">AI recommendation</h3>
                                     <p className="text-gray-600 dark:text-gray-300 mb-4">
@@ -237,7 +244,9 @@ export default function ModernStudentDashboard() {
                                                     ? 'bg-red-100 dark:bg-red-900/30 text-red-600'
                                                     : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600'
                                             }`}>
-                                                {session.status === 'live' ? '🔴' : '⏰'}
+                                                {session.status === 'live'
+                                                    ? <Radio className="w-5 h-5 animate-pulse" />
+                                                    : <Clock className="w-5 h-5" />}
                                             </div>
                                             <div>
                                                 <p className="font-bold text-gray-900 dark:text-white">{session.title}</p>
@@ -268,10 +277,10 @@ export default function ModernStudentDashboard() {
                     {/* Quick Actions */}
                     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 space-y-3">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-4">Quick Access</h3>
-                        <QuickActionButton icon="🧠" label="AI Tutor" to="/student/ai-tutor" />
-                        <QuickActionButton icon="📝" label="Assignments" to="/student/assignments" />
-                        <QuickActionButton icon="🎯" label="Take Quiz" to="/student/courses" />
-                        <QuickActionButton icon="📊" label="View Progress" to="/student/progress" />
+                        <QuickActionButton icon={Brain} label="AI Tutor" to="/student/ai-tutor" />
+                        <QuickActionButton icon={ClipboardList} label="Assignments" to="/student/assignments" />
+                        <QuickActionButton icon={Target} label="Take Quiz" to="/student/courses" />
+                        <QuickActionButton icon={BarChart2} label="View Progress" to="/student/progress" />
                     </div>
 
                     {/* Recent Activity */}
@@ -279,26 +288,34 @@ export default function ModernStudentDashboard() {
                         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
                             <h3 className="font-bold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
                             <div className="space-y-3 max-h-64 overflow-y-auto">
-                                {dashData.activities.slice(0, 5).map((activity, idx) => (
-                                    <div key={idx} className="flex gap-3 pb-3 border-b border-gray-200 dark:border-slate-700 last:border-b-0 last:pb-0">
-                                        <span className="text-2xl flex-shrink-0">{getActivityIcon(activity.activity_type || activity.type)}</span>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                                {activity.title || activity.description || 'Activity'}
-                                            </p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                {formatTime(activity.timestamp || activity.created_at)}
-                                            </p>
+                                {dashData.activities.slice(0, 5).map((activity, idx) => {
+                                    const ActivityIcon = getActivityIcon(activity.activity_type || activity.type);
+                                    return (
+                                        <div key={idx} className="flex gap-3 pb-3 border-b border-gray-200 dark:border-slate-700 last:border-b-0 last:pb-0">
+                                            <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0">
+                                                <ActivityIcon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                                    {activity.title || activity.description || 'Activity'}
+                                                </p>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                    {formatTime(activity.timestamp || activity.created_at)}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
 
                     {/* Learning Tips */}
                     <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-6 border border-emerald-200 dark:border-emerald-800">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-3">💡 Learning Tip</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                            <Lightbulb className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            Learning Tip
+                        </h3>
                         <p className="text-sm text-gray-700 dark:text-gray-300">
                             Take short breaks every 25 minutes while studying. It helps improve retention and keeps you focused!
                         </p>
@@ -309,7 +326,7 @@ export default function ModernStudentDashboard() {
     );
 }
 
-function StatCard({ icon, label, value, color }) {
+function StatCard({ icon: Icon, label, value, color }) {
     const [animatedValue, setAnimatedValue] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
 
@@ -353,7 +370,9 @@ function StatCard({ icon, label, value, color }) {
         <div className={`bg-gradient-to-br ${color} rounded-2xl shadow-lg p-6 text-white transform transition-all duration-700 ${
             isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 opacity-0 scale-95'
         } hover:scale-105 hover:shadow-xl transition-all duration-300`}>
-            <div className="text-4xl mb-3 animate-pulse">{icon}</div>
+            <div className="mb-3">
+                <Icon className="w-8 h-8 text-white/90" />
+            </div>
             <p className="text-white/80 text-sm font-medium">{label}</p>
             <p className="text-4xl font-bold transition-all duration-300">{displayValue}</p>
         </div>
@@ -374,7 +393,10 @@ function CourseCard({ course }) {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full -mr-8 -mt-8"></div>
                 </div>
                 <div className="relative h-full flex items-end p-4">
-                    <span className="text-3xl">{course.category === 'Programming' ? '💻' : '📚'}</span>
+                    {course.category === 'Programming'
+                        ? <Code2 className="w-8 h-8 text-white/80" />
+                        : <BookOpen className="w-8 h-8 text-white/80" />
+                    }
                 </div>
             </div>
 
@@ -401,13 +423,15 @@ function CourseCard({ course }) {
     );
 }
 
-function QuickActionButton({ icon, label, to }) {
+function QuickActionButton({ icon: Icon, label, to }) {
     return (
         <Link
             to={to}
             className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 hover:from-indigo-100 hover:to-purple-100 dark:hover:from-indigo-900/40 dark:hover:to-purple-900/40 transition-all group"
         >
-            <span className="text-2xl group-hover:scale-110 transition-transform">{icon}</span>
+            <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+            </div>
             <span className="font-medium text-gray-900 dark:text-white">{label}</span>
         </Link>
     );
@@ -415,15 +439,15 @@ function QuickActionButton({ icon, label, to }) {
 
 function getActivityIcon(type) {
     const icons = {
-        enrollment: '📚',
-        lesson_completed: '✅',
-        quiz_submitted: '🎯',
-        assignment_submitted: '📝',
-        course_enrolled: '📚',
-        grade_received: '⭐',
-        note_created: '📝',
+        enrollment: BookOpen,
+        lesson_completed: CheckCircle,
+        quiz_submitted: Target,
+        assignment_submitted: FileText,
+        course_enrolled: BookOpen,
+        grade_received: Star,
+        note_created: FileText,
     };
-    return icons[type] || '📌';
+    return icons[type] || Pin;
 }
 
 function formatTime(timestamp) {

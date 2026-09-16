@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { GraduationCap, Bot, Video, Target, BarChart2, Rocket } from 'lucide-react';
 import api from '../api/axios';
 
 const features = [
-    { icon: '🤖', title: 'AI-Powered Tutoring', desc: 'Get instant answers from our intelligent AI tutor powered by advanced language models' },
-    { icon: '📹', title: 'Live Face-to-Face Classes', desc: 'Connect with instructors in real-time virtual classrooms with HD video' },
-    { icon: '🎯', title: 'Adaptive Learning', desc: 'Personalized learning paths that adjust to your pace and performance' },
-    { icon: '📊', title: 'Real-Time Analytics', desc: 'Track progress with detailed insights and performance metrics' },
+    { icon: Bot, title: 'AI-Powered Tutoring', desc: 'Get instant answers from our intelligent AI tutor powered by advanced language models' },
+    { icon: Video, title: 'Live Face-to-Face Classes', desc: 'Connect with instructors in real-time virtual classrooms with HD video' },
+    { icon: Target, title: 'Adaptive Learning', desc: 'Personalized learning paths that adjust to your pace and performance' },
+    { icon: BarChart2, title: 'Real-Time Analytics', desc: 'Track progress with detailed insights and performance metrics' },
 ];
 
 export default function Landing() {
@@ -54,7 +55,7 @@ export default function Landing() {
             {/* Navbar */}
             <nav className="flex items-center justify-between px-8 py-4 animate-fade-in-down">
                 <div className="flex items-center gap-2 group cursor-pointer">
-                    <span className="text-2xl group-hover:scale-110 transition-transform duration-300">🎓</span>
+                    <GraduationCap className="w-7 h-7 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
                     <span className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors duration-300">EduVerse</span>
                 </div>
                 <div className="flex items-center gap-4">
@@ -103,8 +104,8 @@ export default function Landing() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                     {features.map((f, index) => (
                         <div key={f.title} className="bg-[#1a1a35]/60 border border-purple-900/30 rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20 transform group">
-                            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-500 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                                {f.icon}
+                            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                <f.icon className="w-6 h-6 text-white" />
                             </div>
                             <h3 className="text-lg font-bold text-white mb-2 group-hover:text-purple-300 transition-colors duration-300">{f.title}</h3>
                             <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors duration-300">{f.desc}</p>
@@ -115,7 +116,11 @@ export default function Landing() {
 
             {/* CTA */}
             <div className="mx-8 mb-16 bg-gradient-to-br from-purple-600/40 to-pink-600/40 border border-purple-500/30 rounded-3xl p-12 text-center animate-fade-in-up hover:scale-105 transition-transform duration-500" style={{ animationDelay: '1s' }}>
-                <div className="text-5xl mb-4">🚀</div>
+                <div className="flex justify-center mb-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl flex items-center justify-center">
+                        <Rocket className="w-8 h-8 text-white" />
+                    </div>
+                </div>
                 <h2 className="text-3xl font-bold text-white mb-3">Ready to Transform Your Learning?</h2>
                 <p className="text-gray-300 mb-8">Join thousands of students achieving 100% growth with our AI-powered platform</p>
                 <Link to="/register" className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full text-white font-semibold hover:opacity-90 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-purple-500/50 transform text-lg inline-block">
