@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { GraduationCap, Bot, Video, Target, BarChart2, Rocket } from 'lucide-react';
+import { GraduationCap, Bot, Video, Target, BarChart2, Rocket, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 import api from '../api/axios';
 
 const features = [
@@ -11,6 +12,7 @@ const features = [
 ];
 
 export default function Landing() {
+    const { theme, toggleTheme } = useTheme();
     const [stats, setStats] = useState([
         { value: '0', label: 'Active Students' },
         { value: '0', label: 'Expert Instructors' },
@@ -59,6 +61,9 @@ export default function Landing() {
                     <span className="text-xl font-bold text-[var(--text)] group-hover:text-[var(--accent-primary)]/80 transition-colors duration-300">EduVerse</span>
                 </div>
                 <div className="flex items-center gap-4">
+                    <button onClick={toggleTheme} className="p-2 rounded-xl bg-[var(--surface-2)] text-[var(--muted)] border border-[var(--border)] hover:bg-[var(--surface)] hover:text-[var(--text)] transition" aria-label="Toggle theme">
+                        {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                    </button>
                     <Link to="/login" className="text-[var(--text)] hover:text-[var(--accent-primary)]/80 transition-all duration-300 text-sm font-medium hover:scale-105 transform">Sign In</Link>
                     <Link to="/register" className="px-5 py-2 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-full text-[var(--text)] text-sm font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 transform">
                         Get Started
@@ -79,11 +84,8 @@ export default function Landing() {
                 </p>
                 <div className="flex items-center justify-center gap-4 mt-8 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                     <Link to="/register" className="px-8 py-3 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-full text-[var(--text)] font-semibold hover:opacity-90 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-purple-500/50 transform text-lg">
-                        Start Learning Free
+                        Start Learning
                     </Link>
-                    <button className="px-8 py-3 bg-white/10 border border-white/20 rounded-full text-[var(--text)] font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-white/20 transform text-lg">
-                        Watch Demo
-                    </button>
                 </div>
             </div>
 

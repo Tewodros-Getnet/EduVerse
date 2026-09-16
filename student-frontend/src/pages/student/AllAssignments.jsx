@@ -234,9 +234,9 @@ export default function AllAssignments() {
                                         className={`inline-block w-full text-center py-2.5 rounded-xl text-sm font-medium transition ${
                                             status === 'pending' || status === 'overdue'
                                                 ? status === 'overdue'
-                                                    ? 'bg-red-600/30 border border-red-500/30 text-red-300 hover:bg-red-600/40'
+                                                    ? 'bg-[var(--status-error)]/30 border border-[var(--status-error)]/30 text-[var(--status-error)] hover:bg-[var(--status-error)]/40'
                                                     : 'bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] text-[var(--text)] hover:opacity-90'
-                                                : 'bg-[var(--surface-2)] border border-[var(--border)] text-[var(--accent-primary)]/80 dark:text-[var(--accent-primary)] hover:bg-[var(--surface-3)]'
+                                                : 'bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] hover:bg-[var(--surface-3)]'
                                         }`}>
                                         {status === 'pending'   && 'Submit Assignment →'}
                                         {status === 'overdue'   && 'Submit (Late) →'}
