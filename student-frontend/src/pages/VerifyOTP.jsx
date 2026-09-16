@@ -130,7 +130,7 @@ export default function VerifyOTP() {
                 </div>
 
                 {/* OTP form */}
-                <div className="bg-[#12122a]/80 border border-purple-900/40 rounded-2xl p-8">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8">
                     <form onSubmit={handleVerify} className="space-y-6">
                         {/* 6-digit input boxes */}
                         <div className="flex justify-center gap-3" onPaste={handlePaste}>
@@ -145,8 +145,8 @@ export default function VerifyOTP() {
                                     onChange={e => handleChange(index, e.target.value)}
                                     onKeyDown={e => handleKeyDown(index, e)}
                                     className={`w-12 h-14 text-center text-xl font-bold rounded-xl border-2 transition-all duration-200
-                                        bg-[#1a1a35] text-white outline-none
-                                        ${digit ? 'border-purple-500 shadow-lg shadow-purple-500/20' : 'border-purple-900/40'}
+                                        bg-[var(--surface-2)] text-[var(--text)] outline-none
+                                        ${digit ? 'border-purple-500 shadow-lg shadow-purple-500/20' : 'border-[var(--border)]'}
                                         focus:border-purple-400 focus:shadow-lg focus:shadow-purple-500/30`}
                                 />
                             ))}

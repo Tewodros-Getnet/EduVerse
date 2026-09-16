@@ -13,7 +13,7 @@ export default function ConfirmModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-            <div className="w-full max-w-lg rounded-3xl bg-[#12122a] border border-purple-900/40 shadow-2xl p-6">
+            <div className="w-full max-w-lg rounded-3xl bg-[var(--surface)] border border-[var(--border)] shadow-2xl p-6">
                 <div className="mb-4">
                     <h2 className="text-xl font-semibold text-white">{title}</h2>
                     <p className="mt-2 text-sm text-gray-300">{message}</p>
@@ -23,7 +23,7 @@ export default function ConfirmModal({
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="w-full rounded-2xl border border-purple-900/40 bg-[#1a1a35] px-4 py-3 text-sm font-medium text-gray-300 transition hover:border-purple-500 hover:text-white sm:w-auto"
+                        className="w-full rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-sm font-medium text-[var(--muted)] transition hover:border-purple-500 hover:text-[var(--text)] sm:w-auto"
                     >
                         {cancelLabel}
                     </button>

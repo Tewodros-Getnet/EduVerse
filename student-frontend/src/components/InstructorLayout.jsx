@@ -85,8 +85,8 @@ export default function InstructorLayout() {
                         <span className="text-sm text-gray-300 hidden lg:block">{user?.name}</span>
                     </button>
                     {menuOpen && (
-                        <div className="absolute right-0 top-full mt-2 w-52 bg-[#1a1a35] border border-purple-900/40 rounded-xl shadow-xl z-50 py-1">
-                            <div className="px-4 py-2.5 border-b border-purple-900/30">
+                        <div className="absolute right-0 top-full mt-2 w-52 bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-xl z-50 py-1">
+                            <div className="px-4 py-2.5 border-b border-[var(--border)]">
                                 <p className="text-sm font-medium text-white">{user?.name}</p>
                                 <p className="text-xs text-gray-400">{user?.email}</p>
                             </div>

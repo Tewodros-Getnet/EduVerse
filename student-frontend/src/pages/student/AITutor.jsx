@@ -181,7 +181,7 @@ export default function AITutor() {
                             <select
                                 value={courseContext}
                                 onChange={(e) => setCourseContext(e.target.value)}
-                                className="px-4 py-2.5 bg-[#12122a] border border-purple-900/40 rounded-xl text-white text-sm hover:border-purple-500/50 transition focus:outline-none focus:border-purple-500"
+                                className="px-4 py-2.5 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-[var(--text)] text-sm hover:border-purple-500/50 transition focus:outline-none focus:border-purple-500"
                             >
                                 <option value="">General Context</option>
                                 {enrolledCourses.map(course => (
@@ -202,14 +202,14 @@ export default function AITutor() {
                 <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-hidden">
                     {/* Chat Area */}
                     <div className={`lg:col-span-2 flex flex-col ${activeTab === 'chat' ? 'block' : 'hidden lg:block'}`}>
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl flex-1 flex flex-col">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl flex-1 flex flex-col">
                             {/* Messages */}
                             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                                 {messages.map((msg, i) => (
                                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${msg.role === 'user'
                                             ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                                            : 'bg-[#1a1a35] border border-purple-900/30 text-gray-300'
+                                            : 'bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)]'
                                             }`}>
                                             {msg.isExplanation && (
                                                 <div className="flex items-center gap-2 mb-2 text-xs">
@@ -246,7 +246,7 @@ export default function AITutor() {
                                 ))}
                                 {isTyping && (
                                     <div className="flex justify-start">
-                                        <div className="bg-[#1a1a35] border border-purple-900/30 text-gray-300 rounded-2xl p-4">
+                                        <div className="bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] rounded-2xl p-4">
                                             <div className="flex items-center gap-2">
                                                 <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" />
                                                 <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
@@ -267,7 +267,7 @@ export default function AITutor() {
                                         onChange={e => setInput(e.target.value)}
                                         onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage(e)}
                                         placeholder="Ask me anything about your learning..."
-                                        className="flex-1 bg-[#1a1a35] border border-purple-900/40 rounded-lg px-4 py-3 text-white placeholder-gray-500 text-sm"
+                                        className="flex-1 bg-[var(--surface-2)] border border-[var(--border)] rounded-lg px-4 py-3 text-[var(--text)] placeholder-[var(--muted)] text-sm"
                                         disabled={loading}
                                     />
                                     <button
@@ -302,7 +302,7 @@ export default function AITutor() {
                                                 };
                                                 setInput(actionMessages[action.action]);
                                             }}
-                                            className="px-3 py-1.5 bg-[#1a1a35] border border-purple-900/40 rounded-lg text-xs text-gray-300 hover:border-purple-500/50 transition"
+                                            className="px-3 py-1.5 bg-[var(--surface-2)] border border-[var(--border)] rounded-lg text-xs text-[var(--muted)] hover:border-purple-500/50 transition"
                                         >
                                             {action.icon} {action.label}
                                         </button>
@@ -315,7 +315,7 @@ export default function AITutor() {
                     {/* Sidebar */}
                     <div className="space-y-4">
                         {/* Tabs */}
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-1">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-1">
                             <div className="grid grid-cols-1 gap-1">
                                 {[
                                     { id: 'chat', label: 'Chat', icon: '' },
@@ -339,12 +339,12 @@ export default function AITutor() {
 
                         {/* Recommendations Tab */}
                         {activeTab === 'recommendations' && (
-                            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
-                                <h3 className="font-semibold text-white mb-4">Recommended for You</h3>
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4">
+                                <h3 className="font-semibold text-[var(--text)] mb-4">Recommended for You</h3>
                                 <div className="space-y-3">
                                     {recommendations.length > 0 ? (
                                         recommendations.map((rec, index) => (
-                                            <div key={index} className="p-3 bg-[#1a1a35] rounded-lg">
+                                            <div key={index} className="p-3 bg-[var(--surface-2)] rounded-lg">
                                                 <div className="flex items-start gap-2">
                                                     <span className="text-lg">{rec.icon || ''}</span>
                                                     <div className="flex-1">
@@ -365,7 +365,7 @@ export default function AITutor() {
                                         ))
                                     ) : (
                                         <div className="text-center py-8">
-                                            <div className="w-12 h-12 bg-[#1a1a35] rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <div className="w-12 h-12 bg-[var(--surface-2)] rounded-full flex items-center justify-center mx-auto mb-3">
                                                 <span className="text-xl"></span>
                                             </div>
                                             <p className="text-sm text-gray-400">Start chatting to get personalized recommendations</p>
@@ -377,8 +377,8 @@ export default function AITutor() {
 
                         {/* Explanations Tab */}
                         {activeTab === 'explanations' && (
-                            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
-                                <h3 className="font-semibold text-white mb-4">Popular Topics</h3>
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4">
+                                <h3 className="font-semibold text-[var(--text)] mb-4">Popular Topics</h3>
                                 <div className="space-y-2">
                                     {[
                                         { topic: 'Algebra Basics', difficulty: 'beginner' },
@@ -387,7 +387,7 @@ export default function AITutor() {
                                         { topic: 'Calculus', difficulty: 'advanced' },
                                         { topic: 'Data Structures', difficulty: 'intermediate' }
                                     ].map((item, index) => (
-                                        <div key={index} className="flex items-center justify-between p-2 bg-[#1a1a35] rounded-lg">
+                                        <div key={index} className="flex items-center justify-between p-2 bg-[var(--surface-2)] rounded-lg">
                                             <span className="text-sm text-gray-300">{item.topic}</span>
                                             <button
                                                 onClick={() => generateExplanation(item.topic, item.difficulty)}
@@ -437,12 +437,12 @@ export default function AITutor() {
                         )}
 
                         {/* Chat Controls */}
-                        <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-4">
-                            <h3 className="font-semibold text-white mb-4">Chat Controls</h3>
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4">
+                            <h3 className="font-semibold text-[var(--text)] mb-4">Chat Controls</h3>
                             <div className="space-y-3">
                                 <button
                                     onClick={clearChat}
-                                    className="w-full py-2 bg-[#1a1a35] border border-purple-900/40 rounded-lg text-gray-300 text-sm hover:border-purple-500/50 transition"
+                                    className="w-full py-2 bg-[var(--surface-2)] border border-[var(--border)] rounded-lg text-[var(--text)] text-sm hover:border-purple-500/50 transition"
                                 >
                                     Clear Chat
                                 </button>

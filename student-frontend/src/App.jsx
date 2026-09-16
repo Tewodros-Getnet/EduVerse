@@ -40,7 +40,7 @@ import StudentProfile from './pages/student/Profile';
 function ProtectedRoute({ children, role }) {
     const { user, loading } = useAuth();
     if (loading) return (
-        <div className="min-h-screen bg-[#0d0d1a] flex items-center justify-center">
+        <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
             <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
         </div>
     );

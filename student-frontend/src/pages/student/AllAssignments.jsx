@@ -101,8 +101,8 @@ export default function AllAssignments() {
     if (assignments.length === 0) {
         return (
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold text-white mb-6">All Assignments</h1>
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center text-gray-400">
+                <h1 className="text-2xl font-bold text-[var(--text)] mb-6">All Assignments</h1>
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 text-center text-[var(--muted)]">
                     <div className="flex justify-center mb-3">
                         <ClipboardList className="w-10 h-10 text-gray-400" />
                     </div>
@@ -141,7 +141,7 @@ export default function AllAssignments() {
                 ))}
                 {filter !== 'all' && (
                     <button onClick={() => setFilter('all')}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium border bg-[#12122a] text-gray-400 border-purple-900/30 hover:text-white transition">
+                        className="px-3 py-1.5 rounded-full text-xs font-medium border bg-[var(--surface-2)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)] transition">
                         Show All
                     </button>
                 )}
@@ -150,7 +150,7 @@ export default function AllAssignments() {
             {/* Sort bar */}
             <div className="flex gap-3 flex-wrap">
                 <select value={sortBy} onChange={e => setSortBy(e.target.value)}
-                    className="px-4 py-2 bg-[#12122a] border border-purple-900/40 rounded-xl text-white text-sm">
+                    className="px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-[var(--text)] text-sm">
                     <option value="due_date">Sort by Due Date</option>
                     <option value="title">Sort by Title</option>
                     <option value="course">Sort by Course</option>
@@ -159,7 +159,7 @@ export default function AllAssignments() {
             </div>
 
             {filtered.length === 0 ? (
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-8 text-center text-gray-400">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 text-center text-[var(--muted)]">
                     No assignments match this filter
                 </div>
             ) : (
@@ -171,7 +171,7 @@ export default function AllAssignments() {
 
                         return (
                             <div key={assignment.id}
-                                className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-5">
+                                className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5">
                                 <div className="flex items-start justify-between gap-3">
                                     <div className="flex-1 min-w-0">
                                         {/* Title + badge */}
@@ -236,7 +236,7 @@ export default function AllAssignments() {
                                                 ? status === 'overdue'
                                                     ? 'bg-red-600/30 border border-red-500/30 text-red-300 hover:bg-red-600/40'
                                                     : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90'
-                                                : 'bg-[#1a1a35] border border-purple-900/40 text-purple-400 hover:bg-purple-600/20'
+                                                : 'bg-[var(--surface-2)] border border-[var(--border)] text-purple-600 dark:text-purple-400 hover:bg-[var(--surface-3)]'
                                         }`}>
                                         {status === 'pending'   && 'Submit Assignment →'}
                                         {status === 'overdue'   && 'Submit (Late) →'}
