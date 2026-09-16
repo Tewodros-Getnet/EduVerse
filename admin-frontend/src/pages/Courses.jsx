@@ -35,10 +35,10 @@ export default function Courses() {
                 <p className="text-gray-400 text-sm mt-1">{courses.length} total courses</p>
             </div>
 
-            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl overflow-hidden">
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
                 <table className="w-full">
                     <thead>
-                        <tr className="border-b border-purple-900/30">
+                        <tr className="border-b border-[var(--border)]">
                             <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Course</th>
                             <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Instructor</th>
                             <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Difficulty</th>
@@ -53,7 +53,7 @@ export default function Courses() {
                         ) : courses.length === 0 ? (
                             <tr><td colSpan={6} className="text-center py-10 text-gray-500">No courses found</td></tr>
                         ) : courses.map(course => (
-                            <tr key={course.id} className="border-b border-purple-900/20 hover:bg-[#1a1a35] transition">
+                            <tr key={course.id} className="border-b border-[var(--border)] hover:bg-[var(--surface-2)] transition">
                                 <td className="px-5 py-3">
                                     <p className="text-sm font-medium text-white">{course.title}</p>
                                     <p className="text-xs text-gray-500">{course.category}</p>
@@ -72,7 +72,7 @@ export default function Courses() {
                                     <select
                                         value={course.status || 'draft'}
                                         onChange={e => updateStatus(course.id, e.target.value)}
-                                        className="bg-[#1a1a35] border border-purple-900/40 rounded-lg px-2 py-1 text-xs text-white focus:outline-none"
+                                        className="bg-[var(--surface-2)] border border-[var(--border)] rounded-lg px-2 py-1 text-xs text-white focus:outline-none"
                                     >
                                         <option value="draft">Draft</option>
                                         <option value="published">Published</option>

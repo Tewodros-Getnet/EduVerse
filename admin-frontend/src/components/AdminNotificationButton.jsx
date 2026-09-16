@@ -161,9 +161,9 @@ export default function AdminNotificationButton() {
 
             {/* Notification Dropdown */}
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-96 bg-[#1a1a35] border border-purple-900/40 rounded-2xl shadow-2xl z-50 overflow-hidden">
+                <div className="absolute right-0 mt-2 w-96 bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl shadow-2xl z-50 overflow-hidden">
                     {/* Header */}
-                    <div className="p-4 border-b border-purple-900/40">
+                    <div className="p-4 border-b border-[var(--border)]">
                         <div className="flex items-center justify-between mb-3">
                             <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                                 <Shield className="w-5 h-5" />
@@ -188,7 +188,7 @@ export default function AdminNotificationButton() {
                         </div>
                         
                         {/* Tabs */}
-                        <div className="flex gap-1 p-1 bg-[#12122a] rounded-lg">
+                        <div className="flex gap-1 p-1 bg-[var(--surface)] rounded-lg">
                             {['all', 'unread', 'alerts', 'announcements', 'security'].map(tab => (
                                 <button
                                     key={tab}
@@ -227,7 +227,7 @@ export default function AdminNotificationButton() {
                                 {filteredNotifications.map(notification => (
                                     <div
                                         key={notification.id}
-                                        className={`p-4 hover:bg-[#12122a] transition-colors cursor-pointer group ${
+                                        className={`p-4 hover:bg-[var(--surface)] transition-colors cursor-pointer group ${
                                             !notification.is_read ? 'bg-purple-600/10' : ''
                                         }`}
                                         onClick={() => !notification.is_read && markAsRead(notification.id)}
@@ -278,7 +278,7 @@ export default function AdminNotificationButton() {
                     </div>
 
                     {/* Footer */}
-                    <div className="p-3 border-t border-purple-900/40">
+                    <div className="p-3 border-t border-[var(--border)]">
                         <p className="text-xs text-gray-500 text-center">
                             Notifications update every 30 seconds
                         </p>

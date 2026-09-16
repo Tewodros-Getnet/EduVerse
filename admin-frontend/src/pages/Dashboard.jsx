@@ -95,11 +95,11 @@ export default function Dashboard() {
 
             {/* Top Courses */}
             {top_courses && top_courses.length > 0 && (
-                <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
                     <h2 className="text-lg font-semibold text-white mb-4">Top Performing Courses</h2>
                     <div className="space-y-3">
                         {top_courses.map((course, index) => (
-                            <div key={`${course.title}-${index}`} className="flex items-center justify-between p-3 bg-[#1a1a35] rounded-xl">
+                            <div key={`${course.title}-${index}`} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-xl">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-medium text-sm">
                                         {index + 1}
@@ -123,7 +123,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* User Growth */}
                 {user_growth && user_growth.length > 0 && (
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
                         <h2 className="text-lg font-semibold text-white mb-4">User Growth (Last 6 Months)</h2>
                         <div className="space-y-2">
                             {user_growth.map((data) => (
@@ -132,7 +132,7 @@ export default function Dashboard() {
                                         {new Date(data.month).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                                     </span>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-32 bg-[#1a1a35] rounded-full h-2">
+                                        <div className="w-32 bg-[var(--surface-2)] rounded-full h-2">
                                             <div
                                                 className="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 rounded-full"
                                                 style={{ width: `${Math.min((data.new_users / Math.max(...user_growth.map(u => u.new_users))) * 100, 100)}%` }}
@@ -150,7 +150,7 @@ export default function Dashboard() {
 
                 {/* Course Growth */}
                 {course_growth && course_growth.length > 0 && (
-                    <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl p-6">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
                         <h2 className="text-lg font-semibold text-white mb-4">Course Growth (Last 6 Months)</h2>
                         <div className="space-y-2">
                             {course_growth.map((data, index) => (
@@ -159,7 +159,7 @@ export default function Dashboard() {
                                         {new Date(data.month).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                                     </span>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-32 bg-[#1a1a35] rounded-full h-2">
+                                        <div className="w-32 bg-[var(--surface-2)] rounded-full h-2">
                                             <div
                                                 className="bg-gradient-to-r from-green-500 to-emerald-400 h-2 rounded-full"
                                                 style={{ width: `${Math.min((data.new_courses / Math.max(...course_growth.map(c => c.new_courses))) * 100, 100)}%` }}
@@ -243,14 +243,14 @@ function AnimatedStatCard({ card, index }) {
     const displayValue = card.value.replace(/\d+/, animatedValue.toLocaleString());
 
     return (
-        <div className={`bg-[#12122a] border border-purple-900/30 rounded-2xl p-6 transform transition-all duration-700 hover:scale-105 hover:shadow-lg ${
+        <div className={`bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 transform transition-all duration-700 hover:scale-105 hover:shadow-lg ${
             isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 opacity-0 scale-95'
         }`}>
             <div className="flex items-center justify-between mb-4">
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${card.gradient} flex items-center justify-center text-white text-xl animate-pulse`}>
                     {card.icon}
                 </div>
-                <span className="text-xs text-gray-400 bg-[#1a1a35] px-2 py-1 rounded-full">
+                <span className="text-xs text-gray-400 bg-[var(--surface-2)] px-2 py-1 rounded-full">
                     {card.subtitle}
                 </span>
             </div>

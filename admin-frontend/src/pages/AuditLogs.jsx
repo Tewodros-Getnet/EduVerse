@@ -60,12 +60,12 @@ export default function AuditLogs() {
                     placeholder="Search by name, email or action..."
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="flex-1 min-w-[200px] px-4 py-2 bg-[#12122a] border border-purple-900/40 rounded-xl text-white text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500"
+                    className="flex-1 min-w-[200px] px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-white text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500"
                 />
                 <select
                     value={actionFilter}
                     onChange={e => { setActionFilter(e.target.value); setPage(1); }}
-                    className="px-4 py-2 bg-[#12122a] border border-purple-900/40 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500"
+                    className="px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-white text-sm focus:outline-none focus:border-purple-500"
                 >
                     <option value="">All Actions</option>
                     <option value="USER_ACTIVATED">User Activated</option>
@@ -80,10 +80,10 @@ export default function AuditLogs() {
                 </button>
             </div>
 
-            <div className="bg-[#12122a] border border-purple-900/30 rounded-2xl overflow-hidden">
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
                 <table className="w-full">
                     <thead>
-                        <tr className="border-b border-purple-900/30">
+                        <tr className="border-b border-[var(--border)]">
                             <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Action</th>
                             <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Admin</th>
                             <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase">Resource</th>
@@ -97,7 +97,7 @@ export default function AuditLogs() {
                         ) : logs.length === 0 ? (
                             <tr><td colSpan={5} className="text-center py-10 text-gray-500">No audit logs found</td></tr>
                         ) : logs.map(log => (
-                            <tr key={log.id} className="border-b border-purple-900/20 hover:bg-[#1a1a35] transition">
+                            <tr key={log.id} className="border-b border-[var(--border)] hover:bg-[var(--surface-2)] transition">
                                 <td className="px-5 py-3">
                                     <span className={`text-sm font-medium ${ACTION_COLORS[log.action] || ACTION_COLORS.default}`}>
                                         {log.action}
@@ -126,7 +126,7 @@ export default function AuditLogs() {
                         <button
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="px-3 py-1 bg-[#12122a] border border-purple-900/40 rounded-lg text-sm text-gray-400 hover:text-white disabled:opacity-40 transition"
+                            className="px-3 py-1 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-sm text-gray-400 hover:text-white disabled:opacity-40 transition"
                         >
                             Previous
                         </button>
@@ -136,7 +136,7 @@ export default function AuditLogs() {
                         <button
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                             disabled={page >= totalPages}
-                            className="px-3 py-1 bg-[#12122a] border border-purple-900/40 rounded-lg text-sm text-gray-400 hover:text-white disabled:opacity-40 transition"
+                            className="px-3 py-1 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-sm text-gray-400 hover:text-white disabled:opacity-40 transition"
                         >
                             Next
                         </button>

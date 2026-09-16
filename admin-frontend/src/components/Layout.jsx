@@ -51,7 +51,7 @@ export default function Layout() {
                         </NavLink>
                     ))}
                 </nav>
-                <div className="p-3 border-t border-purple-900/30">
+                <div className="p-3 border-t border-[var(--border)]">
                     <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-900/20 transition w-full text-sm">
                         <span className="text-lg">🚪</span>
                         {sidebarOpen && <span>Logout</span>}
