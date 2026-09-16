@@ -529,28 +529,6 @@ export default function SecurityManager() {
                 </div>
             )}
         </div>
-    );        <div className="text-sm text-gray-700">
-                        Showing {((currentPage - 1) * 20) + 1} to {Math.min(currentPage * 20, totalItems)} of {totalItems} results
-                    </div>
-                    <div className="flex space-x-2">
-                        <button
-                            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                            disabled={currentPage === 1}
-                            className="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50"
-                        >
-                            Previous
-                        </button>
-                        <button
-                            onClick={() => setCurrentPage(Math.min(Math.ceil(totalItems / 20), currentPage + 1))}
-                            disabled={currentPage >= Math.ceil(totalItems / 20)}
-                            className="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50"
-                        >
-                            Next
-                        </button>
-                    </div>
-                </div>
-            )}
-        </div>
     );
 }
 
