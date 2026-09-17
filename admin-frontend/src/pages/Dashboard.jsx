@@ -35,7 +35,7 @@ export default function Dashboard() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-[var(--accent-primary)] border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -57,7 +57,7 @@ export default function Dashboard() {
             value: overview?.total_courses?.toLocaleString() || '0',
             change: `${overview?.published_courses || 0} published`,
             icon: <BookOpen className="w-6 h-6" />,
-            gradient: 'from-green-500 to-cyan-400',
+            gradient: 'from-[var(--status-success)] to-[var(--accent-tertiary)]',
             subtitle: 'Published courses'
         },
         {
@@ -73,7 +73,7 @@ export default function Dashboard() {
             value: `$${(overview?.total_revenue || 0).toLocaleString()}`,
             change: `${overview?.recent_activity || 0} recent activities`,
             icon: <DollarSign className="w-6 h-6" />,
-            gradient: 'from-orange-500 to-yellow-400',
+            gradient: 'from-[var(--status-warning)] to-[var(--accent-secondary)]',
             subtitle: 'Recent activity'
         },
     ];

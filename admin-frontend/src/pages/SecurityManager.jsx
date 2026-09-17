@@ -3,6 +3,42 @@ import { Lock, LogOut, Zap, Shield } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
+// Validation utilities
+const isValidUUID = (uuid) => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(uuid);
+};
+
+const isValidDate = (dateString) => {
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date);
+};
+
+const validateUserIdInput = (userId) => {
+    if (!userId || userId.trim() === '') return null; // Optional field
+    if (!isValidUUID(userId)) return 'Invalid user ID format (must be UUID)';
+    return null;
+};
+
+const validateDateRange = (startDate, endDate) => {
+    if (!startDate && !endDate) return null; // Both optional
+    if (startDate && !isValidDate(startDate)) return 'Invalid start date';
+    if (endDate && !isValidDate(endDate)) return 'Invalid end date';
+    if (startDate && endDate) {
+        if (new Date(startDate) > new Date(endDate)) {
+            return 'Start date must be before end date';
+        }
+    }
+    return null;
+};
+
+const validateLockReason = (reason) => {
+    if (!reason || reason.trim() === '') return 'Reason is required';
+    if (reason.length < 3) return 'Reason must be at least 3 characters';
+    if (reason.length > 500) return 'Reason must not exceed 500 characters';
+    return null;
+};
+
 export default function SecurityManager() {
     const [activeTab, setActiveTab] = useState('sessions');
     const [sessions, setSessions] = useState([]);
@@ -18,27 +54,59 @@ export default function SecurityManager() {
     const [sessionFilters, setSessionFilters] = useState({ user_id: '', role: '' });
     const [logFilters, setLogFilters] = useState({ user_id: '', action: '', level: '', start_date: '', end_date: '' });
     const [eventFilters, setEventFilters] = useState({ severity: '', start_date: '', end_date: '' });
+    
+    // Error states
+    const [filterErrors, setFilterErrors] = useState({});
+    const [statsCache, setStatsCache] = useState(null);
+    const [statsCachetime, setStatsCacheTime] = useState(null);
 
     useEffect(() => {
-        fetchStats();
+        fetchStats(); // Fetch stats only once on mount
+    }, []);
+
+    useEffect(() => {
+        // Reset pagination when changing tabs
+        setCurrentPage(1);
         if (activeTab === 'sessions') fetchSessions();
         else if (activeTab === 'logs') fetchActivityLogs();
         else if (activeTab === 'events') fetchSecurityEvents();
         else if (activeTab === 'permissions') fetchPermissions();
-    }, [activeTab, currentPage]);
+    }, [activeTab]);
 
     const fetchStats = async () => {
+        // Use cache if available (cache for 30 seconds)
+        const now = Date.now();
+        if (statsCache && statsCachetime && (now - statsCachetime) < 30000) {
+            setStats(statsCache);
+            return;
+        }
+
         try {
             const response = await api.get('/security/admin/stats');
             setStats(response.data);
+            setStatsCache(response.data);
+            setStatsCacheTime(now);
         } catch (error) {
-            console.error('Failed to fetch stats');
+            console.error('Failed to fetch stats:', error);
+            toast.error('Failed to load security stats');
         }
     };
 
     const fetchSessions = async () => {
         try {
             setLoading(true);
+            setFilterErrors({});
+            
+            // Validate filters
+            const userIdError = validateUserIdInput(sessionFilters.user_id);
+            if (userIdError) {
+                setFilterErrors({ user_id: userIdError });
+                toast.error(userIdError);
+                setSessions([]);
+                setTotalItems(0);
+                return;
+            }
+
             const params = new URLSearchParams({
                 page: currentPage,
                 limit: 20,
@@ -50,9 +118,9 @@ export default function SecurityManager() {
             setSessions(response.data.sessions || []);
             setTotalItems(response.data.total || 0);
         } catch (error) {
+            const errorMsg = error.response?.data?.error || error.message || 'Failed to fetch sessions';
             console.error('Failed to fetch sessions:', error);
-            const errorMsg = error.response?.data?.error || error.message || 'Sessions endpoint not available';
-            toast.error(`Failed to fetch sessions: ${errorMsg}`);
+            toast.error(errorMsg);
             setSessions([]);
             setTotalItems(0);
         } finally {
@@ -63,6 +131,24 @@ export default function SecurityManager() {
     const fetchActivityLogs = async () => {
         try {
             setLoading(true);
+            setFilterErrors({});
+            
+            // Validate filters
+            const userIdError = validateUserIdInput(logFilters.user_id);
+            const dateError = validateDateRange(logFilters.start_date, logFilters.end_date);
+            
+            const errors = {};
+            if (userIdError) errors.user_id = userIdError;
+            if (dateError) errors.date_range = dateError;
+            
+            if (Object.keys(errors).length > 0) {
+                setFilterErrors(errors);
+                toast.error(Object.values(errors)[0]);
+                setActivityLogs([]);
+                setTotalItems(0);
+                return;
+            }
+
             const params = new URLSearchParams({
                 page: currentPage,
                 limit: 50,
@@ -77,7 +163,9 @@ export default function SecurityManager() {
             setActivityLogs(response.data.logs);
             setTotalItems(response.data.total);
         } catch (error) {
-            toast.error('Failed to fetch activity logs');
+            const errorMsg = error.response?.data?.error || 'Failed to fetch activity logs';
+            console.error('Failed to fetch activity logs:', error);
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -86,6 +174,18 @@ export default function SecurityManager() {
     const fetchSecurityEvents = async () => {
         try {
             setLoading(true);
+            setFilterErrors({});
+            
+            // Validate date range
+            const dateError = validateDateRange(eventFilters.start_date, eventFilters.end_date);
+            if (dateError) {
+                setFilterErrors({ date_range: dateError });
+                toast.error(dateError);
+                setSecurityEvents([]);
+                setTotalItems(0);
+                return;
+            }
+
             const params = new URLSearchParams({
                 page: currentPage,
                 limit: 20,
@@ -98,7 +198,9 @@ export default function SecurityManager() {
             setSecurityEvents(response.data.events);
             setTotalItems(response.data.total);
         } catch (error) {
-            toast.error('Failed to fetch security events');
+            const errorMsg = error.response?.data?.error || 'Failed to fetch security events';
+            console.error('Failed to fetch security events:', error);
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -114,7 +216,7 @@ export default function SecurityManager() {
     };
 
     const handleTerminateSession = async (sessionId) => {
-        if (!window.confirm('Are you sure you want to terminate this session?')) return;
+        if (!window.confirm('Are you sure you want to terminate this session? The user will be logged out.')) return;
 
         try {
             await api.delete(`/security/admin/sessions/${sessionId}`);
@@ -122,46 +224,57 @@ export default function SecurityManager() {
             fetchSessions();
             fetchStats();
         } catch (error) {
-            toast.error('Failed to terminate session');
+            const errorMsg = error.response?.data?.error || 'Failed to terminate session';
+            toast.error(errorMsg);
         }
     };
 
     const handleTerminateUserSessions = async (userId) => {
-        if (!window.confirm('Are you sure you want to terminate all sessions for this user?')) return;
+        if (!window.confirm('Are you sure you want to terminate ALL sessions for this user? They will be logged out everywhere.')) return;
 
         try {
             const response = await api.post(`/security/admin/sessions/terminate-user/${userId}`);
-            toast.success(`${response.data.terminated_count} sessions terminated`);
+            toast.success(`${response.data.terminated_count} session(s) terminated`);
             fetchSessions();
             fetchStats();
         } catch (error) {
-            toast.error('Failed to terminate user sessions');
+            const errorMsg = error.response?.data?.error || 'Failed to terminate user sessions';
+            toast.error(errorMsg);
         }
     };
 
     const handleLockUser = async (userId, locked) => {
-        const reason = locked ? prompt('Enter reason for locking user:') : prompt('Enter reason for unlocking user:');
-        if (!reason) return;
+        const action = locked ? 'lock' : 'unlock';
+        const reason = prompt(`Enter reason for ${action}ing user (min 3 chars, max 500 chars):`);
+        
+        const reasonError = validateLockReason(reason);
+        if (reasonError) {
+            toast.error(reasonError);
+            return;
+        }
 
         try {
             await api.post(`/security/admin/lock-user/${userId}`, { locked, reason });
             toast.success(`User ${locked ? 'locked' : 'unlocked'} successfully`);
             fetchStats();
+            fetchSessions();
         } catch (error) {
-            toast.error('Failed to update user lock status');
+            const errorMsg = error.response?.data?.error || `Failed to ${action} user`;
+            toast.error(errorMsg);
         }
     };
 
     const handleForceLogout = async (userId) => {
-        if (!window.confirm('Are you sure you want to force logout this user from all sessions?')) return;
+        if (!window.confirm('Force logout will immediately terminate all sessions for this user. Continue?')) return;
 
         try {
             const response = await api.post(`/security/admin/force-logout/${userId}`);
-            toast.success(`${response.data.terminated_sessions} sessions terminated`);
+            toast.success(`${response.data.terminated_sessions} session(s) terminated`);
             fetchSessions();
             fetchStats();
         } catch (error) {
-            toast.error('Failed to force logout user');
+            const errorMsg = error.response?.data?.error || 'Failed to force logout user';
+            toast.error(errorMsg);
         }
     };
 
@@ -173,17 +286,18 @@ export default function SecurityManager() {
                 action,
                 granted
             });
-            toast.success('Permission updated successfully');
+            toast.success(`Permission ${granted ? 'granted' : 'denied'} successfully`);
             fetchPermissions();
         } catch (error) {
-            toast.error('Failed to update permission');
+            const errorMsg = error.response?.data?.error || 'Failed to update permission';
+            toast.error(errorMsg);
         }
     };
 
     if (loading && activeTab !== 'permissions') {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-[var(--accent-primary)] border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -199,15 +313,15 @@ export default function SecurityManager() {
                     </div>
                     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
                         <h3 className="text-sm font-medium text-[var(--muted)]">Recent Logins</h3>
-                        <p className="text-2xl font-bold text-green-500 mt-2">{stats.recent_logins}</p>
+                        <p className="text-2xl font-bold text-[var(--status-success)] mt-2">{stats.recent_logins}</p>
                     </div>
                     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
                         <h3 className="text-sm font-medium text-[var(--muted)]">Failed Logins</h3>
-                        <p className="text-2xl font-bold text-red-500 mt-2">{stats.failed_logins}</p>
+                        <p className="text-2xl font-bold text-[var(--status-error)] mt-2">{stats.failed_logins}</p>
                     </div>
                     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
                         <h3 className="text-sm font-medium text-[var(--muted)]">Security Events</h3>
-                        <p className="text-2xl font-bold text-yellow-500 mt-2">{stats.security_events}</p>
+                        <p className="text-2xl font-bold text-[var(--status-warning)] mt-2">{stats.security_events}</p>
                     </div>
                 </div>
             )}
@@ -221,7 +335,7 @@ export default function SecurityManager() {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`py-4 px-1 border-b-2 font-medium text-sm transition ${activeTab === tab
-                                        ? 'border-blue-500 text-blue-400'
+                                        ? 'border-[var(--accent-primary)] text-[var(--accent-primary)]'
                                         : 'border-transparent text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--border)]'
                                     }`}
                             >
@@ -257,7 +371,7 @@ export default function SecurityManager() {
                                     </select>
                                     <button
                                         onClick={fetchSessions}
-                                        className="px-3 py-1 bg-blue-600 text-[var(--text)] rounded text-sm hover:bg-blue-700 font-medium"
+                                        className="px-3 py-1 bg-[var(--accent-primary)] text-[var(--text)] rounded text-sm hover:bg-[var(--accent-primary)]/90 font-medium"
                                     >
                                         Filter
                                     </button>
@@ -294,22 +408,25 @@ export default function SecurityManager() {
                                                     <div className="flex space-x-2">
                                                         <button
                                                             onClick={() => handleTerminateSession(session.id)}
-                                                            className="p-1.5 text-red-400 hover:bg-red-500/20 rounded transition"
+                                                            className="p-1.5 text-[var(--status-error)] hover:bg-[var(--status-error)]/20 rounded transition"
                                                             title="Terminate session"
+                                                            aria-label="Terminate session"
                                                         >
                                                             <LogOut className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => handleTerminateUserSessions(session.user_id)}
-                                                            className="p-1.5 text-yellow-400 hover:bg-yellow-500/20 rounded transition"
+                                                            className="p-1.5 text-[var(--status-warning)] hover:bg-[var(--status-warning)]/20 rounded transition"
                                                             title="Terminate all user sessions"
+                                                            aria-label="Terminate all user sessions"
                                                         >
                                                             <Zap className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => handleForceLogout(session.user_id)}
-                                                            className="p-1.5 text-orange-400 hover:bg-orange-500/20 rounded transition"
+                                                            className="p-1.5 text-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/20 rounded transition"
                                                             title="Force logout"
+                                                            aria-label="Force logout"
                                                         >
                                                             <Lock className="w-4 h-4" />
                                                         </button>
@@ -345,7 +462,7 @@ export default function SecurityManager() {
                                     />
                                     <button
                                         onClick={fetchActivityLogs}
-                                        className="px-3 py-1 bg-blue-600 text-[var(--text)] rounded text-sm hover:bg-blue-700 font-medium"
+                                        className="px-3 py-1 bg-[var(--accent-primary)] text-[var(--text)] rounded text-sm hover:bg-[var(--accent-primary)]/90 font-medium"
                                     >
                                         Filter
                                     </button>
@@ -417,7 +534,7 @@ export default function SecurityManager() {
                                     </select>
                                     <button
                                         onClick={fetchSecurityEvents}
-                                        className="px-3 py-1 bg-blue-600 text-[var(--text)] rounded text-sm hover:bg-blue-700 font-medium"
+                                        className="px-3 py-1 bg-[var(--accent-primary)] text-[var(--text)] rounded text-sm hover:bg-[var(--accent-primary)]/90 font-medium"
                                     >
                                         Filter
                                     </button>
@@ -488,8 +605,8 @@ export default function SecurityManager() {
                                                     <button
                                                         onClick={() => handleUpdatePermission(roleName, permission.resource, permission.action, !permission.granted)}
                                                         className={`px-2 py-1 text-xs rounded font-medium transition ${permission.granted
-                                                                ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
-                                                                : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                                                                ? 'bg-[var(--status-success)]/20 text-[var(--status-success)] hover:bg-[var(--status-success)]/30'
+                                                                : 'bg-[var(--status-error)]/20 text-[var(--status-error)] hover:bg-[var(--status-error)]/30'
                                                             }`}
                                                     >
                                                         {permission.granted ? 'Granted' : 'Denied'}

@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Bell, BellRing, Check, Settings, X, FileText, Target, BarChart2, Megaphone, Clock, Radio, BookOpen } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
 export default function NotificationButton() {
+    const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
@@ -273,8 +275,8 @@ export default function NotificationButton() {
                         <button
                             onClick={() => {
                                 setIsOpen(false);
-                                // Navigate to full notifications page
-                                window.location.href = '/notifications';
+                                // Navigate to full notifications page using React Router
+                                navigate('/notifications');
                             }}
                             className="w-full py-2 text-sm text-[var(--accent-primary)] hover:text-[var(--text)] hover:bg-[var(--accent-primary)]/20 rounded-lg transition-all"
                         >

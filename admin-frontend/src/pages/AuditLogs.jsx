@@ -3,10 +3,10 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 
 const ACTION_COLORS = {
-    USER_ACTIVATED: 'text-green-400',
-    USER_DEACTIVATED: 'text-yellow-400',
-    USER_DELETED: 'text-red-400',
-    default: 'text-blue-400',
+    USER_ACTIVATED: { style: { color: 'var(--status-success)' }, label: 'Activated' },
+    USER_DEACTIVATED: { style: { color: 'var(--status-warning)' }, label: 'Deactivated' },
+    USER_DELETED: { style: { color: 'var(--status-error)' }, label: 'Deleted' },
+    default: { style: { color: 'var(--status-info)' }, label: 'Action' },
 };
 
 export default function AuditLogs() {
@@ -74,7 +74,8 @@ export default function AuditLogs() {
                 </select>
                 <button
                     onClick={() => { setPage(1); fetchLogs(); }}
-                    className="px-4 py-2 bg-[var(--accent-primary)] hover:bg-purple-700 rounded-xl text-[var(--text)] text-sm transition"
+                    className="px-4 py-2 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/90 rounded-xl text-[var(--text)] text-sm transition"
+                    aria-label="Refresh audit logs"
                 >
                     Refresh
                 </button>
@@ -84,11 +85,11 @@ export default function AuditLogs() {
                 <table className="w-full">
                     <thead>
                         <tr className="border-b border-[var(--border)]">
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Action</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Admin</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Resource</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">IP</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase">Time</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase" scope="col">Action</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase" scope="col">Admin</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase" scope="col">Resource</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase" scope="col">IP</th>
+                            <th className="text-left px-5 py-3 text-xs font-semibold text-[var(--muted)] uppercase" scope="col">Time</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,7 +100,13 @@ export default function AuditLogs() {
                         ) : logs.map(log => (
                             <tr key={log.id} className="border-b border-[var(--border)] hover:bg-[var(--surface-2)] transition">
                                 <td className="px-5 py-3">
-                                    <span className={`text-sm font-medium ${ACTION_COLORS[log.action] || ACTION_COLORS.default}`}>
+                                    <span 
+                                        className="text-sm font-medium flex items-center gap-2"
+                                        style={ACTION_COLORS[log.action]?.style || ACTION_COLORS.default.style}
+                                        role="status"
+                                        aria-label={`Action: ${log.action.replace(/_/g, ' ')}`}
+                                    >
+                                        <span className="w-2 h-2 rounded-full" style={ACTION_COLORS[log.action]?.style || ACTION_COLORS.default.style}></span>
                                         {log.action}
                                     </span>
                                 </td>

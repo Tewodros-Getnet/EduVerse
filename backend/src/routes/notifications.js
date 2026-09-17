@@ -233,7 +233,7 @@ router.get('/admin', authenticate, authorize('admin'), async (req, res, next) =>
         // Get notifications for the admin
         const notificationsQuery = `
             SELECT 
-                id, title, message, type, created_at, is_read, read_at
+                id, title, message, type, created_at, is_read, read_at, action_url, action_text
             FROM notifications 
             WHERE user_id = $1 
             ORDER BY created_at DESC 
@@ -260,44 +260,54 @@ router.post('/admin/generate-test', authenticate, authorize('admin'), async (req
                 title: 'System Alert',
                 message: 'Database backup completed successfully',
                 type: 'system_alert',
-                is_read: false
+                is_read: false,
+                action_url: '/admin/system-logs',
+                action_text: 'View Details'
             },
             {
                 user_id: userId,
                 title: 'New User Registration',
                 message: '15 new users registered in the last 24 hours',
                 type: 'announcement',
-                is_read: false
+                is_read: false,
+                action_url: '/admin/users',
+                action_text: 'View Users'
             },
             {
                 user_id: userId,
                 title: 'Security Update',
                 message: 'All systems are secure and up to date',
                 type: 'security',
-                is_read: true
+                is_read: true,
+                action_url: '/admin/security',
+                action_text: 'View Report'
             },
             {
                 user_id: userId,
                 title: 'Course Review Required',
                 message: '3 courses pending admin review',
                 type: 'course_review',
-                is_read: false
+                is_read: false,
+                action_url: '/admin/courses/pending',
+                action_text: 'Review Courses'
             },
             {
                 user_id: userId,
                 title: 'User Report',
                 message: '2 user reports require attention',
                 type: 'user_report',
-                is_read: true
+                is_read: true,
+                action_url: '/admin/reports',
+                action_text: 'View Reports'
             }
         ];
 
         // Insert mock notifications
         const insertPromises = mockNotifications.map(notification =>
             query(
-                `INSERT INTO notifications (user_id, title, message, type, created_at, is_read) 
-                 VALUES ($1, $2, $3, $4, NOW(), $5)`,
-                [notification.user_id, notification.title, notification.message, notification.type, notification.is_read]
+                `INSERT INTO notifications (user_id, title, message, type, created_at, is_read, action_url, action_text) 
+                 VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7)`,
+                [notification.user_id, notification.title, notification.message, notification.type, notification.is_read, notification.action_url, notification.action_text]
             )
         );
 
@@ -354,7 +364,7 @@ router.get('/instructor', authenticate, authorize('instructor'), async (req, res
         // Get notifications for the instructor
         const notificationsQuery = `
             SELECT 
-                id, title, message, type, created_at, is_read, read_at
+                id, title, message, type, created_at, is_read, read_at, action_url, action_text
             FROM notifications 
             WHERE user_id = $1 
             ORDER BY created_at DESC 
@@ -371,7 +381,9 @@ router.get('/instructor', authenticate, authorize('instructor'), async (req, res
             type: notification.type,
             created_at: notification.created_at,
             read: notification.is_read,
-            read_at: notification.read_at
+            read_at: notification.read_at,
+            action_url: notification.action_url,
+            action_text: notification.action_text
         }));
 
         res.json({ notifications: transformedNotifications });
@@ -462,44 +474,54 @@ router.post('/instructor/generate', authenticate, authorize('instructor'), async
                 title: 'New Student Enrollment',
                 message: 'John Doe has enrolled in your Web Development course',
                 type: 'enrollment',
-                is_read: false
+                is_read: false,
+                action_url: '/instructor/courses/1/students',
+                action_text: 'View Student'
             },
             {
                 user_id: userId,
                 title: 'Assignment Submitted',
                 message: '5 students have submitted the JavaScript Fundamentals assignment',
                 type: 'assignment',
-                is_read: false
+                is_read: false,
+                action_url: '/instructor/courses/1/assignments/1',
+                action_text: 'Review Submissions'
             },
             {
                 user_id: userId,
                 title: 'Course Review Posted',
                 message: 'A student left a 5-star review for your React course',
                 type: 'review',
-                is_read: true
+                is_read: true,
+                action_url: '/instructor/courses/1/reviews',
+                action_text: 'View Reviews'
             },
             {
                 user_id: userId,
                 title: 'Live Session Reminder',
                 message: 'Your live session starts in 1 hour',
                 type: 'reminder',
-                is_read: false
+                is_read: false,
+                action_url: '/instructor/courses/1/live',
+                action_text: 'Start Session'
             },
             {
                 user_id: userId,
                 title: 'Revenue Update',
                 message: 'You earned $250 from course enrollments this week',
                 type: 'revenue',
-                is_read: true
+                is_read: true,
+                action_url: '/instructor/earnings',
+                action_text: 'View Earnings'
             }
         ];
 
         // Insert mock notifications
         const insertPromises = mockNotifications.map(notification =>
             query(
-                `INSERT INTO notifications (user_id, title, message, type, created_at, is_read) 
-                 VALUES ($1, $2, $3, $4, NOW(), $5)`,
-                [notification.user_id, notification.title, notification.message, notification.type, notification.is_read]
+                `INSERT INTO notifications (user_id, title, message, type, created_at, is_read, action_url, action_text) 
+                 VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7)`,
+                [notification.user_id, notification.title, notification.message, notification.type, notification.is_read, notification.action_url, notification.action_text]
             )
         );
 
@@ -525,7 +547,7 @@ router.get('/student', authenticate, authorize('student'), async (req, res, next
         // Get notifications for the student
         const notificationsQuery = `
             SELECT 
-                id, title, message, type, created_at, is_read, read_at
+                id, title, message, type, created_at, is_read, read_at, action_url, action_text
             FROM notifications 
             WHERE user_id = $1 
             ORDER BY created_at DESC 
@@ -542,7 +564,9 @@ router.get('/student', authenticate, authorize('student'), async (req, res, next
             type: notification.type,
             created_at: notification.created_at,
             read: notification.is_read,
-            read_at: notification.read_at
+            read_at: notification.read_at,
+            action_url: notification.action_url,
+            action_text: notification.action_text
         }));
 
         res.json({ notifications: transformedNotifications });
@@ -623,44 +647,54 @@ router.post('/student/generate', authenticate, authorize('student'), async (req,
                 title: 'New Assignment Available',
                 message: 'Complete the JavaScript Fundamentals assignment by tomorrow',
                 type: 'assignment',
-                is_read: false
+                is_read: false,
+                action_url: '/student/courses/1/assignments/1',
+                action_text: 'View Assignment'
             },
             {
                 user_id: userId,
                 title: 'Quiz Reminder',
                 message: 'Don\'t forget to take the React Hooks quiz today',
                 type: 'quiz',
-                is_read: false
+                is_read: false,
+                action_url: '/student/quiz/1',
+                action_text: 'Take Quiz'
             },
             {
                 user_id: userId,
                 title: 'Grade Posted',
                 message: 'Your grade for the CSS Module assignment has been posted',
                 type: 'grade',
-                is_read: true
+                is_read: true,
+                action_url: '/student/grades',
+                action_text: 'View Grade'
             },
             {
                 user_id: userId,
                 title: 'Live Session Starting Soon',
                 message: 'Join the live session on Advanced React in 30 minutes',
                 type: 'live_session',
-                is_read: false
+                is_read: false,
+                action_url: '/student/courses/1/live',
+                action_text: 'Join Session'
             },
             {
                 user_id: userId,
                 title: 'Course Update',
                 message: 'New content added to the Web Development course',
                 type: 'announcement',
-                is_read: true
+                is_read: true,
+                action_url: '/student/courses/1',
+                action_text: 'View Course'
             }
         ];
 
         // Insert mock notifications
         const insertPromises = mockNotifications.map(notification =>
             query(
-                `INSERT INTO notifications (user_id, title, message, type, created_at, is_read) 
-                 VALUES ($1, $2, $3, $4, NOW(), $5)`,
-                [notification.user_id, notification.title, notification.message, notification.type, notification.is_read]
+                `INSERT INTO notifications (user_id, title, message, type, created_at, is_read, action_url, action_text) 
+                 VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7)`,
+                [notification.user_id, notification.title, notification.message, notification.type, notification.is_read, notification.action_url, notification.action_text]
             )
         );
 
