@@ -6,7 +6,11 @@ const { getUnreadCount, setUnreadCount, invalidateUnreadCount } = require('../li
 const router = express.Router();
 
 // ============= ADMIN NOTIFICATIONS =============
+// Admin notifications feature disabled (single admin setup - not needed)
+// All admin notification endpoints have been commented out
+// Student and instructor notifications remain fully functional
 
+/*
 // POST /api/notifications/admin/broadcast - Send broadcast message to all users
 router.post('/admin/broadcast', authenticate, authorize('admin'), async (req, res, next) => {
     try {
@@ -352,6 +356,7 @@ router.post('/admin/mark-all-read', authenticate, authorize('admin'), async (req
         });
     } catch (err) { next(err); }
 });
+*/
 
 // ============= INSTRUCTOR NOTIFICATIONS =============
 

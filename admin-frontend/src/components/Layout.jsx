@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutGrid, Users, BookOpen, BarChart3, Bell, Shield, Brain, ClipboardList, Settings, LogOut, Menu, Sun, Moon } from 'lucide-react';
+import { LayoutGrid, Users, BookOpen, BarChart3, Shield, Brain, ClipboardList, Settings, LogOut, Menu, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import AdminNotificationButton from './AdminNotificationButton';
 
 const navItems = [
     { path: '/', label: 'Dashboard', Icon: LayoutGrid },
     { path: '/users', label: 'Users', Icon: Users },
     { path: '/courses', label: 'Courses', Icon: BookOpen },
     { path: '/analytics', label: 'Analytics', Icon: BarChart3 },
-    { path: '/notifications', label: 'Notifications', Icon: Bell },
     { path: '/security', label: 'Security', Icon: Shield },
     { path: '/ai', label: 'AI', Icon: Brain },
     { path: '/audit-logs', label: 'Audit logs', Icon: ClipboardList },
@@ -74,7 +72,6 @@ export default function Layout() {
                         <button onClick={toggleTheme} className="p-2 rounded-xl bg-[var(--surface-2)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--surface)] transition flex items-center gap-1.5" aria-label="Toggle theme">
                             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                         </button>
-                        <AdminNotificationButton />
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full flex items-center justify-center text-[var(--text)] text-sm font-bold">
                                 {user?.name?.[0]?.toUpperCase() || 'A'}

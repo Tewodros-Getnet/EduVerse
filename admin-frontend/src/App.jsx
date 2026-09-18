@@ -8,7 +8,6 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import UserManagement from './pages/UserManagement';
 import CourseManagement from './pages/CourseManagement';
-import NotificationManager from './pages/NotificationManager';
 import SecurityManager from './pages/SecurityManager';
 import AIManager from './pages/AIManager';
 import Analytics from './pages/Analytics';
@@ -33,7 +32,6 @@ function AppRoutes() {
                 <Route index element={<Dashboard />} />
                 <Route path="users" element={<UserManagement />} />
                 <Route path="courses" element={<CourseManagement />} />
-                <Route path="notifications" element={<NotificationManager />} />
                 <Route path="security" element={<SecurityManager />} />
                 <Route path="ai" element={<AIManager />} />
                 <Route path="analytics" element={<Analytics />} />
