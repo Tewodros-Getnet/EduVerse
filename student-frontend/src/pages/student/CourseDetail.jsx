@@ -154,7 +154,24 @@ export default function CourseDetail() {
         if (durationSec > 0) return Math.min(100, Math.round((watchSec / durationSec) * 100));
         return watchSec > 0 ? 25 : 0;
     };
-    if (!course) return <div className="text-center py-20 text-[var(--muted)]">Course not found</div>;
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    if (!course) {
+        return (
+            <div className="text-center py-20">
+                <p className="text-[var(--muted)] mb-4">Course not found</p>
+                <Link to="/student/courses" className="px-4 py-2 bg-[var(--accent-primary)] text-[var(--text)] rounded-xl text-sm hover:opacity-90 transition">
+                    Back to Courses
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-6xl mx-auto space-y-6">
