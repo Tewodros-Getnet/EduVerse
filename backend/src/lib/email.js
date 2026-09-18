@@ -1,26 +1,33 @@
 /**
- * email.js — Resend transactional email helper
- * Uses the Resend SDK (https://resend.com)
+ * email.js — Brevo transactional email helper
+ * Uses the Brevo SDK (https://www.brevo.com)
  *
- * Required env var:
- *   RESEND_API_KEY   — from Resend dashboard → API Keys
+ * Required env vars:
+ *   BREVO_API_KEY        — from Brevo dashboard → SMTP & API → API Keys
+ *   BREVO_SENDER_EMAIL   — verified sender email address
+ *   BREVO_SENDER_NAME    — (optional) sender name, defaults to 'EduVerse'
  *
- * FROM address:
- *   Free tier uses 'onboarding@resend.dev' (works without a custom domain).
- *   Set FROM_EMAIL in env to override once you add a custom domain.
+ * Brevo allows sending to ANY email address (300 emails/day free tier).
+ * Only the sender email needs to be verified in your Brevo account.
  */
-const { Resend } = require('resend');
+const brevo = require('@getbrevo/brevo');
 
-const APP_NAME = 'EduVerse';
+const APP_NAME = process.env.BREVO_SENDER_NAME || 'EduVerse';
 
 function getClient() {
-    if (!process.env.RESEND_API_KEY) return null;
-    return new Resend(process.env.RESEND_API_KEY);
+    if (!process.env.BREVO_API_KEY || !process.env.BREVO_SENDER_EMAIL) {
+        return null;
+    }
+
+    const apiInstance = new brevo.TransactionalEmailsApi();
+    const apiKey = apiInstance.authentications['apiKey'];
+    apiKey.apiKey = process.env.BREVO_API_KEY;
+
+    return apiInstance;
 }
 
-// Free-tier safe: use Resend's default onboarding address
-const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
-const FROM = `${APP_NAME} <${FROM_EMAIL}>`;
+const SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || '';
+const SENDER_NAME = APP_NAME;
 
 /**
  * Send a 6-digit OTP to the given email address.
@@ -31,15 +38,26 @@ async function sendOTPEmail(toEmail, name, otp) {
     if (!client) {
         // Dev fallback — log OTP to console when no API key is configured
         console.log(`[EMAIL DEV] OTP for ${toEmail}: ${otp}`);
+        console.warn('[EMAIL] Missing BREVO_API_KEY or BREVO_SENDER_EMAIL in .env');
         return { success: true, dev: true };
     }
 
     try {
-        const { data, error } = await client.emails.send({
-            from: FROM,
-            to: toEmail,
-            subject: `Your ${APP_NAME} verification code: ${otp}`,
-            html: `
+        const sendSmtpEmail = new brevo.SendSmtpEmail();
+
+        sendSmtpEmail.sender = {
+            name: SENDER_NAME,
+            email: SENDER_EMAIL
+        };
+
+        sendSmtpEmail.to = [{
+            email: toEmail,
+            name: name
+        }];
+
+        sendSmtpEmail.subject = `Your ${APP_NAME} verification code: ${otp}`;
+
+        sendSmtpEmail.htmlContent = `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
@@ -69,20 +87,21 @@ async function sendOTPEmail(toEmail, name, otp) {
     </div>
   </div>
 </body>
-</html>`,
-            text: `Hi ${name},\n\nYour ${APP_NAME} verification code is: ${otp}\n\nThis code expires in 10 minutes.\n\nIf you didn't create an account, ignore this email.`,
-        });
+</html>`;
 
-        if (error) {
-            console.error('[EMAIL] Resend error:', error);
-            return { success: false, error: error.message };
-        }
+        sendSmtpEmail.textContent = `Hi ${name},\n\nYour ${APP_NAME} verification code is: ${otp}\n\nThis code expires in 10 minutes.\n\nIf you didn't create an account, ignore this email.`;
 
-        console.log(`[EMAIL] OTP sent to ${toEmail} — id: ${data?.id}`);
-        return { success: true, id: data?.id };
+        const data = await client.sendTransacEmail(sendSmtpEmail);
+
+        console.log(`[EMAIL] OTP sent to ${toEmail} — messageId: ${data.messageId}`);
+        return { success: true, messageId: data.messageId };
+
     } catch (err) {
-        console.error('[EMAIL] Resend exception:', err.message);
-        return { success: false, error: err.message };
+        console.error('[EMAIL] Brevo error:', err.response?.text || err.message);
+        return { 
+            success: false, 
+            error: err.response?.body?.message || err.message 
+        };
     }
 }
 
