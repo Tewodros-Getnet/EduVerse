@@ -469,34 +469,34 @@ export default function SecurityManager() {
                                 </div>
                             </div>
 
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
                                 <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Action</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Details</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Level</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--muted)] uppercase">Time</th>
+                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">User</th>
+                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Action</th>
+                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider hidden lg:table-cell">Details</th>
+                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Level</th>
+                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider hidden md:table-cell">Time</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[var(--border)]">
+                                    <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
                                         {activityLogs.map((log) => (
                                             <tr key={log.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                <td className="px-4 sm:px-6 py-3 sm:py-4">
                                                     <div>
-                                                        <div className="text-sm font-medium text-[var(--text)]">{log.name || 'System'}</div>
-                                                        <div className="text-sm text-[var(--muted)]">{log.email || 'N/A'}</div>
+                                                        <div className="text-sm font-medium text-[var(--text)] truncate max-w-[150px] sm:max-w-none">{log.name || 'System'}</div>
+                                                        <div className="text-xs text-[var(--muted)] truncate max-w-[150px] sm:max-w-none">{log.email || 'N/A'}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
-                                                    {log.action}
+                                                <td className="px-4 sm:px-6 py-3 sm:py-4">
+                                                    <span className="text-xs sm:text-sm text-[var(--muted)]">{log.action}</span>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)] max-w-xs truncate">
-                                                    {log.details}
+                                                <td className="px-4 sm:px-6 py-3 sm:py-4 hidden lg:table-cell">
+                                                    <span className="text-xs sm:text-sm text-[var(--muted)] max-w-xs truncate block">{log.details}</span>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${log.level === 'security' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
+                                                <td className="px-4 sm:px-6 py-3 sm:py-4">
+                                                    <span className={`px-2 py-1 inline-flex text-[10px] sm:text-xs leading-5 font-semibold rounded-full ${log.level === 'security' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
                                                             log.level === 'warning' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
                                                                 log.level === 'info' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
                                                                     'bg-[var(--muted)]/20 text-[var(--muted)]'
@@ -504,8 +504,15 @@ export default function SecurityManager() {
                                                         {log.level}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--muted)]">
-                                                    {new Date(log.created_at).toLocaleString()}
+                                                <td className="px-4 sm:px-6 py-3 sm:py-4 hidden md:table-cell">
+                                                    <span className="text-xs sm:text-sm text-[var(--muted)]">
+                                                        {new Date(log.created_at).toLocaleString(undefined, { 
+                                                            month: 'short', 
+                                                            day: 'numeric', 
+                                                            hour: '2-digit', 
+                                                            minute: '2-digit' 
+                                                        })}
+                                                    </span>
                                                 </td>
                                             </tr>
                                         ))}

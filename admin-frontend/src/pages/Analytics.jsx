@@ -138,7 +138,7 @@ export default function Analytics() {
     }
 
     return (
-        <div className="space-y-6 max-w-6xl mx-auto">
+            <div className="space-y-4 sm:space-y-6 max-w-6xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-[var(--text)]">Analytics</h1>
@@ -176,28 +176,36 @@ export default function Analytics() {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-                    <h3 className="text-base font-semibold text-[var(--text)] mb-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm">
+                    <h3 className="text-sm sm:text-base font-semibold text-[var(--text)] mb-3 sm:mb-4">
                         {period === 'Week' ? 'New users by week' : 'New users by month'}
                     </h3>
                     {userLineData.length === 0 ? (
                         <p className="text-sm text-[var(--muted)] py-8 text-center">No user growth data yet.</p>
                     ) : (
-                        <ResponsiveContainer width="100%" height={240}>
-                            <LineChart data={userLineData}>
+                        <ResponsiveContainer width="100%" height={280}>
+                            <LineChart data={userLineData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                                <XAxis dataKey="label" stroke="#6b7280" tick={{ fontSize: 11 }} />
-                                <YAxis stroke="#6b7280" tick={{ fontSize: 11 }} allowDecimals={false} />
+                                <XAxis 
+                                    dataKey="label" 
+                                    stroke="#6b7280" 
+                                    tick={{ fontSize: 10 }} 
+                                    angle={-45}
+                                    textAnchor="end"
+                                    height={60}
+                                />
+                                <YAxis stroke="#6b7280" tick={{ fontSize: 10 }} allowDecimals={false} />
                                 <Tooltip
                                     contentStyle={{
                                         background: 'var(--surface-2)',
                                         border: '1px solid var(--border)',
                                         borderRadius: 8,
                                         color: 'var(--text)',
+                                        fontSize: '12px'
                                     }}
                                 />
-                                <Legend />
+                                <Legend wrapperStyle={{ fontSize: '12px' }} />
                                 <Line
                                     type="monotone"
                                     dataKey="new_users"
@@ -211,22 +219,30 @@ export default function Analytics() {
                     )}
                 </div>
 
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-                    <h3 className="text-base font-semibold text-[var(--text)] mb-4">AI tutor messages by day</h3>
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm">
+                    <h3 className="text-sm sm:text-base font-semibold text-[var(--text)] mb-3 sm:mb-4">AI tutor messages by day</h3>
                     {aiBarData.length === 0 ? (
                         <p className="text-sm text-[var(--muted)] py-8 text-center">No AI usage logged yet.</p>
                     ) : (
-                        <ResponsiveContainer width="100%" height={240}>
-                            <BarChart data={aiBarData}>
+                        <ResponsiveContainer width="100%" height={280}>
+                            <BarChart data={aiBarData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                                <XAxis dataKey="label" stroke="#6b7280" tick={{ fontSize: 11 }} />
-                                <YAxis stroke="#6b7280" tick={{ fontSize: 11 }} allowDecimals={false} />
+                                <XAxis 
+                                    dataKey="label" 
+                                    stroke="#6b7280" 
+                                    tick={{ fontSize: 10 }} 
+                                    angle={-45}
+                                    textAnchor="end"
+                                    height={60}
+                                />
+                                <YAxis stroke="#6b7280" tick={{ fontSize: 10 }} allowDecimals={false} />
                                 <Tooltip
                                     contentStyle={{
                                         background: 'var(--surface-2)',
                                         border: '1px solid var(--border)',
                                         borderRadius: 8,
                                         color: 'var(--text)',
+                                        fontSize: '12px'
                                     }}
                                 />
                                 <Bar dataKey="queries" fill="#7c3aed" radius={[4, 4, 0, 0]} name="Queries" />
@@ -236,42 +252,58 @@ export default function Analytics() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-                    <h3 className="text-base font-semibold text-[var(--text)] mb-4">Courses by category</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm">
+                    <h3 className="text-sm sm:text-base font-semibold text-[var(--text)] mb-3 sm:mb-4">Courses by category</h3>
                     {pieData.length === 0 ? (
                         <p className="text-sm text-[var(--muted)] py-8 text-center">No course category data.</p>
                     ) : (
-                        <ResponsiveContainer width="100%" height={260}>
-                            <PieChart>
-                                <Pie
-                                    data={pieData}
-                                    cx="50%"
-                                    cy="50%"
-                                    outerRadius={88}
-                                    dataKey="value"
-                                    nameKey="name"
-                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                >
-                                    {pieData.map((_, i) => (
-                                        <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip
-                                    contentStyle={{
-                                        background: 'var(--surface-2)',
-                                        border: '1px solid var(--border)',
-                                        borderRadius: 8,
-                                        color: 'var(--text)',
-                                    }}
-                                />
-                                <Legend />
-                            </PieChart>
-                        </ResponsiveContainer>
+                        <div className="flex flex-col items-center">
+                            <ResponsiveContainer width="100%" height={300}>
+                                <PieChart>
+                                    <Pie
+                                        data={pieData}
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={90}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                        labelLine={true}
+                                        style={{ fontSize: '11px' }}
+                                    >
+                                        {pieData.map((_, i) => (
+                                            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip
+                                        contentStyle={{
+                                            background: 'var(--surface-2)',
+                                            border: '1px solid var(--border)',
+                                            borderRadius: 8,
+                                            color: 'var(--text)',
+                                            fontSize: '12px'
+                                        }}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                            {/* Custom Legend */}
+                            <div className="grid grid-cols-2 gap-2 w-full mt-4">
+                                {pieData.map((entry, i) => (
+                                    <div key={i} className="flex items-center gap-2">
+                                        <div 
+                                            className="w-3 h-3 rounded-sm flex-shrink-0" 
+                                            style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                                        />
+                                        <span className="text-xs text-[var(--muted)] truncate">{entry.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     )}
                 </div>
 
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm">
                     <h3 className="text-base font-semibold text-[var(--text)] mb-4">Quiz performance</h3>
                     <div className="space-y-4 mt-2">
                         <div className="p-4 rounded-xl bg-[var(--surface-2)] border border-[var(--border)]">
