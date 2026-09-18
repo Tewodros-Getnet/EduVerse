@@ -47,19 +47,19 @@ export default function ModernAdminDashboard() {
     const systemHealth = dashData?.analytics?.system_health || 95;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-6 space-y-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6 lg:space-y-8">
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-3xl shadow-lg p-8 text-[var(--text)] relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500 opacity-10 rounded-full -mr-20 -mt-20"></div>
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500 opacity-10 rounded-full -ml-16 -mb-16"></div>
+            <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-2xl lg:rounded-3xl shadow-lg p-4 sm:p-6 lg:p-8 text-[var(--text)] relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 sm:w-40 sm:h-40 bg-indigo-500 opacity-10 rounded-full -mr-16 sm:-mr-20 -mt-16 sm:-mt-20"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 sm:w-32 sm:h-32 bg-purple-500 opacity-10 rounded-full -ml-12 sm:-ml-16 -mb-12 sm:-mb-16"></div>
                 <div className="relative z-10">
-                    <h1 className="text-4xl font-bold mb-2">System Control Center 🛡️</h1>
-                    <p className="text-slate-300 text-lg">Monitor, manage, and secure your learning platform</p>
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">System Control Center 🛡️</h1>
+                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg">Monitor, manage, and secure your learning platform</p>
                 </div>
             </div>
 
             {/* Top KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                 <AdminMetricCard
                     icon="👥"
                     label="Total Users"
@@ -95,11 +95,11 @@ export default function ModernAdminDashboard() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                 {/* Left Column - Control & Management */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Quick Actions */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                         <AdminActionCard
                             icon="👤"
                             title="Add User"
@@ -146,8 +146,8 @@ export default function ModernAdminDashboard() {
 
                     {/* System Alerts */}
                     <div>
-                        <h2 className="text-2xl font-bold text-[var(--text)] dark:text-[var(--text)] mb-4">🚨 System Alerts</h2>
-                        <div className="space-y-3">
+                        <h2 className="text-xl sm:text-2xl font-bold text-[var(--text)] dark:text-[var(--text)] mb-3 sm:mb-4">🚨 System Alerts</h2>
+                        <div className="space-y-2 sm:space-y-3">
                             <AlertCard
                                 type="warning"
                                 title="High Memory Usage"
@@ -171,14 +171,54 @@ export default function ModernAdminDashboard() {
 
                     {/* Recent Users */}
                     <div>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-2xl font-bold text-[var(--text)] dark:text-[var(--text)]">👥 Recent Users</h2>
-                            <Link to="/admin/users" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 text-sm font-medium">
+                        <div className="flex items-center justify-between mb-3 sm:mb-4">
+                            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text)] dark:text-[var(--text)]">👥 Recent Users</h2>
+                            <Link to="/admin/users" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 text-xs sm:text-sm font-medium">
                                 View All →
                             </Link>
                         </div>
-                        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
-                            <div className="overflow-x-auto">
+                        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
+                            {/* Mobile Card View */}
+                            <div className="block sm:hidden divide-y divide-gray-200 dark:divide-slate-700">
+                                {dashData?.users && dashData.users.map((user, idx) => (
+                                    <div key={idx} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
+                                        <div className="flex items-start gap-3 mb-3">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-[var(--text)] font-bold text-sm flex-shrink-0">
+                                                {user.name?.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-medium text-[var(--text)] dark:text-[var(--text)] truncate">{user.name}</p>
+                                                <p className="text-xs text-[var(--muted)] dark:text-[var(--muted)] truncate">{user.email}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between text-xs">
+                                            <span className={`px-2 py-1 rounded-full font-bold ${
+                                                user.role === 'admin' 
+                                                    ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-[var(--accent-primary)]'
+                                                    : user.role === 'instructor'
+                                                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-[var(--muted)]'
+                                            }`}>
+                                                {user.role}
+                                            </span>
+                                            <span className={`flex items-center gap-1.5 font-medium ${
+                                                user.is_active 
+                                                    ? 'text-green-600 dark:text-green-400' 
+                                                    : 'text-gray-600 dark:text-[var(--muted)]'
+                                            }`}>
+                                                <div className={`w-1.5 h-1.5 rounded-full ${user.is_active ? 'bg-emerald-600' : 'bg-gray-600'}`}></div>
+                                                {user.is_active ? 'Active' : 'Inactive'}
+                                            </span>
+                                            <span className="text-gray-600 dark:text-[var(--muted)]">
+                                                {new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Desktop Table View */}
+                            <div className="hidden sm:block overflow-x-auto">
                                 <table className="w-full">
                                     <thead className="border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/50">
                                         <tr>
@@ -236,12 +276,12 @@ export default function ModernAdminDashboard() {
                 </div>
 
                 {/* Right Column - Sidebar Stats & Actions */}
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                     {/* System Status */}
-                    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-                        <h3 className="font-bold text-[var(--text)] dark:text-[var(--text)] mb-6">⚙️ System Status</h3>
+                    <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6">
+                        <h3 className="font-bold text-base sm:text-lg text-[var(--text)] dark:text-[var(--text)] mb-4 sm:mb-6">⚙️ System Status</h3>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                             <StatusItem
                                 label="API Server"
                                 status="Online"
@@ -316,12 +356,12 @@ export default function ModernAdminDashboard() {
 
 function AdminMetricCard({ icon, label, value, color, trend, subtitle }) {
     return (
-        <div className={`bg-gradient-to-br ${color} rounded-2xl shadow-lg p-6 text-[var(--text)]`}>
-            <div className="text-4xl mb-3">{icon}</div>
+        <div className={`bg-gradient-to-br ${color} rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-5 lg:p-6 text-[var(--text)]`}>
+            <div className="text-3xl sm:text-4xl mb-2 sm:mb-3">{icon}</div>
             <p className="text-[var(--text)]/80 text-xs font-medium uppercase">{label}</p>
-            <p className="text-3xl font-bold my-2">{value}</p>
+            <p className="text-2xl sm:text-3xl font-bold my-1 sm:my-2">{value}</p>
             <p className="text-xs text-[var(--text)]/70">{trend}</p>
-            <p className="text-xs text-[var(--text)]/60 mt-2">{subtitle}</p>
+            <p className="text-xs text-[var(--text)]/60 mt-1 sm:mt-2">{subtitle}</p>
         </div>
     );
 }
@@ -330,11 +370,11 @@ function AdminActionCard({ icon, title, description, color, to }) {
     return (
         <Link
             to={to}
-            className={`bg-gradient-to-br ${color} text-[var(--text)] rounded-2xl p-4 hover:shadow-lg hover:scale-105 transition-all group flex flex-col items-center text-center`}
+            className={`bg-gradient-to-br ${color} text-[var(--text)] rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:shadow-lg hover:scale-105 transition-all group flex flex-col items-center text-center`}
         >
-            <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{icon}</div>
-            <h3 className="font-bold text-sm">{title}</h3>
-            <p className="text-xs text-[var(--text)]/80">{description}</p>
+            <div className="text-2xl sm:text-3xl mb-1 sm:mb-2 group-hover:scale-110 transition-transform">{icon}</div>
+            <h3 className="font-bold text-xs sm:text-sm">{title}</h3>
+            <p className="text-[10px] sm:text-xs text-[var(--text)]/80">{description}</p>
         </Link>
     );
 }
@@ -355,12 +395,12 @@ function AlertCard({ type, title, message, action }) {
     };
 
     return (
-        <div className={`border rounded-2xl p-4 flex items-start justify-between ${colors[type]}`}>
-            <div className="flex items-start gap-4">
-                <span className="text-2xl flex-shrink-0">{icons[type]}</span>
+        <div className={`border rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0 ${colors[type]}`}>
+            <div className="flex items-start gap-3 sm:gap-4">
+                <span className="text-xl sm:text-2xl flex-shrink-0">{icons[type]}</span>
                 <div>
-                    <p className="font-bold text-[var(--text)] dark:text-[var(--text)]">{title}</p>
-                    <p className="text-sm text-gray-700 dark:text-[var(--muted)] mt-1">{message}</p>
+                    <p className="font-bold text-sm sm:text-base text-[var(--text)] dark:text-[var(--text)]">{title}</p>
+                    <p className="text-xs sm:text-sm text-gray-700 dark:text-[var(--muted)] mt-1">{message}</p>
                 </div>
             </div>
             <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 font-medium text-sm flex-shrink-0">
@@ -379,8 +419,8 @@ function StatusItem({ label, status, statusType }) {
 
     return (
         <div className="flex items-center justify-between">
-            <span className="text-gray-700 dark:text-[var(--muted)] font-medium">{label}</span>
-            <span className={`px-3 py-1 rounded-full text-xs font-bold ${colors[statusType]}`}>
+            <span className="text-sm text-gray-700 dark:text-[var(--muted)] font-medium">{label}</span>
+            <span className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold ${colors[statusType]}`}>
                 {status}
             </span>
         </div>
