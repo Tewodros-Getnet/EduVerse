@@ -354,19 +354,19 @@ const InstructorAssignments = () => {
                         </div>
                         <div>
                             <label className="block text-sm text-[var(--muted)] mb-1">
-                                Instructions <span className="text-gray-600">(full assignment brief â€” students read this before submitting)</span>
+                                Instructions <span className="text-gray-600">(full assignment brief –” students read this before submitting)</span>
                             </label>
                             <textarea
                                 value={formData.instructions}
                                 onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
                                 rows={5}
-                                placeholder="Write the full assignment instructions here â€” what students must do, requirements, evaluation criteria..."
+                                placeholder="Write the full assignment instructions here –” what students must do, requirements, evaluation criteria..."
                                 className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-2.5 text-[var(--text)] placeholder-gray-600 focus:outline-none focus:border-[var(--accent-primary)] text-sm resize-none"
                             />
                         </div>
                         <div>
                             <label className="block text-sm text-[var(--muted)] mb-1">
-                                Assignment Brief File <span className="text-gray-600">(optional â€” PDF or Word doc)</span>
+                                Assignment Brief File <span className="text-gray-600">(optional –” PDF or Word doc)</span>
                             </label>
                             {formData.attachment_url ? (
                                 <div className="flex items-center justify-between bg-[var(--surface-2)] border border-green-500/30 rounded-xl px-4 py-3">
@@ -375,7 +375,7 @@ const InstructorAssignments = () => {
                                         <div className="min-w-0">
                                             <p className="text-sm text-[var(--text)] truncate">{formData.attachment_name}</p>
                                             <a href={formData.attachment_url} target="_blank" rel="noopener noreferrer"
-                                                className="text-xs text-blue-400 hover:text-blue-300 transition">Preview â†—</a>
+                                                className="text-xs text-blue-400 hover:text-blue-300 transition">Preview ↗</a>
                                         </div>
                                     </div>
                                     <button type="button"
@@ -460,7 +460,7 @@ const InstructorAssignments = () => {
                         {assignment.attachment_url && (
                             <a href={assignment.attachment_url} target="_blank" rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1.5 mb-3 text-xs text-blue-400 hover:text-blue-300 transition bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-1.5">
-                                ðŸ“Ž {assignment.attachment_name || 'Assignment Brief'} â†—
+                                ðŸ“Ž {assignment.attachment_name || 'Assignment Brief'} ↗
                             </a>
                         )}
                         <div className="flex items-center justify-between text-xs text-[var(--muted)] mb-4">
@@ -551,7 +551,7 @@ const InstructorAssignments = () => {
                                     onClick={() => { setShowSubmissions(null); setGradingMode(false); setBulkGrades({}); setGradeInputs({}); }}
                                     className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition"
                                 >
-                                    âœ•
+                                    ✕
                                 </button>
                             </div>
                         </div>
@@ -651,7 +651,7 @@ const InstructorAssignments = () => {
                                                             rows={2} />
                                                     </div>
                                                 ) : (
-                                                    // Individual grade mode â€” always visible (allow editing existing grades too)
+                                                    // Individual grade mode –” always visible (allow editing existing grades too)
                                                     <div className="flex gap-2 items-start">
                                                         <input type="number"
                                                             placeholder={`Score (/${currentAssignment?.max_points || 100})`}
@@ -718,7 +718,7 @@ const InstructorAssignments = () => {
                 </div>
             )}
 
-            {/* Analytics Modal â€” independent, not nested inside Submissions Modal */}
+            {/* Analytics Modal –” independent, not nested inside Submissions Modal */}
             {showAnalytics && analytics && (
                             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                                 <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -728,7 +728,7 @@ const InstructorAssignments = () => {
                                             onClick={() => setShowAnalytics(null)}
                                             className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition"
                                         >
-                                            âœ•
+                                            ✕
                                         </button>
                                     </div>
 
@@ -820,7 +820,7 @@ const InstructorAssignments = () => {
                         {/* Header */}
                         <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
                             <h2 className="text-lg font-bold text-[var(--text)]">Edit Assignment</h2>
-                            <button onClick={() => setEditingId(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">âœ•</button>
+                            <button onClick={() => setEditingId(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
                         </div>
 
                         <div className="p-5 space-y-4">
@@ -851,7 +851,7 @@ const InstructorAssignments = () => {
 
                             {/* Brief file */}
                             <div>
-                                <label className="block text-sm text-[var(--muted)] mb-1">Assignment Brief File <span className="text-gray-600">(optional â€” PDF or Word)</span></label>
+                                <label className="block text-sm text-[var(--muted)] mb-1">Assignment Brief File <span className="text-gray-600">(optional –” PDF or Word)</span></label>
                                 {editForm.attachment_url ? (
                                     <div className="flex items-center justify-between bg-[var(--surface-2)] border border-green-500/30 rounded-xl px-4 py-3">
                                         <div className="flex items-center gap-3 min-w-0">
@@ -859,7 +859,7 @@ const InstructorAssignments = () => {
                                             <div className="min-w-0">
                                                 <p className="text-sm text-[var(--text)] truncate">{editForm.attachment_name}</p>
                                                 <a href={editForm.attachment_url} target="_blank" rel="noopener noreferrer"
-                                                    className="text-xs text-blue-400 hover:text-blue-300 transition">Preview â†—</a>
+                                                    className="text-xs text-blue-400 hover:text-blue-300 transition">Preview ↗</a>
                                             </div>
                                         </div>
                                         <button type="button"

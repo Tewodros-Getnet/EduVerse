@@ -42,7 +42,7 @@ export default function InstructorCourses() {
             setCourses(prev => [res.data.course, ...prev]);
             setShowForm(false);
             setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' });
-            toast.success('âœ“ Course created successfully!');
+            toast.success('✓ Course created successfully!');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Failed to create course');
         } finally { setSaving(false); }
@@ -57,7 +57,7 @@ export default function InstructorCourses() {
             setCourses(prev => prev.map(c => c.id === editingId ? res.data.course : c));
             setEditingId(null);
             setForm({ title: '', description: '', difficulty_level: 'beginner', category: '', price: 0, prerequisites: '' });
-            toast.success('âœ“ Course updated successfully!');
+            toast.success('✓ Course updated successfully!');
             setShowForm(false);
         } catch (err) {
             toast.error(err.response?.data?.error || 'Failed to update course');
@@ -82,7 +82,7 @@ export default function InstructorCourses() {
         try {
             const res = await api.post(`/courses/${courseId}/publish`);
             setCourses(prev => prev.map(c => c.id === courseId ? res.data.course : c));
-            toast.success('âœ“ Course published successfully!');
+            toast.success('✓ Course published successfully!');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Failed to publish course');
         } finally {
@@ -94,7 +94,7 @@ export default function InstructorCourses() {
         try {
             const res = await api.post(`/courses/${courseId}/duplicate`, { new_title: newTitle });
             setCourses(prev => [res.data.course, ...prev]);
-            toast.success('âœ“ Course duplicated successfully!');
+            toast.success('✓ Course duplicated successfully!');
         } catch (err) {
             toast.error(err.response?.data?.error || 'Failed to duplicate course');
         }
@@ -119,7 +119,7 @@ export default function InstructorCourses() {
                 try {
                     await api.delete(`/courses/${id}`);
                     setCourses(prev => prev.filter(c => c.id !== id));
-                    toast.success('âœ“ Course deleted');
+                    toast.success('✓ Course deleted');
                 } catch {
                     toast.error('Failed to delete course');
                 } finally {
@@ -186,7 +186,7 @@ export default function InstructorCourses() {
                 {/* Form */}
                 {showForm && (
                     <div className="mb-8 bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-[var(--accent-primary)]/30 rounded-2xl p-8 backdrop-blur">
-                        <h2 className="text-2xl font-bold text-[var(--text)] mb-6">{editingId ? 'âœï¸ Edit Course' : 'âž• Create New Course'}</h2>
+                        <h2 className="text-2xl font-bold text-[var(--text)] mb-6">{editingId ? '✏️ Edit Course' : '➕ Create New Course'}</h2>
                         <form onSubmit={editingId ? updateCourse : createCourse} className="space-y-6">
                             <div>
                                 <label className="block text-sm font-medium text-[var(--muted)] mb-2">Course Title *</label>
@@ -214,9 +214,9 @@ export default function InstructorCourses() {
                                         value={form.difficulty_level}
                                         onChange={e => setForm(f => ({ ...f, difficulty_level: e.target.value }))}
                                         className="w-full bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] transition">
-                                        <option value="beginner">ðŸŸ¢ Beginner</option>
-                                        <option value="intermediate">ðŸŸ¡ Intermediate</option>
-                                        <option value="advanced">ðŸ”´ Advanced</option>
+                                        <option value="beginner">🟢 Beginner</option>
+                                        <option value="intermediate">🟡 Intermediate</option>
+                                        <option value="advanced">🔴 Advanced</option>
                                     </select>
                                 </div>
                                 <div>
@@ -255,7 +255,7 @@ export default function InstructorCourses() {
                                     type="submit"
                                     disabled={saving}
                                     className="px-6 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 hover:from-purple-700 hover:to-pink-700 rounded-xl text-[var(--text)] font-medium transition disabled:opacity-50 shadow-lg hover:shadow-purple-500/25">
-                                    {saving ? 'â³ Saving...' : (editingId ? 'âœ“ Update Course' : 'âœ“ Create Course')}
+                                    {saving ? '⏳ Saving...' : (editingId ? '✓ Update Course' : '✓ Create Course')}
                                 </button>
                                 <button
                                     type="button"
@@ -317,7 +317,7 @@ export default function InstructorCourses() {
                                         )}
                                         <div className={`bg-black/30 rounded-lg px-3 py-2 text-xs font-medium ${getDifficultyBadgeColor(course.difficulty_level).split(' ')[0]}`}>
                                             <span className={getDifficultyBadgeColor(course.difficulty_level)}>
-                                                {course.difficulty_level === 'beginner' ? 'ðŸŸ¢' : course.difficulty_level === 'intermediate' ? 'ðŸŸ¡' : 'ðŸ”´'} {course.difficulty_level}
+                                                {course.difficulty_level === 'beginner' ? '🟢' : course.difficulty_level === 'intermediate' ? '🟡' : '🔴'} {course.difficulty_level}
                                             </span>
                                         </div>
                                     </div>
@@ -368,7 +368,7 @@ export default function InstructorCourses() {
                     </div>
                 ) : (
                     <div className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-[var(--accent-primary)]/30 rounded-2xl p-12 text-center">
-                        <div className="text-5xl mb-4">ðŸ“š</div>
+                        <div className="text-5xl mb-4">📚</div>
                         <p className="text-[var(--muted)] text-lg mb-6">No {filter !== 'all' ? filter : ''} courses yet. Start creating!</p>
                         <button
                             onClick={() => setShowForm(true)}
@@ -384,11 +384,11 @@ export default function InstructorCourses() {
                     <div className="fixed inset-0 bg-black/60 backdrop-blur flex items-center justify-center z-50 p-4">
                         <div className="bg-gradient-to-br from-[var(--surface)] to-[var(--surface-2)] border border-[var(--accent-primary)]/30 rounded-2xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-2xl font-bold text-[var(--text)]">ðŸ“Š Course Analytics</h3>
+                                <h3 className="text-2xl font-bold text-[var(--text)]">📊 Course Analytics</h3>
                                 <button
                                     onClick={() => setShowAnalytics(null)}
                                     className="text-[var(--muted)] hover:text-[var(--text)] text-2xl transition">
-                                    âœ•
+                                    ✕
                                 </button>
                             </div>
 

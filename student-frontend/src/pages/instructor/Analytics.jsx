@@ -80,7 +80,7 @@ export default function InstructorAnalytics() {
     };
 
     // â”€â”€ Derived computed values â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    // Overview card sub-labels â€” computed from real data, not hardcoded
+    // Overview card sub-labels –” computed from real data, not hardcoded
     const engagementLabel = (pct) => {
         if (pct >= 70) return { text: 'High engagement',     color: 'text-green-400' };
         if (pct >= 40) return { text: 'Moderate engagement', color: 'text-yellow-400' };
@@ -213,7 +213,7 @@ export default function InstructorAnalytics() {
                                 {formatNumber(performanceData.revenue_analytics.total_enrollments || 0)} enrollments
                             </p>
                         </div>
-                        {/* Course Completion â€” use completionData when available, otherwise avg quiz score */}
+                        {/* Course Completion –” use completionData when available, otherwise avg quiz score */}
                         <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-4">
                             <h3 className="text-sm text-[var(--muted)] mb-2">Course Completion</h3>
                             <p className="text-2xl font-bold text-[var(--text)]">
@@ -367,7 +367,7 @@ export default function InstructorAnalytics() {
                                 <div key={course.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-lg">
                                     <div className="flex-1">
                                         <h4 className="font-medium text-[var(--text)]">{course.title}</h4>
-                                        <p className="text-sm text-[var(--muted)]">{course.enrollments} enrolled â€¢ {course.completions} completed</p>
+                                        <p className="text-sm text-[var(--muted)]">{course.enrollments} enrolled • {course.completions} completed</p>
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <div className="text-right">
@@ -552,7 +552,7 @@ export default function InstructorAnalytics() {
                                 <div key={lesson.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-lg">
                                     <div className="flex-1">
                                         <h4 className="font-medium text-[var(--text)]">{lesson.title}</h4>
-                                        <p className="text-sm text-[var(--muted)]">{lesson.attempts} attempts â€¢ {lesson.completions} completed</p>
+                                        <p className="text-sm text-[var(--muted)]">{lesson.attempts} attempts • {lesson.completions} completed</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-green-400">{formatPercentage(lesson.completion_rate)}</p>
@@ -571,7 +571,7 @@ export default function InstructorAnalytics() {
                                 <div key={quiz.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-lg">
                                     <div className="flex-1">
                                         <h4 className="font-medium text-[var(--text)]">{quiz.title}</h4>
-                                        <p className="text-sm text-[var(--muted)]">{quiz.attempts} attempts â€¢ {quiz.passes} passed</p>
+                                        <p className="text-sm text-[var(--muted)]">{quiz.attempts} attempts • {quiz.passes} passed</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-blue-400">{formatPercentage(quiz.pass_rate)}</p>

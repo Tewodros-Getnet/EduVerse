@@ -197,7 +197,7 @@ export default function InstructorLiveClasses() {
     return (
         <div className="space-y-6 max-w-7xl mx-auto">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] bg-clip-text text-transparent">ðŸŽ¥ Live Classes</h1>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] bg-clip-text text-transparent">🎥 Live Classes</h1>
                 <button
                     onClick={() => setShowCreateForm(true)}
                     className="px-5 py-2.5 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-xl text-[var(--text)] text-sm font-semibold hover:opacity-90 transition shadow-lg shadow-purple-500/25"
@@ -215,7 +215,7 @@ export default function InstructorLiveClasses() {
                             onClick={() => setShowCreateForm(false)}
                             className="text-[var(--muted)] hover:text-[var(--text)] transition text-xl leading-none"
                         >
-                            âœ•
+                            ✕
                         </button>
                     </div>
                     <form onSubmit={handleCreateSession} className="space-y-5">
@@ -398,7 +398,7 @@ export default function InstructorLiveClasses() {
 
             {sessions.length === 0 && (
                 <div className="bg-gradient-to-br from-[var(--surface-2)] to-[var(--surface)] border border-purple-900/30 rounded-2xl p-12 text-center shadow-xl">
-                    <div className="text-6xl mb-4">ðŸŽ¥</div>
+                    <div className="text-6xl mb-4">🎥</div>
                     <h3 className="text-xl font-bold text-[var(--text)] mb-2">No Live Classes Scheduled Yet</h3>
                     <p className="text-[var(--muted)] mb-6">Start engaging with your students through live sessions</p>
                     <button
@@ -430,7 +430,7 @@ export default function InstructorLiveClasses() {
                                 onClick={() => setShowSessionDetails(null)}
                                 className="text-[var(--muted)] hover:text-[var(--text)] transition text-2xl"
                             >
-                                âœ•
+                                ✕
                             </button>
                         </div>
 
@@ -479,7 +479,7 @@ export default function InstructorLiveClasses() {
                                 onClick={() => setShowAnalytics(null)}
                                 className="text-[var(--muted)] hover:text-[var(--text)] transition text-2xl"
                             >
-                                âœ•
+                                ✕
                             </button>
                         </div>
 
@@ -520,7 +520,7 @@ export default function InstructorLiveClasses() {
 
                             {/* Recording Stats */}
                             <div className="bg-[var(--bg)] rounded-xl p-5 border border-purple-900/30">
-                                <h4 className="font-bold text-[var(--text)] mb-4">ðŸŽ¥ Recordings</h4>
+                                <h4 className="font-bold text-[var(--text)] mb-4">🎥 Recordings</h4>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-gradient-to-br from-[var(--accent-secondary)]/20 to-[var(--accent-secondary)]/20 rounded-xl p-4 border border-[var(--accent-secondary)]/30">
                                         <p className="text-[var(--muted)] text-sm mb-1">Total Recordings</p>
