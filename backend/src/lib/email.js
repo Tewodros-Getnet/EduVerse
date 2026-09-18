@@ -10,16 +10,32 @@
  * Brevo allows sending to ANY email address (300 emails/day free tier).
  * Only the sender email needs to be verified in your Brevo account.
  */
-const brevo = require('@getbrevo/brevo');
 
 const APP_NAME = process.env.BREVO_SENDER_NAME || 'EduVerse';
+
+// Lazy-load Brevo SDK only when needed (allows server to start without it)
+let brevo = null;
+function loadBrevo() {
+    if (!brevo) {
+        try {
+            brevo = require('@getbrevo/brevo');
+        } catch (err) {
+            console.warn('[EMAIL] @getbrevo/brevo not installed. Run: npm install @getbrevo/brevo');
+            return null;
+        }
+    }
+    return brevo;
+}
 
 function getClient() {
     if (!process.env.BREVO_API_KEY || !process.env.BREVO_SENDER_EMAIL) {
         return null;
     }
 
-    const apiInstance = new brevo.TransactionalEmailsApi();
+    const brevoSDK = loadBrevo();
+    if (!brevoSDK) return null;
+
+    const apiInstance = new brevoSDK.TransactionalEmailsApi();
     const apiKey = apiInstance.authentications['apiKey'];
     apiKey.apiKey = process.env.BREVO_API_KEY;
 
@@ -43,7 +59,15 @@ async function sendOTPEmail(toEmail, name, otp) {
     }
 
     try {
-        const sendSmtpEmail = new brevo.SendSmtpEmail();
+        const brevoSDK = loadBrevo();
+        if (!brevoSDK) {
+            // Package not available, fall back to dev mode
+            console.log(`[EMAIL DEV] OTP for ${toEmail}: ${otp}`);
+            console.warn('[EMAIL] Brevo SDK not available, using dev mode');
+            return { success: true, dev: true };
+        }
+
+        const sendSmtpEmail = new brevoSDK.SendSmtpEmail();
 
         sendSmtpEmail.sender = {
             name: SENDER_NAME,
