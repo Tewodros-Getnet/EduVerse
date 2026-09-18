@@ -113,6 +113,38 @@ export default function InstructorAnalytics() {
         );
     }
 
+    // Check if instructor has any courses
+    const hasCourses = courses && courses.length > 0;
+    const hasPerformanceData = performanceData && performanceData.student_engagement;
+    const hasCompletionData = completionData && completionData.overall_completion;
+    const hasStudentData = studentData && (studentData.top_performers?.length > 0 || studentData.struggling_students?.length > 0);
+    const hasContentData = contentData && contentData.content_engagement_by_type;
+
+    // Show empty state if no courses exist
+    if (!hasCourses) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] space-y-4">
+                <div className="w-20 h-20 bg-[var(--surface)] rounded-full flex items-center justify-center border-2 border-[var(--border)]">
+                    <svg className="w-10 h-10 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
+                <div className="text-center">
+                    <h2 className="text-xl font-semibold text-[var(--text)] mb-2">No Analytics Available</h2>
+                    <p className="text-[var(--muted)] mb-6 max-w-md">
+                        You haven't created any courses yet. Create your first course to start tracking analytics and student performance.
+                    </p>
+                    <button
+                        onClick={() => window.location.href = '/instructor/courses'}
+                        className="px-6 py-3 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 transition font-medium"
+                    >
+                        Create Your First Course
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6 max-w-7xl mx-auto">
             <div className="flex items-center justify-between">
@@ -146,10 +178,16 @@ export default function InstructorAnalytics() {
             </div>
 
             {/* Overview Tab */}
-            {activeTab === 'overview' && performanceData && (
+            {activeTab === 'overview' && (
                 <div className="space-y-6">
-                    {/* Key Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {!hasPerformanceData ? (
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-12 text-center">
+                            <p className="text-[var(--muted)]">No performance data available yet. Data will appear once students enroll in your courses.</p>
+                        </div>
+                    ) : (
+                        <>
+                            {/* Key Metrics */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {/* Total Students */}
                         <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-4">
                             <h3 className="text-sm text-[var(--muted)] mb-2">Total Students</h3>
@@ -191,29 +229,39 @@ export default function InstructorAnalytics() {
                     </div>
 
                     {/* Course Performance Overview */}
-                    <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
-                        <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Course Performance</h3>
-                        <div className="space-y-4">
-                            {performanceData.course_performance.slice(0, 5).map(course => (
-                                <div key={course.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-lg">
-                                    <div>
-                                        <h4 className="font-medium text-[var(--text)]">{course.title}</h4>
-                                        <p className="text-sm text-[var(--muted)]">{course.enrollment_count} students enrolled</p>
+                    {performanceData.course_performance && performanceData.course_performance.length > 0 && (
+                        <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
+                            <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Course Performance</h3>
+                            <div className="space-y-4">
+                                {performanceData.course_performance.slice(0, 5).map(course => (
+                                    <div key={course.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-lg">
+                                        <div>
+                                            <h4 className="font-medium text-[var(--text)]">{course.title}</h4>
+                                            <p className="text-sm text-[var(--muted)]">{course.enrollment_count} students enrolled</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-bold text-[var(--accent-primary)]">{formatPercentage(course.avg_progress)}</p>
+                                            <p className="text-xs text-[var(--muted)]">avg progress</p>
+                                        </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="font-bold text-[var(--accent-primary)]">{formatPercentage(course.avg_progress)}</p>
-                                        <p className="text-xs text-[var(--muted)]">avg progress</p>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
+                        </>
+                    )}
                 </div>
             )}
 
             {/* Performance Tab */}
-            {activeTab === 'performance' && performanceData && (
+            {activeTab === 'performance' && (
                 <div className="space-y-6">
+                    {!hasPerformanceData ? (
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-12 text-center">
+                            <p className="text-[var(--muted)]">No performance data available yet. Data will appear once students start engaging with your courses.</p>
+                        </div>
+                    ) : (
+                        <>
                     {/* Student Engagement */}
                     <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
                         <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Student Engagement</h3>
@@ -274,12 +322,20 @@ export default function InstructorAnalytics() {
                             </div>
                         </div>
                     </div>
+                        </>
+                    )}
                 </div>
             )}
 
             {/* Completion Tab */}
-            {activeTab === 'completion' && completionData && (
+            {activeTab === 'completion' && (
                 <div className="space-y-6">
+                    {!hasCompletionData ? (
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-12 text-center">
+                            <p className="text-[var(--muted)]">No completion data available yet. Data will appear once students make progress in your courses.</p>
+                        </div>
+                    ) : (
+                        <>
                     {/* Overall Completion */}
                     <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
                         <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Overall Completion Rates</h3>
@@ -360,12 +416,20 @@ export default function InstructorAnalytics() {
                             ))}
                         </div>
                     </div>
+                        </>
+                    )}
                 </div>
             )}
 
             {/* Students Tab */}
-            {activeTab === 'students' && studentData && (
+            {activeTab === 'students' && (
                 <div className="space-y-6">
+                    {!hasStudentData ? (
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-12 text-center">
+                            <p className="text-[var(--muted)]">No student data available yet. Data will appear once students enroll and engage with your courses.</p>
+                        </div>
+                    ) : (
+                        <>
                     {/* Top Performers */}
                     <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
                         <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Top Performers</h3>
@@ -449,12 +513,20 @@ export default function InstructorAnalytics() {
                             ))}
                         </div>
                     </div>
+                        </>
+                    )}
                 </div>
             )}
 
             {/* Content Tab */}
-            {activeTab === 'content' && contentData && (
+            {activeTab === 'content' && (
                 <div className="space-y-6">
+                    {!hasContentData ? (
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-12 text-center">
+                            <p className="text-[var(--muted)]">No content analytics available yet. Data will appear once you add lessons, quizzes, and assignments to your courses.</p>
+                        </div>
+                    ) : (
+                        <>
                     {/* Content Engagement by Type */}
                     <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-6">
                         <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Content Engagement by Type</h3>
@@ -509,15 +581,10 @@ export default function InstructorAnalytics() {
                             ))}
                         </div>
                     </div>
+                        </>
+                    )}
                 </div>
             )}
         </div>
     );
 }
-
-
-
-
-
-
-
