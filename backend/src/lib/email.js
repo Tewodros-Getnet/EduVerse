@@ -129,4 +129,101 @@ async function sendOTPEmail(toEmail, name, otp) {
     }
 }
 
-module.exports = { sendOTPEmail };
+/**
+ * Send password reset email with a secure token link.
+ */
+async function sendPasswordResetEmail(toEmail, name, resetToken) {
+    const client = getClient();
+
+    // Build reset URL
+    const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const resetUrl = `${FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+    if (!client) {
+        // Dev fallback
+        console.log(`[EMAIL DEV] Password reset for ${toEmail}:`);
+        console.log(`Reset URL: ${resetUrl}`);
+        console.warn('[EMAIL] Missing BREVO_API_KEY or BREVO_SENDER_EMAIL in .env');
+        return { success: true, dev: true, resetUrl };
+    }
+
+    try {
+        const brevoSDK = loadBrevo();
+        if (!brevoSDK) {
+            console.log(`[EMAIL DEV] Password reset for ${toEmail}:`);
+            console.log(`Reset URL: ${resetUrl}`);
+            console.warn('[EMAIL] Brevo SDK not available, using dev mode');
+            return { success: true, dev: true, resetUrl };
+        }
+
+        const sendSmtpEmail = new brevoSDK.SendSmtpEmail();
+
+        sendSmtpEmail.sender = {
+            name: SENDER_NAME,
+            email: SENDER_EMAIL
+        };
+
+        sendSmtpEmail.to = [{
+            email: toEmail,
+            name: name
+        }];
+
+        sendSmtpEmail.subject = `Reset your ${APP_NAME} password`;
+
+        sendSmtpEmail.htmlContent = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
+<body style="margin:0;padding:0;background:#0d0d1a;font-family:sans-serif;">
+  <div style="max-width:520px;margin:40px auto;background:#12122a;border-radius:16px;border:1px solid #3b0764;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#7c3aed,#db2777);padding:32px 24px;text-align:center;">
+      <div style="font-size:36px;margin-bottom:8px;">🔐</div>
+      <h1 style="color:#fff;margin:0;font-size:22px;font-weight:700;">${APP_NAME}</h1>
+      <p style="color:#f3e8ff;margin:6px 0 0;font-size:14px;">Password Reset Request</p>
+    </div>
+    <div style="padding:32px 24px;">
+      <p style="color:#d1d5db;font-size:16px;margin:0 0 16px;">
+        Hi <strong style="color:#fff;">${name}</strong>,
+      </p>
+      <p style="color:#d1d5db;font-size:14px;margin:0 0 24px;line-height:1.6;">
+        We received a request to reset your password. Click the button below to create a new password:
+      </p>
+      <div style="text-align:center;margin-bottom:24px;">
+        <a href="${resetUrl}" style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;">
+          Reset Password
+        </a>
+      </div>
+      <p style="color:#9ca3af;font-size:13px;margin:0 0 16px;line-height:1.6;">
+        This link expires in <strong style="color:#f59e0b;">1 hour</strong>. If you didn't request this, you can safely ignore this email.
+      </p>
+      <div style="background:#1a1a35;border-left:3px solid #7c3aed;padding:12px 16px;border-radius:6px;">
+        <p style="color:#6b7280;font-size:11px;margin:0;line-height:1.5;">
+          If the button doesn't work, copy and paste this link into your browser:<br/>
+          <a href="${resetUrl}" style="color:#a78bfa;word-break:break-all;">${resetUrl}</a>
+        </p>
+      </div>
+    </div>
+    <div style="border-top:1px solid #1e1b4b;padding:16px 24px;text-align:center;">
+      <p style="color:#4b5563;font-size:11px;margin:0;">© ${new Date().getFullYear()} ${APP_NAME}. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+        sendSmtpEmail.textContent = `Hi ${name},\n\nWe received a request to reset your ${APP_NAME} password.\n\nClick this link to reset your password:\n${resetUrl}\n\nThis link expires in 1 hour.\n\nIf you didn't request this, you can safely ignore this email.`;
+
+        const data = await client.sendTransacEmail(sendSmtpEmail);
+
+        console.log(`[EMAIL] Password reset sent to ${toEmail} — messageId: ${data.messageId}`);
+        return { success: true, messageId: data.messageId };
+
+    } catch (err) {
+        console.error('[EMAIL] Brevo error:', err.response?.text || err.message);
+        return { 
+            success: false, 
+            error: err.response?.body?.message || err.message 
+        };
+    }
+}
+
+module.exports = { sendOTPEmail, sendPasswordResetEmail };

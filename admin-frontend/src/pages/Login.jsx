@@ -65,6 +65,18 @@ export default function Login() {
                                 </button>
                             </div>
                         </div>
+
+                        <div className="flex items-center justify-end">
+                            <a
+                                href={`${import.meta.env.VITE_STUDENT_URL || 'http://localhost:5173'}/forgot-password`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-[var(--accent-primary)] hover:text-[var(--accent-secondary)] transition-colors"
+                            >
+                                Forgot password?
+                            </a>
+                        </div>
+
                         <button type="submit" disabled={loading}
                             className="w-full py-3 rounded-xl font-semibold text-[var(--text)] bg-gradient-to-r from-green-500 to-cyan-400 hover:opacity-90 transition disabled:opacity-50">
                             {loading ? 'Signing in...' : 'Sign In as Admin'}

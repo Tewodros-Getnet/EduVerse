@@ -98,6 +98,15 @@ export default function Login() {
                         </div>
                     </div>
 
+                    <div className="flex items-center justify-end">
+                        <Link
+                            to="/forgot-password"
+                            className="text-sm text-[var(--accent-primary)] hover:text-[var(--accent-secondary)] transition-colors duration-300"
+                        >
+                            Forgot password?
+                        </Link>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-3">
                         <button onClick={() => handleLogin('student')} disabled={loading}
                             className="py-3 rounded-xl font-semibold text-[var(--text)] bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 text-sm flex items-center justify-center gap-2">

@@ -7,6 +7,8 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyOTP from './pages/VerifyOTP';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import StudentDashboard from './pages/student/Dashboard';
 import Courses from './pages/student/Courses';
 import CourseDetail from './pages/student/CourseDetail';
@@ -57,6 +59,8 @@ function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verify-otp" element={<VerifyOTP />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Student routes */}
             <Route path="/student" element={<ProtectedRoute role="student"><StudentLayout /></ProtectedRoute>}>
