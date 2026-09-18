@@ -195,17 +195,25 @@ export default function Courses() {
                         const enrolled = isEnrolled(course.id);
                         return (
                             <div key={course.id} className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl overflow-hidden hover:border-purple-500/50 transition">
-                                <div className="h-40 bg-gradient-to-br from-[var(--accent-primary)]/70 to-[var(--accent-secondary)]/70 relative">
-                                    {course.thumbnail_url && (
+                                {course.thumbnail_url && (
+                                    <div className="h-40 bg-gradient-to-br from-[var(--accent-primary)]/70 to-[var(--accent-secondary)]/70 relative">
                                         <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
-                                    )}
-                                    {enrolled && course.progress_percent !== undefined && (
-                                        <div className="absolute top-2 right-2 bg-black/50 rounded-full px-2 py-1">
-                                            <span className="text-xs text-[var(--text)]">{Math.round(course.progress_percent)}% complete</span>
+                                        {enrolled && course.progress_percent !== undefined && (
+                                            <div className="absolute top-2 right-2 bg-black/50 rounded-full px-2 py-1">
+                                                <span className="text-xs text-[var(--text)]">{Math.round(course.progress_percent)}% complete</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                <div className="p-4">
+                                    {/* Progress badge for enrolled courses without thumbnail */}
+                                    {!course.thumbnail_url && enrolled && course.progress_percent !== undefined && (
+                                        <div className="mb-2">
+                                            <span className="inline-block bg-black/50 rounded-full px-3 py-1 text-xs text-[var(--text)]">
+                                                {Math.round(course.progress_percent)}% complete
+                                            </span>
                                         </div>
                                     )}
-                                </div>
-                                <div className="p-4">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className={`text-xs font-medium capitalize ${DIFF_COLORS[course.difficulty_level] || 'text-[var(--muted)]'}`}>
                                             {course.difficulty_level}
