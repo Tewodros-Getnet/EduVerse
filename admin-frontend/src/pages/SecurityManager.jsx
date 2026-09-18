@@ -378,30 +378,87 @@ export default function SecurityManager() {
                                 </div>
                             </div>
 
-                            <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+                            {/* Mobile Card View */}
+                            <div className="block md:hidden space-y-3">
+                                {sessions.map((session) => (
+                                    <div key={session.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-3">
+                                        <div>
+                                            <div className="text-sm font-semibold text-[var(--text)]">{session.name}</div>
+                                            <div className="text-xs text-[var(--muted)] mt-0.5">{session.email}</div>
+                                            <div className="text-xs text-[var(--muted)] mt-0.5 capitalize">{session.role}</div>
+                                        </div>
+                                        <div className="space-y-2 text-sm">
+                                            <div>
+                                                <span className="text-[var(--muted)] text-xs">IP Address:</span>
+                                                <span className="text-[var(--text)] ml-2 text-xs">{session.ip_address}</span>
+                                            </div>
+                                            <div>
+                                                <span className="text-[var(--muted)] text-xs">Last Activity:</span>
+                                                <span className="text-[var(--text)] ml-2 text-xs">
+                                                    {new Date(session.last_activity).toLocaleString(undefined, { 
+                                                        month: 'short', 
+                                                        day: 'numeric', 
+                                                        hour: '2-digit', 
+                                                        minute: '2-digit' 
+                                                    })}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex space-x-2 pt-2">
+                                            <button
+                                                onClick={() => handleTerminateSession(session.id)}
+                                                className="flex-1 flex items-center justify-center gap-1.5 p-2 text-[var(--status-error)] bg-[var(--status-error)]/10 hover:bg-[var(--status-error)]/20 rounded-lg transition text-xs font-medium"
+                                                title="Terminate session"
+                                            >
+                                                <LogOut className="w-3.5 h-3.5" />
+                                                Terminate
+                                            </button>
+                                            <button
+                                                onClick={() => handleTerminateUserSessions(session.user_id)}
+                                                className="flex-1 flex items-center justify-center gap-1.5 p-2 text-[var(--status-warning)] bg-[var(--status-warning)]/10 hover:bg-[var(--status-warning)]/20 rounded-lg transition text-xs font-medium"
+                                                title="Terminate all user sessions"
+                                            >
+                                                <Zap className="w-3.5 h-3.5" />
+                                                All
+                                            </button>
+                                            <button
+                                                onClick={() => handleForceLogout(session.user_id)}
+                                                className="flex-1 flex items-center justify-center gap-1.5 p-2 text-[var(--accent-tertiary)] bg-[var(--accent-tertiary)]/10 hover:bg-[var(--accent-tertiary)]/20 rounded-lg transition text-xs font-medium"
+                                                title="Force logout"
+                                            >
+                                                <Lock className="w-3.5 h-3.5" />
+                                                Logout
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Desktop Table View */}
+                            <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)]">
                                 <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
-                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase hidden md:table-cell">IP Address</th>
-                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase hidden lg:table-cell">Last Activity</th>
-                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Actions</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">IP Address</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Last Activity</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
                                         {sessions.map((session) => (
                                             <tr key={session.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5">
+                                                <td className="px-6 py-4">
                                                     <div>
-                                                        <div className="text-sm font-medium text-[var(--text)] truncate max-w-[150px] sm:max-w-none">{session.name}</div>
-                                                        <div className="text-xs sm:text-sm text-[var(--muted)] truncate max-w-[150px] sm:max-w-none">{session.email}</div>
-                                                        <div className="text-xs text-[var(--muted)]">{session.role}</div>
+                                                        <div className="text-sm font-medium text-[var(--text)]">{session.name}</div>
+                                                        <div className="text-xs text-[var(--muted)]">{session.email}</div>
+                                                        <div className="text-xs text-[var(--muted)] capitalize">{session.role}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5 text-xs sm:text-sm text-[var(--muted)] hidden md:table-cell">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)]">
                                                     {session.ip_address}
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5 text-xs sm:text-sm text-[var(--muted)] hidden lg:table-cell">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)]">
                                                     {new Date(session.last_activity).toLocaleString(undefined, { 
                                                         month: 'short', 
                                                         day: 'numeric', 
@@ -409,7 +466,7 @@ export default function SecurityManager() {
                                                         minute: '2-digit' 
                                                     })}
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5 text-sm font-medium">
+                                                <td className="px-6 py-4 text-sm font-medium">
                                                     <div className="flex space-x-2">
                                                         <button
                                                             onClick={() => handleTerminateSession(session.id)}
@@ -474,43 +531,90 @@ export default function SecurityManager() {
                                 </div>
                             </div>
 
-                            <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+                            {/* Mobile Card View */}
+                            <div className="block md:hidden space-y-3">
+                                {activityLogs.map((log) => (
+                                    <div key={log.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-3">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="text-sm font-semibold text-[var(--text)]">{log.name || 'System'}</div>
+                                                <div className="text-xs text-[var(--muted)] mt-0.5">{log.email || 'N/A'}</div>
+                                            </div>
+                                            <span className={`px-2 py-1 text-[10px] leading-tight font-semibold rounded-full whitespace-nowrap ${
+                                                log.level === 'security' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
+                                                log.level === 'warning' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
+                                                log.level === 'info' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
+                                                'bg-[var(--muted)]/20 text-[var(--muted)]'
+                                            }`}>
+                                                {log.level}
+                                            </span>
+                                        </div>
+                                        <div className="space-y-2 text-sm">
+                                            <div>
+                                                <span className="text-[var(--muted)] text-xs">Action:</span>
+                                                <span className="text-[var(--text)] ml-2">{log.action}</span>
+                                            </div>
+                                            {log.details && (
+                                                <div>
+                                                    <span className="text-[var(--muted)] text-xs">Details:</span>
+                                                    <p className="text-[var(--text)] mt-1 text-xs leading-relaxed">{log.details}</p>
+                                                </div>
+                                            )}
+                                            <div>
+                                                <span className="text-[var(--muted)] text-xs">Time:</span>
+                                                <span className="text-[var(--text)] ml-2 text-xs">
+                                                    {new Date(log.created_at).toLocaleString(undefined, { 
+                                                        month: 'short', 
+                                                        day: 'numeric', 
+                                                        hour: '2-digit', 
+                                                        minute: '2-digit' 
+                                                    })}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Desktop Table View */}
+                            <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)]">
                                 <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-4 sm:px-6 py-4 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">User</th>
-                                            <th className="px-4 sm:px-6 py-4 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Action</th>
-                                            <th className="px-4 sm:px-6 py-4 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider hidden lg:table-cell">Details</th>
-                                            <th className="px-4 sm:px-6 py-4 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Level</th>
-                                            <th className="px-4 sm:px-6 py-4 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider hidden md:table-cell">Time</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">User</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Action</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Details</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Level</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Time</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
                                         {activityLogs.map((log) => (
                                             <tr key={log.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5">
+                                                <td className="px-6 py-4">
                                                     <div>
-                                                        <div className="text-sm font-medium text-[var(--text)] truncate max-w-[150px] sm:max-w-none">{log.name || 'System'}</div>
-                                                        <div className="text-xs text-[var(--muted)] truncate max-w-[150px] sm:max-w-none">{log.email || 'N/A'}</div>
+                                                        <div className="text-sm font-medium text-[var(--text)]">{log.name || 'System'}</div>
+                                                        <div className="text-xs text-[var(--muted)]">{log.email || 'N/A'}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5">
-                                                    <span className="text-xs sm:text-sm text-[var(--muted)]">{log.action}</span>
+                                                <td className="px-6 py-4">
+                                                    <span className="text-sm text-[var(--muted)]">{log.action}</span>
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5 hidden lg:table-cell">
-                                                    <span className="text-xs sm:text-sm text-[var(--muted)] max-w-xs truncate block">{log.details}</span>
+                                                <td className="px-6 py-4">
+                                                    <span className="text-sm text-[var(--muted)] max-w-xs block">{log.details}</span>
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5">
-                                                    <span className={`px-2 py-1 inline-flex text-[10px] sm:text-xs leading-5 font-semibold rounded-full ${log.level === 'security' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
-                                                            log.level === 'warning' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
-                                                                log.level === 'info' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
-                                                                    'bg-[var(--muted)]/20 text-[var(--muted)]'
-                                                        }`}>
+                                                <td className="px-6 py-4">
+                                                    <span className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${
+                                                        log.level === 'security' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
+                                                        log.level === 'warning' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
+                                                        log.level === 'info' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
+                                                        'bg-[var(--muted)]/20 text-[var(--muted)]'
+                                                    }`}>
                                                         {log.level}
                                                     </span>
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5 hidden md:table-cell">
-                                                    <span className="text-xs sm:text-sm text-[var(--muted)]">
+                                                <td className="px-6 py-4">
+                                                    <span className="text-sm text-[var(--muted)]">
                                                         {new Date(log.created_at).toLocaleString(undefined, { 
                                                             month: 'short', 
                                                             day: 'numeric', 
@@ -553,50 +657,95 @@ export default function SecurityManager() {
                                 </div>
                             </div>
 
-                            <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+                            {/* Mobile Card View */}
+                            <div className="block md:hidden space-y-3">
+                                {securityEvents.map((event) => (
+                                    <div key={event.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-3">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="text-sm font-semibold text-[var(--text)]">{event.name || 'System'}</div>
+                                                <div className="text-xs text-[var(--muted)] mt-0.5">{event.email || 'N/A'}</div>
+                                            </div>
+                                            <span className={`px-2 py-1 text-[10px] leading-tight font-semibold rounded-full whitespace-nowrap ${
+                                                event.severity === 'critical' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
+                                                event.severity === 'high' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
+                                                event.severity === 'medium' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
+                                                'bg-[var(--status-success)]/20 text-[var(--status-success)]'
+                                            }`}>
+                                                {event.severity}
+                                            </span>
+                                        </div>
+                                        <div className="space-y-2 text-sm">
+                                            <div>
+                                                <span className="text-[var(--muted)] text-xs">Event:</span>
+                                                <span className="text-[var(--text)] ml-2">{event.event_type}</span>
+                                            </div>
+                                            {event.description && (
+                                                <div>
+                                                    <span className="text-[var(--muted)] text-xs">Description:</span>
+                                                    <p className="text-[var(--text)] mt-1 text-xs leading-relaxed">{event.description}</p>
+                                                </div>
+                                            )}
+                                            <div>
+                                                <span className="text-[var(--muted)] text-xs">Time:</span>
+                                                <span className="text-[var(--text)] ml-2 text-xs">
+                                                    {new Date(event.created_at).toLocaleString(undefined, { 
+                                                        month: 'short', 
+                                                        day: 'numeric', 
+                                                        hour: '2-digit', 
+                                                        minute: '2-digit' 
+                                                    })}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Desktop Table View */}
+                            <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)]">
                                 <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
-                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Event</th>
-                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase hidden lg:table-cell">Description</th>
-                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Severity</th>
-                                            <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-[var(--muted)] uppercase hidden md:table-cell">Time</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Event</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Description</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Severity</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Time</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
                                         {securityEvents.map((event) => (
                                             <tr key={event.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5">
+                                                <td className="px-6 py-4">
                                                     <div>
-                                                        <div className="text-sm font-medium text-[var(--text)] truncate max-w-[150px] sm:max-w-none">{event.name || 'System'}</div>
-                                                        <div className="text-xs sm:text-sm text-[var(--muted)] truncate max-w-[150px] sm:max-w-none">{event.email || 'N/A'}</div>
+                                                        <div className="text-sm font-medium text-[var(--text)]">{event.name || 'System'}</div>
+                                                        <div className="text-xs text-[var(--muted)]">{event.email || 'N/A'}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5 text-xs sm:text-sm text-[var(--muted)]">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)]">
                                                     {event.event_type}
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5 text-xs sm:text-sm text-[var(--muted)] max-w-xs truncate hidden lg:table-cell">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)] max-w-xs">
                                                     {event.description}
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5">
-                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${event.severity === 'critical' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
-                                                            event.severity === 'high' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
-                                                                event.severity === 'medium' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
-                                                                    'bg-[var(--status-success)]/20 text-[var(--status-success)]'
-                                                        }`}>
+                                                <td className="px-6 py-4">
+                                                    <span className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${
+                                                        event.severity === 'critical' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
+                                                        event.severity === 'high' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
+                                                        event.severity === 'medium' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
+                                                        'bg-[var(--status-success)]/20 text-[var(--status-success)]'
+                                                    }`}>
                                                         {event.severity}
                                                     </span>
                                                 </td>
-                                                <td className="px-4 sm:px-6 py-4 sm:py-5 hidden md:table-cell">
-                                                    <span className="text-xs sm:text-sm text-[var(--muted)]">
-                                                        {new Date(event.created_at).toLocaleString(undefined, { 
-                                                            month: 'short', 
-                                                            day: 'numeric', 
-                                                            hour: '2-digit', 
-                                                            minute: '2-digit' 
-                                                        })}
-                                                    </span>
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)]">
+                                                    {new Date(event.created_at).toLocaleString(undefined, { 
+                                                        month: 'short', 
+                                                        day: 'numeric', 
+                                                        hour: '2-digit', 
+                                                        minute: '2-digit' 
+                                                    })}
                                                 </td>
                                             </tr>
                                         ))}
