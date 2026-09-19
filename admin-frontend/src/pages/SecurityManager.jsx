@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, LogOut, Zap, Shield } from 'lucide-react';
+import { Lock, LogOut, Zap, Shield, Activity, AlertTriangle, Users, Clock, MapPin, Monitor } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -303,342 +303,443 @@ export default function SecurityManager() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pb-6">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                    <h1 className="text-2xl font-bold text-[var(--text)]">Security Center</h1>
+                    <p className="text-sm text-[var(--muted)]">Monitor sessions, events, and permissions</p>
+                </div>
+            </div>
+
             {/* Stats Cards */}
             {stats && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
-                        <h3 className="text-sm font-medium text-[var(--muted)]">Active Sessions</h3>
-                        <p className="text-2xl font-bold text-[var(--text)] mt-2">{stats.active_sessions}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/20 rounded-2xl p-5 hover:shadow-lg hover:shadow-purple-500/10 transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                                <Users className="w-5 h-5 text-purple-400" />
+                            </div>
+                            <span className="text-xs font-medium text-purple-400 bg-purple-500/20 px-2 py-1 rounded-full">Live</span>
+                        </div>
+                        <h3 className="text-sm font-medium text-[var(--muted)] mb-1">Active Sessions</h3>
+                        <p className="text-3xl font-bold text-[var(--text)]">{stats.active_sessions}</p>
                     </div>
-                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
-                        <h3 className="text-sm font-medium text-[var(--muted)]">Recent Logins</h3>
-                        <p className="text-2xl font-bold text-[var(--status-success)] mt-2">{stats.recent_logins}</p>
+                    
+                    <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border border-green-500/20 rounded-2xl p-5 hover:shadow-lg hover:shadow-green-500/10 transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                                <Activity className="w-5 h-5 text-green-400" />
+                            </div>
+                            <span className="text-xs font-medium text-green-400 bg-green-500/20 px-2 py-1 rounded-full">24h</span>
+                        </div>
+                        <h3 className="text-sm font-medium text-[var(--muted)] mb-1">Recent Logins</h3>
+                        <p className="text-3xl font-bold text-[var(--text)]">{stats.recent_logins}</p>
                     </div>
-                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
-                        <h3 className="text-sm font-medium text-[var(--muted)]">Failed Logins</h3>
-                        <p className="text-2xl font-bold text-[var(--status-error)] mt-2">{stats.failed_logins}</p>
+                    
+                    <div className="bg-gradient-to-br from-red-500/10 to-rose-600/10 border border-red-500/20 rounded-2xl p-5 hover:shadow-lg hover:shadow-red-500/10 transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
+                                <AlertTriangle className="w-5 h-5 text-red-400" />
+                            </div>
+                            <span className="text-xs font-medium text-red-400 bg-red-500/20 px-2 py-1 rounded-full">Alert</span>
+                        </div>
+                        <h3 className="text-sm font-medium text-[var(--muted)] mb-1">Failed Logins</h3>
+                        <p className="text-3xl font-bold text-[var(--text)]">{stats.failed_logins}</p>
                     </div>
-                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
-                        <h3 className="text-sm font-medium text-[var(--muted)]">Security Events</h3>
-                        <p className="text-2xl font-bold text-[var(--status-warning)] mt-2">{stats.security_events}</p>
+                    
+                    <div className="bg-gradient-to-br from-yellow-500/10 to-orange-600/10 border border-yellow-500/20 rounded-2xl p-5 hover:shadow-lg hover:shadow-yellow-500/10 transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                                <Shield className="w-5 h-5 text-yellow-400" />
+                            </div>
+                            <span className="text-xs font-medium text-yellow-400 bg-yellow-500/20 px-2 py-1 rounded-full">Watch</span>
+                        </div>
+                        <h3 className="text-sm font-medium text-[var(--muted)] mb-1">Security Events</h3>
+                        <p className="text-3xl font-bold text-[var(--text)]">{stats.security_events}</p>
                     </div>
                 </div>
             )}
 
             {/* Tabs */}
-            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-sm overflow-hidden">
-                <div className="border-b border-[var(--border)]">
-                    <nav className="flex space-x-8 px-6">
-                        {['sessions', 'logs', 'events', 'permissions'].map(tab => (
-                            <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`py-4 px-1 border-b-2 font-medium text-sm transition ${activeTab === tab
-                                        ? 'border-[var(--accent-primary)] text-[var(--accent-primary)]'
-                                        : 'border-transparent text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--border)]'
-                                    }`}
-                            >
-                                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                            </button>
-                        ))}
-                    </nav>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-1.5 shadow-sm overflow-x-auto">
+                <div className="flex gap-1 min-w-max">
+                    {[
+                        { id: 'sessions', label: 'Active Sessions', icon: Monitor },
+                        { id: 'logs', label: 'Activity Logs', icon: Activity },
+                        { id: 'events', label: 'Security Events', icon: AlertTriangle },
+                        { id: 'permissions', label: 'Permissions', icon: Lock }
+                    ].map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
+                                activeTab === tab.id
+                                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                                    : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
+                            }`}
+                        >
+                            <tab.icon className="w-4 h-4" />
+                            {tab.label}
+                        </button>
+                    ))}
                 </div>
-
-                <div className="p-6">
+            </div>
+            {/* Content Container */}
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-sm overflow-hidden">
+                <div className="p-4 sm:p-6">
                     {/* Sessions Tab */}
                     {activeTab === 'sessions' && (
-                        <div>
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-[var(--text)]">Active Sessions</h3>
-                                <div className="flex space-x-2">
-                                    <input
-                                        type="text"
-                                        placeholder="User ID"
-                                        value={sessionFilters.user_id}
-                                        onChange={(e) => setSessionFilters({ ...sessionFilters, user_id: e.target.value })}
-                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] placeholder:text-[var(--muted)]"
-                                    />
-                                    <select
-                                        value={sessionFilters.role}
-                                        onChange={(e) => setSessionFilters({ ...sessionFilters, role: e.target.value })}
-                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)]"
-                                    >
-                                        <option value="">All Roles</option>
-                                        <option value="student">Student</option>
-                                        <option value="instructor">Instructor</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                    <button
-                                        onClick={fetchSessions}
-                                        className="px-3 py-1 bg-[var(--accent-primary)] text-[var(--text)] rounded text-sm hover:bg-[var(--accent-primary)]/90 font-medium"
-                                    >
-                                        Filter
-                                    </button>
-                                </div>
+                        <div className="space-y-4">
+                            {/* Filters */}
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <input
+                                    type="text"
+                                    placeholder="Filter by User ID..."
+                                    value={sessionFilters.user_id}
+                                    onChange={(e) => setSessionFilters({ ...sessionFilters, user_id: e.target.value })}
+                                    className="flex-1 px-4 py-2.5 bg-[var(--surface-2)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-purple-500 transition"
+                                />
+                                <select
+                                    value={sessionFilters.role}
+                                    onChange={(e) => setSessionFilters({ ...sessionFilters, role: e.target.value })}
+                                    className="px-4 py-2.5 bg-[var(--surface-2)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] focus:outline-none focus:border-purple-500 transition"
+                                >
+                                    <option value="">All Roles</option>
+                                    <option value="student">Student</option>
+                                    <option value="instructor">Instructor</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                                <button
+                                    onClick={fetchSessions}
+                                    className="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all whitespace-nowrap"
+                                >
+                                    Apply Filters
+                                </button>
                             </div>
 
-                            {/* Scrollable Table */}
-                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-x-auto">
-                                <table className="w-full min-w-max">
-                                    <thead className="bg-[var(--surface-2)]">
-                                        <tr className="border-b border-[var(--border)]">
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">User</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">IP Address</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Last Activity</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-[var(--border)]">
-                                        {sessions.map((session) => (
-                                            <tr key={session.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div>
-                                                        <div className="text-sm font-medium text-[var(--text)]">{session.name}</div>
-                                                        <div className="text-xs text-[var(--muted)]">{session.email}</div>
-                                                        <div className="text-xs text-[var(--muted)] capitalize">{session.role}</div>
+                            {/* Session Cards */}
+                            {sessions.length === 0 ? (
+                                <div className="text-center py-16">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--surface-2)] flex items-center justify-center">
+                                        <Users className="w-8 h-8 text-[var(--muted)]" />
+                                    </div>
+                                    <p className="text-[var(--muted)] text-sm">No active sessions found</p>
+                                </div>
+                            ) : (
+                                <div className="grid gap-4">
+                                    {sessions.map((session) => (
+                                        <div key={session.id} className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-4 hover:border-purple-500/50 transition-all">
+                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                                {/* User Info */}
+                                                <div className="flex items-start gap-3 flex-1 min-w-0">
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                                                        <span className="text-white font-semibold text-sm">
+                                                            {session.name?.charAt(0)?.toUpperCase() || 'U'}
+                                                        </span>
                                                     </div>
-                                                </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)] whitespace-nowrap">
-                                                    {session.ip_address}
-                                                </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)] whitespace-nowrap">
-                                                    {new Date(session.last_activity).toLocaleString(undefined, { 
-                                                        month: 'short', 
-                                                        day: 'numeric', 
-                                                        hour: '2-digit', 
-                                                        minute: '2-digit' 
-                                                    })}
-                                                </td>
-                                                <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
-                                                    <div className="flex space-x-2">
-                                                        <button
-                                                            onClick={() => handleTerminateSession(session.id)}
-                                                            className="p-1.5 text-[var(--status-error)] hover:bg-[var(--status-error)]/20 rounded transition"
-                                                            title="Terminate session"
-                                                            aria-label="Terminate session"
-                                                        >
-                                                            <LogOut className="w-4 h-4" />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleTerminateUserSessions(session.user_id)}
-                                                            className="p-1.5 text-[var(--status-warning)] hover:bg-[var(--status-warning)]/20 rounded transition"
-                                                            title="Terminate all user sessions"
-                                                            aria-label="Terminate all user sessions"
-                                                        >
-                                                            <Zap className="w-4 h-4" />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleForceLogout(session.user_id)}
-                                                            className="p-1.5 text-[var(--accent-tertiary)] hover:bg-[var(--accent-tertiary)]/20 rounded transition"
-                                                            title="Force logout"
-                                                            aria-label="Force logout"
-                                                        >
-                                                            <Lock className="w-4 h-4" />
-                                                        </button>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h4 className="font-semibold text-[var(--text)] truncate">{session.name}</h4>
+                                                        <p className="text-xs text-[var(--muted)] truncate">{session.email}</p>
+                                                        <div className="flex flex-wrap items-center gap-3 mt-2">
+                                                            <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full font-medium ${
+                                                                session.role === 'admin' ? 'bg-purple-500/20 text-purple-400' :
+                                                                session.role === 'instructor' ? 'bg-blue-500/20 text-blue-400' :
+                                                                'bg-green-500/20 text-green-400'
+                                                            }`}>
+                                                                <Users className="w-3 h-3" />
+                                                                {session.role}
+                                                            </span>
+                                                            <span className="inline-flex items-center gap-1 text-xs text-[var(--muted)]">
+                                                                <MapPin className="w-3 h-3" />
+                                                                {session.ip_address}
+                                                            </span>
+                                                            <span className="inline-flex items-center gap-1 text-xs text-[var(--muted)]">
+                                                                <Clock className="w-3 h-3" />
+                                                                {new Date(session.last_activity).toLocaleString(undefined, { 
+                                                                    month: 'short', 
+                                                                    day: 'numeric', 
+                                                                    hour: '2-digit', 
+                                                                    minute: '2-digit' 
+                                                                })}
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                                </div>
+
+                                                {/* Actions */}
+                                                <div className="flex items-center gap-2 flex-shrink-0">
+                                                    <button
+                                                        onClick={() => handleTerminateSession(session.id)}
+                                                        className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition"
+                                                        title="Terminate session"
+                                                    >
+                                                        <LogOut className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleTerminateUserSessions(session.user_id)}
+                                                        className="p-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 rounded-lg transition"
+                                                        title="Terminate all user sessions"
+                                                    >
+                                                        <Zap className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleForceLogout(session.user_id)}
+                                                        className="p-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 rounded-lg transition"
+                                                        title="Force logout"
+                                                    >
+                                                        <Lock className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
 
                     {/* Activity Logs Tab */}
                     {activeTab === 'logs' && (
-                        <div>
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-[var(--text)]">Activity Logs</h3>
-                                <div className="flex space-x-2">
-                                    <input
-                                        type="text"
-                                        placeholder="User ID"
-                                        value={logFilters.user_id}
-                                        onChange={(e) => setLogFilters({ ...logFilters, user_id: e.target.value })}
-                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] placeholder:text-[var(--muted)]"
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Action"
-                                        value={logFilters.action}
-                                        onChange={(e) => setLogFilters({ ...logFilters, action: e.target.value })}
-                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] placeholder:text-[var(--muted)]"
-                                    />
-                                    <button
-                                        onClick={fetchActivityLogs}
-                                        className="px-3 py-1 bg-[var(--accent-primary)] text-[var(--text)] rounded text-sm hover:bg-[var(--accent-primary)]/90 font-medium"
-                                    >
-                                        Filter
-                                    </button>
-                                </div>
+                        <div className="space-y-4">
+                            {/* Filters */}
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <input
+                                    type="text"
+                                    placeholder="User ID"
+                                    value={logFilters.user_id}
+                                    onChange={(e) => setLogFilters({ ...logFilters, user_id: e.target.value })}
+                                    className="flex-1 px-4 py-2.5 bg-[var(--surface-2)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-purple-500 transition"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Action"
+                                    value={logFilters.action}
+                                    onChange={(e) => setLogFilters({ ...logFilters, action: e.target.value })}
+                                    className="flex-1 px-4 py-2.5 bg-[var(--surface-2)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:border-purple-500 transition"
+                                />
+                                <button
+                                    onClick={fetchActivityLogs}
+                                    className="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all whitespace-nowrap"
+                                >
+                                    Apply Filters
+                                </button>
                             </div>
 
-                            {/* Scrollable Table */}
-                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-x-auto">
-                                <table className="w-full min-w-max">
-                                    <thead className="bg-[var(--surface-2)]">
-                                        <tr className="border-b border-[var(--border)]">
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">User</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Action</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Details</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Level</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-[var(--border)]">
-                                        {activityLogs.map((log) => (
-                                            <tr key={log.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div>
-                                                        <div className="text-sm font-medium text-[var(--text)]">{log.name || 'System'}</div>
-                                                        <div className="text-xs text-[var(--muted)]">{log.email || 'N/A'}</div>
+                            {/* Activity Log Cards */}
+                            {activityLogs.length === 0 ? (
+                                <div className="text-center py-16">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--surface-2)] flex items-center justify-center">
+                                        <Activity className="w-8 h-8 text-[var(--muted)]" />
+                                    </div>
+                                    <p className="text-[var(--muted)] text-sm">No activity logs found</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {activityLogs.map((log) => (
+                                        <div key={log.id} className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-4 hover:border-purple-500/50 transition-all">
+                                            <div className="flex items-start gap-3">
+                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                                                    log.level === 'security' ? 'bg-red-500/20' :
+                                                    log.level === 'warning' ? 'bg-yellow-500/20' :
+                                                    log.level === 'info' ? 'bg-blue-500/20' :
+                                                    'bg-gray-500/20'
+                                                }`}>
+                                                    <Activity className={`w-4 h-4 ${
+                                                        log.level === 'security' ? 'text-red-400' :
+                                                        log.level === 'warning' ? 'text-yellow-400' :
+                                                        log.level === 'info' ? 'text-blue-400' :
+                                                        'text-gray-400'
+                                                    }`} />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-start justify-between gap-2 mb-1">
+                                                        <div>
+                                                            <h4 className="font-semibold text-[var(--text)] text-sm">{log.name || 'System'}</h4>
+                                                            <p className="text-xs text-[var(--muted)]">{log.email || 'N/A'}</p>
+                                                        </div>
+                                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${
+                                                            log.level === 'security' ? 'bg-red-500/20 text-red-400' :
+                                                            log.level === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                            log.level === 'info' ? 'bg-blue-500/20 text-blue-400' :
+                                                            'bg-gray-500/20 text-gray-400'
+                                                        }`}>
+                                                            {log.level}
+                                                        </span>
                                                     </div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className="text-sm text-[var(--muted)]">{log.action}</span>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className="text-sm text-[var(--muted)] max-w-xs block">{log.details}</span>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${
-                                                        log.level === 'security' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
-                                                        log.level === 'warning' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
-                                                        log.level === 'info' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
-                                                        'bg-[var(--muted)]/20 text-[var(--muted)]'
-                                                    }`}>
-                                                        {log.level}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className="text-sm text-[var(--muted)]">
+                                                    <p className="text-sm text-[var(--text)] font-medium mb-1">{log.action}</p>
+                                                    <p className="text-xs text-[var(--muted)] mb-2">{log.details}</p>
+                                                    <p className="text-xs text-[var(--muted)] flex items-center gap-1">
+                                                        <Clock className="w-3 h-3" />
                                                         {new Date(log.created_at).toLocaleString(undefined, { 
                                                             month: 'short', 
                                                             day: 'numeric', 
                                                             hour: '2-digit', 
                                                             minute: '2-digit' 
                                                         })}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
 
                     {/* Security Events Tab */}
                     {activeTab === 'events' && (
-                        <div>
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-[var(--text)]">Security Events</h3>
-                                <div className="flex space-x-2">
-                                    <select
-                                        value={eventFilters.severity}
-                                        onChange={(e) => setEventFilters({ ...eventFilters, severity: e.target.value })}
-                                        className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)]"
-                                    >
-                                        <option value="">All Severities</option>
-                                        <option value="low">Low</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="high">High</option>
-                                        <option value="critical">Critical</option>
-                                    </select>
-                                    <button
-                                        onClick={fetchSecurityEvents}
-                                        className="px-3 py-1 bg-[var(--accent-primary)] text-[var(--text)] rounded text-sm hover:bg-[var(--accent-primary)]/90 font-medium"
-                                    >
-                                        Filter
-                                    </button>
-                                </div>
+                        <div className="space-y-4">
+                            {/* Filters */}
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <select
+                                    value={eventFilters.severity}
+                                    onChange={(e) => setEventFilters({ ...eventFilters, severity: e.target.value })}
+                                    className="flex-1 px-4 py-2.5 bg-[var(--surface-2)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] focus:outline-none focus:border-purple-500 transition"
+                                >
+                                    <option value="">All Severities</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="critical">Critical</option>
+                                </select>
+                                <button
+                                    onClick={fetchSecurityEvents}
+                                    className="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all whitespace-nowrap"
+                                >
+                                    Apply Filter
+                                </button>
                             </div>
 
-                            {/* Scrollable Table */}
-                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-x-auto">
-                                <table className="w-full min-w-max">
-                                    <thead className="bg-[var(--surface-2)]">
-                                        <tr className="border-b border-[var(--border)]">
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">User</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Event</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Description</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Severity</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-[var(--border)]">
-                                        {securityEvents.map((event) => (
-                                            <tr key={event.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div>
-                                                        <div className="text-sm font-medium text-[var(--text)]">{event.name || 'System'}</div>
-                                                        <div className="text-xs text-[var(--muted)]">{event.email || 'N/A'}</div>
+                            {/* Security Event Cards */}
+                            {securityEvents.length === 0 ? (
+                                <div className="text-center py-16">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--surface-2)] flex items-center justify-center">
+                                        <Shield className="w-8 h-8 text-[var(--muted)]" />
+                                    </div>
+                                    <p className="text-[var(--muted)] text-sm">No security events found</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {securityEvents.map((event) => (
+                                        <div key={event.id} className={`border rounded-xl p-4 transition-all ${
+                                            event.severity === 'critical' ? 'bg-red-500/10 border-red-500/30 hover:border-red-500/50' :
+                                            event.severity === 'high' ? 'bg-yellow-500/10 border-yellow-500/30 hover:border-yellow-500/50' :
+                                            event.severity === 'medium' ? 'bg-blue-500/10 border-blue-500/30 hover:border-blue-500/50' :
+                                            'bg-green-500/10 border-green-500/30 hover:border-green-500/50'
+                                        }`}>
+                                            <div className="flex items-start gap-3">
+                                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                                                    event.severity === 'critical' ? 'bg-red-500/20' :
+                                                    event.severity === 'high' ? 'bg-yellow-500/20' :
+                                                    event.severity === 'medium' ? 'bg-blue-500/20' :
+                                                    'bg-green-500/20'
+                                                }`}>
+                                                    <AlertTriangle className={`w-5 h-5 ${
+                                                        event.severity === 'critical' ? 'text-red-400' :
+                                                        event.severity === 'high' ? 'text-yellow-400' :
+                                                        event.severity === 'medium' ? 'text-blue-400' :
+                                                        'text-green-400'
+                                                    }`} />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-start justify-between gap-2 mb-2">
+                                                        <div>
+                                                            <h4 className="font-semibold text-[var(--text)]">{event.event_type}</h4>
+                                                            <p className="text-xs text-[var(--muted)]">{event.name || 'System'} • {event.email || 'N/A'}</p>
+                                                        </div>
+                                                        <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase flex-shrink-0 ${
+                                                            event.severity === 'critical' ? 'bg-red-500/20 text-red-400' :
+                                                            event.severity === 'high' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                            event.severity === 'medium' ? 'bg-blue-500/20 text-blue-400' :
+                                                            'bg-green-500/20 text-green-400'
+                                                        }`}>
+                                                            {event.severity}
+                                                        </span>
                                                     </div>
-                                                </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)] whitespace-nowrap">
-                                                    {event.event_type}
-                                                </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)] max-w-xs whitespace-nowrap">
-                                                    {event.description}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${
-                                                        event.severity === 'critical' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
-                                                        event.severity === 'high' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
-                                                        event.severity === 'medium' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
-                                                        'bg-[var(--status-success)]/20 text-[var(--status-success)]'
-                                                    }`}>
-                                                        {event.severity}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)] whitespace-nowrap">
-                                                    {new Date(event.created_at).toLocaleString(undefined, { 
-                                                        month: 'short', 
-                                                        day: 'numeric', 
-                                                        hour: '2-digit', 
-                                                        minute: '2-digit' 
-                                                    })}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                                    <p className="text-sm text-[var(--text)] mb-2">{event.description}</p>
+                                                    <p className="text-xs text-[var(--muted)] flex items-center gap-1">
+                                                        <Clock className="w-3 h-3" />
+                                                        {new Date(event.created_at).toLocaleString(undefined, { 
+                                                            month: 'short', 
+                                                            day: 'numeric', 
+                                                            hour: '2-digit', 
+                                                            minute: '2-digit' 
+                                                        })}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
 
                     {/* Permissions Tab */}
                     {activeTab === 'permissions' && (
-                        <div>
-                            <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Role-Based Permissions</h3>
-                            <div className="space-y-6">
-                                {Object.entries(permissions).map(([roleName, rolePermissions]) => (
-                                    <div key={roleName} className="border border-[var(--border)] rounded-lg p-4 bg-[var(--surface-2)]">
-                                        <h4 className="font-medium text-[var(--text)] mb-3 capitalize">{roleName} Permissions</h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                            {rolePermissions.map((permission, index) => (
-                                                <div key={index} className="flex items-center justify-between p-2 bg-[var(--surface)] rounded border border-[var(--border)]">
-                                                    <div>
-                                                        <span className="text-sm font-medium text-[var(--text)]">{permission.resource}</span>
-                                                        <span className="text-xs text-[var(--muted)] ml-2">({permission.action})</span>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleUpdatePermission(roleName, permission.resource, permission.action, !permission.granted)}
-                                                        className={`px-2 py-1 text-xs rounded font-medium transition ${permission.granted
-                                                                ? 'bg-[var(--status-success)]/20 text-[var(--status-success)] hover:bg-[var(--status-success)]/30'
-                                                                : 'bg-[var(--status-error)]/20 text-[var(--status-error)] hover:bg-[var(--status-error)]/30'
-                                                            }`}
-                                                    >
-                                                        {permission.granted ? 'Granted' : 'Denied'}
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Lock className="w-5 h-5 text-purple-500" />
+                                <h3 className="text-lg font-semibold text-[var(--text)]">Role-Based Access Control</h3>
                             </div>
+                            
+                            {Object.entries(permissions).length === 0 ? (
+                                <div className="text-center py-16">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--surface-2)] flex items-center justify-center">
+                                        <Lock className="w-8 h-8 text-[var(--muted)]" />
+                                    </div>
+                                    <p className="text-[var(--muted)] text-sm">No permissions configured</p>
+                                </div>
+                            ) : (
+                                <div className="grid gap-6">
+                                    {Object.entries(permissions).map(([roleName, rolePermissions]) => (
+                                        <div key={roleName} className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl overflow-hidden">
+                                            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-b border-[var(--border)] px-5 py-4">
+                                                <h4 className="font-bold text-[var(--text)] capitalize flex items-center gap-2">
+                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                                                        roleName === 'admin' ? 'bg-purple-500/20' :
+                                                        roleName === 'instructor' ? 'bg-blue-500/20' :
+                                                        'bg-green-500/20'
+                                                    }`}>
+                                                        <Users className={`w-4 h-4 ${
+                                                            roleName === 'admin' ? 'text-purple-400' :
+                                                            roleName === 'instructor' ? 'text-blue-400' :
+                                                            'text-green-400'
+                                                        }`} />
+                                                    </div>
+                                                    {roleName} Permissions
+                                                </h4>
+                                            </div>
+                                            <div className="p-5">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                    {rolePermissions.map((permission, index) => (
+                                                        <div key={index} className="flex items-center justify-between p-3 bg-[var(--surface)] rounded-lg border border-[var(--border)] hover:border-purple-500/50 transition-all">
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="text-sm font-semibold text-[var(--text)] truncate">{permission.resource}</p>
+                                                                <p className="text-xs text-[var(--muted)] capitalize">{permission.action}</p>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => handleUpdatePermission(roleName, permission.resource, permission.action, !permission.granted)}
+                                                                className={`px-3 py-1.5 text-xs rounded-lg font-bold uppercase transition-all flex-shrink-0 ml-2 ${
+                                                                    permission.granted
+                                                                        ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                                                                        : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                                                                }`}
+                                                            >
+                                                                {permission.granted ? '✓ Allow' : '✕ Deny'}
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -646,21 +747,21 @@ export default function SecurityManager() {
 
             {/* Pagination */}
             {totalItems > 20 && (
-                <div className="flex items-center justify-between bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4">
+                <div className="flex items-center justify-between bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
                     <div className="text-sm text-[var(--muted)]">
-                        Showing page {currentPage}
+                        Showing page <span className="font-semibold text-[var(--text)]">{currentPage}</span>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex gap-2">
                         <button
                             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                             disabled={currentPage === 1}
-                            className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] hover:bg-[var(--surface-3)] disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                            className="px-4 py-2 bg-[var(--surface-2)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[var(--surface-2)] disabled:hover:text-[var(--text)] font-medium transition-all"
                         >
                             Previous
                         </button>
                         <button
                             onClick={() => setCurrentPage(currentPage + 1)}
-                            className="px-3 py-1 bg-[var(--surface-2)] border border-[var(--border)] rounded text-sm text-[var(--text)] hover:bg-[var(--surface-3)] font-medium"
+                            className="px-4 py-2 bg-[var(--surface-2)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 hover:text-white font-medium transition-all"
                         >
                             Next
                         </button>

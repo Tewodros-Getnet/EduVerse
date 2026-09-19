@@ -116,11 +116,6 @@ export default function ForgotPassword() {
                                 </div>
                             )}
 
-                            <div className="space-y-3 text-sm text-[var(--muted)]">
-                                <p>• Check your spam folder if you don't see the email</p>
-                                <p>• The reset link expires in 1 hour</p>
-                            </div>
-
                             <div className="flex flex-col gap-2">
                                 <button
                                     onClick={() => setSubmitted(false)}
