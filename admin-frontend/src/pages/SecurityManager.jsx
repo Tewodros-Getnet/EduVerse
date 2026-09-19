@@ -379,7 +379,7 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Mobile Card View */}
-                            <div className="block md:hidden space-y-3">
+                            <div className="sm:hidden space-y-3">
                                 {sessions.map((session) => (
                                     <div key={session.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-3">
                                         <div>
@@ -435,7 +435,7 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Desktop Table View */}
-                            <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)]">
+                            <div className="hidden sm:block overflow-x-auto rounded-xl border border-[var(--border)]">
                                 <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
@@ -532,7 +532,7 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Mobile Card View */}
-                            <div className="block md:hidden space-y-3">
+                            <div className="sm:hidden space-y-3">
                                 {activityLogs.map((log) => (
                                     <div key={log.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-3">
                                         <div className="flex items-start justify-between">
@@ -577,7 +577,7 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Desktop Table View */}
-                            <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)]">
+                            <div className="hidden sm:block overflow-x-auto rounded-xl border border-[var(--border)]">
                                 <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
@@ -658,7 +658,7 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Mobile Card View */}
-                            <div className="block md:hidden space-y-3">
+                            <div className="sm:hidden space-y-3">
                                 {securityEvents.map((event) => (
                                     <div key={event.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-3">
                                         <div className="flex items-start justify-between">
@@ -703,7 +703,7 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Desktop Table View */}
-                            <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border)]">
+                            <div className="hidden sm:block overflow-x-auto rounded-xl border border-[var(--border)]">
                                 <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
