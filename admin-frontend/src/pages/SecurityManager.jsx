@@ -672,7 +672,6 @@ export default function SecurityManager() {
                         </button>
                     </div>
                 </div>
-                </div>
             )}
         </div>
     );
