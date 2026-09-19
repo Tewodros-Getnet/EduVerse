@@ -443,6 +443,7 @@ export default function SecurityManager() {
                                         ))}
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -528,6 +529,7 @@ export default function SecurityManager() {
                                         ))}
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -608,8 +610,8 @@ export default function SecurityManager() {
                                         ))}
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     )}
 
@@ -669,6 +671,7 @@ export default function SecurityManager() {
                             Next
                         </button>
                     </div>
+                </div>
                 </div>
             )}
         </div>
