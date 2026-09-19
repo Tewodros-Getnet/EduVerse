@@ -379,32 +379,30 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="overflow-x-auto -mx-6 sm:mx-0">
-                                <div className="inline-block min-w-full align-middle">
-                                    <div className="overflow-hidden border-x border-b sm:border sm:rounded-xl border-[var(--border)]">
-                                        <table className="min-w-full divide-y divide-[var(--border)]">
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-[var(--border)] border border-[var(--border)] rounded-xl overflow-hidden">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">IP Address</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Last Activity</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Actions</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">User</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">IP Address</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Last Activity</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
                                         {sessions.map((session) => (
                                             <tr key={session.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <div>
                                                         <div className="text-sm font-medium text-[var(--text)]">{session.name}</div>
                                                         <div className="text-xs text-[var(--muted)]">{session.email}</div>
                                                         <div className="text-xs text-[var(--muted)] capitalize">{session.role}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)]">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)] whitespace-nowrap">
                                                     {session.ip_address}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)]">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)] whitespace-nowrap">
                                                     {new Date(session.last_activity).toLocaleString(undefined, { 
                                                         month: 'short', 
                                                         day: 'numeric', 
@@ -412,7 +410,7 @@ export default function SecurityManager() {
                                                         minute: '2-digit' 
                                                     })}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm font-medium">
+                                                <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
                                                     <div className="flex space-x-2">
                                                         <button
                                                             onClick={() => handleTerminateSession(session.id)}
@@ -446,8 +444,6 @@ export default function SecurityManager() {
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                        </div>
                     )}
 
                     {/* Activity Logs Tab */}
@@ -480,35 +476,33 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="overflow-x-auto -mx-6 sm:mx-0">
-                                <div className="inline-block min-w-full align-middle">
-                                    <div className="overflow-hidden border-x border-b sm:border sm:rounded-xl border-[var(--border)]">
-                                        <table className="min-w-full divide-y divide-[var(--border)]">
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-[var(--border)] border border-[var(--border)] rounded-xl overflow-hidden">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">User</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Action</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Details</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Level</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Time</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">User</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Action</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Details</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Level</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Time</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
                                         {activityLogs.map((log) => (
                                             <tr key={log.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <div>
                                                         <div className="text-sm font-medium text-[var(--text)]">{log.name || 'System'}</div>
                                                         <div className="text-xs text-[var(--muted)]">{log.email || 'N/A'}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className="text-sm text-[var(--muted)]">{log.action}</span>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className="text-sm text-[var(--muted)] max-w-xs block">{log.details}</span>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${
                                                         log.level === 'security' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
                                                         log.level === 'warning' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
@@ -518,7 +512,7 @@ export default function SecurityManager() {
                                                         {log.level}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className="text-sm text-[var(--muted)]">
                                                         {new Date(log.created_at).toLocaleString(undefined, { 
                                                             month: 'short', 
@@ -534,8 +528,6 @@ export default function SecurityManager() {
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                        </div>
                     )}
 
                     {/* Security Events Tab */}
@@ -565,35 +557,33 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="overflow-x-auto -mx-6 sm:mx-0">
-                                <div className="inline-block min-w-full align-middle">
-                                    <div className="overflow-hidden border-x border-b sm:border sm:rounded-xl border-[var(--border)]">
-                                        <table className="min-w-full divide-y divide-[var(--border)]">
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-[var(--border)] border border-[var(--border)] rounded-xl overflow-hidden">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Event</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Description</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Severity</th>
-                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">Time</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">User</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Event</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Description</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Severity</th>
+                                            <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Time</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
                                         {securityEvents.map((event) => (
                                             <tr key={event.id} className="hover:bg-[var(--surface-2)] transition">
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <div>
                                                         <div className="text-sm font-medium text-[var(--text)]">{event.name || 'System'}</div>
                                                         <div className="text-xs text-[var(--muted)]">{event.email || 'N/A'}</div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)]">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)] whitespace-nowrap">
                                                     {event.event_type}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)] max-w-xs">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)] max-w-xs whitespace-nowrap">
                                                     {event.description}
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${
                                                         event.severity === 'critical' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
                                                         event.severity === 'high' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
@@ -603,7 +593,7 @@ export default function SecurityManager() {
                                                         {event.severity}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-[var(--muted)]">
+                                                <td className="px-6 py-4 text-sm text-[var(--muted)] whitespace-nowrap">
                                                     {new Date(event.created_at).toLocaleString(undefined, { 
                                                         month: 'short', 
                                                         day: 'numeric', 
@@ -617,8 +607,6 @@ export default function SecurityManager() {
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                        </div>
                     )}
 
                     {/* Permissions Tab */}
