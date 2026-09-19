@@ -379,17 +379,18 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-[var(--border)] border border-[var(--border)] rounded-xl overflow-hidden">
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
                                     <thead className="bg-[var(--surface-2)]">
-                                        <tr>
+                                        <tr className="border-b border-[var(--border)]">
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">User</th>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">IP Address</th>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Last Activity</th>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
+                                    <tbody className="divide-y divide-[var(--border)]">
                                         {sessions.map((session) => (
                                             <tr key={session.id} className="hover:bg-[var(--surface-2)] transition">
                                                 <td className="px-6 py-4 whitespace-nowrap">
@@ -476,10 +477,11 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-[var(--border)] border border-[var(--border)] rounded-xl overflow-hidden">
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
                                     <thead className="bg-[var(--surface-2)]">
-                                        <tr>
+                                        <tr className="border-b border-[var(--border)]">
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">User</th>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Action</th>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Details</th>
@@ -487,7 +489,7 @@ export default function SecurityManager() {
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">Time</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
+                                    <tbody className="divide-y divide-[var(--border)]">
                                         {activityLogs.map((log) => (
                                             <tr key={log.id} className="hover:bg-[var(--surface-2)] transition">
                                                 <td className="px-6 py-4 whitespace-nowrap">
@@ -557,10 +559,11 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-[var(--border)] border border-[var(--border)] rounded-xl overflow-hidden">
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
                                     <thead className="bg-[var(--surface-2)]">
-                                        <tr>
+                                        <tr className="border-b border-[var(--border)]">
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">User</th>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Event</th>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Description</th>
@@ -568,7 +571,7 @@ export default function SecurityManager() {
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">Time</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[var(--border)] bg-[var(--surface)]">
+                                    <tbody className="divide-y divide-[var(--border)]">
                                         {securityEvents.map((event) => (
                                             <tr key={event.id} className="hover:bg-[var(--surface-2)] transition">
                                                 <td className="px-6 py-4 whitespace-nowrap">
@@ -606,6 +609,7 @@ export default function SecurityManager() {
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
                         </div>
                     )}
 
