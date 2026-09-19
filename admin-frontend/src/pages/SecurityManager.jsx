@@ -378,65 +378,11 @@ export default function SecurityManager() {
                                 </div>
                             </div>
 
-                            {/* Mobile Card View */}
-                            <div className="sm:hidden space-y-3">
-                                {sessions.map((session) => (
-                                    <div key={session.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-3">
-                                        <div>
-                                            <div className="text-sm font-semibold text-[var(--text)]">{session.name}</div>
-                                            <div className="text-xs text-[var(--muted)] mt-0.5">{session.email}</div>
-                                            <div className="text-xs text-[var(--muted)] mt-0.5 capitalize">{session.role}</div>
-                                        </div>
-                                        <div className="space-y-2 text-sm">
-                                            <div>
-                                                <span className="text-[var(--muted)] text-xs">IP Address:</span>
-                                                <span className="text-[var(--text)] ml-2 text-xs">{session.ip_address}</span>
-                                            </div>
-                                            <div>
-                                                <span className="text-[var(--muted)] text-xs">Last Activity:</span>
-                                                <span className="text-[var(--text)] ml-2 text-xs">
-                                                    {new Date(session.last_activity).toLocaleString(undefined, { 
-                                                        month: 'short', 
-                                                        day: 'numeric', 
-                                                        hour: '2-digit', 
-                                                        minute: '2-digit' 
-                                                    })}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="flex space-x-2 pt-2">
-                                            <button
-                                                onClick={() => handleTerminateSession(session.id)}
-                                                className="flex-1 flex items-center justify-center gap-1.5 p-2 text-[var(--status-error)] bg-[var(--status-error)]/10 hover:bg-[var(--status-error)]/20 rounded-lg transition text-xs font-medium"
-                                                title="Terminate session"
-                                            >
-                                                <LogOut className="w-3.5 h-3.5" />
-                                                Terminate
-                                            </button>
-                                            <button
-                                                onClick={() => handleTerminateUserSessions(session.user_id)}
-                                                className="flex-1 flex items-center justify-center gap-1.5 p-2 text-[var(--status-warning)] bg-[var(--status-warning)]/10 hover:bg-[var(--status-warning)]/20 rounded-lg transition text-xs font-medium"
-                                                title="Terminate all user sessions"
-                                            >
-                                                <Zap className="w-3.5 h-3.5" />
-                                                All
-                                            </button>
-                                            <button
-                                                onClick={() => handleForceLogout(session.user_id)}
-                                                className="flex-1 flex items-center justify-center gap-1.5 p-2 text-[var(--accent-tertiary)] bg-[var(--accent-tertiary)]/10 hover:bg-[var(--accent-tertiary)]/20 rounded-lg transition text-xs font-medium"
-                                                title="Force logout"
-                                            >
-                                                <Lock className="w-3.5 h-3.5" />
-                                                Logout
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Desktop Table View */}
-                            <div className="hidden sm:block overflow-x-auto rounded-xl border border-[var(--border)]">
-                                <table className="min-w-full divide-y divide-[var(--border)]">
+                            {/* Scrollable Table */}
+                            <div className="overflow-x-auto -mx-6 sm:mx-0">
+                                <div className="inline-block min-w-full align-middle">
+                                    <div className="overflow-hidden border-x border-b sm:border sm:rounded-xl border-[var(--border)]">
+                                        <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
@@ -497,7 +443,9 @@ export default function SecurityManager() {
                                             </tr>
                                         ))}
                                     </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -531,54 +479,11 @@ export default function SecurityManager() {
                                 </div>
                             </div>
 
-                            {/* Mobile Card View */}
-                            <div className="sm:hidden space-y-3">
-                                {activityLogs.map((log) => (
-                                    <div key={log.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-3">
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex-1">
-                                                <div className="text-sm font-semibold text-[var(--text)]">{log.name || 'System'}</div>
-                                                <div className="text-xs text-[var(--muted)] mt-0.5">{log.email || 'N/A'}</div>
-                                            </div>
-                                            <span className={`px-2 py-1 text-[10px] leading-tight font-semibold rounded-full whitespace-nowrap ${
-                                                log.level === 'security' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
-                                                log.level === 'warning' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
-                                                log.level === 'info' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
-                                                'bg-[var(--muted)]/20 text-[var(--muted)]'
-                                            }`}>
-                                                {log.level}
-                                            </span>
-                                        </div>
-                                        <div className="space-y-2 text-sm">
-                                            <div>
-                                                <span className="text-[var(--muted)] text-xs">Action:</span>
-                                                <span className="text-[var(--text)] ml-2">{log.action}</span>
-                                            </div>
-                                            {log.details && (
-                                                <div>
-                                                    <span className="text-[var(--muted)] text-xs">Details:</span>
-                                                    <p className="text-[var(--text)] mt-1 text-xs leading-relaxed">{log.details}</p>
-                                                </div>
-                                            )}
-                                            <div>
-                                                <span className="text-[var(--muted)] text-xs">Time:</span>
-                                                <span className="text-[var(--text)] ml-2 text-xs">
-                                                    {new Date(log.created_at).toLocaleString(undefined, { 
-                                                        month: 'short', 
-                                                        day: 'numeric', 
-                                                        hour: '2-digit', 
-                                                        minute: '2-digit' 
-                                                    })}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Desktop Table View */}
-                            <div className="hidden sm:block overflow-x-auto rounded-xl border border-[var(--border)]">
-                                <table className="min-w-full divide-y divide-[var(--border)]">
+                            {/* Scrollable Table */}
+                            <div className="overflow-x-auto -mx-6 sm:mx-0">
+                                <div className="inline-block min-w-full align-middle">
+                                    <div className="overflow-hidden border-x border-b sm:border sm:rounded-xl border-[var(--border)]">
+                                        <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider">User</th>
@@ -626,7 +531,9 @@ export default function SecurityManager() {
                                             </tr>
                                         ))}
                                     </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -657,54 +564,11 @@ export default function SecurityManager() {
                                 </div>
                             </div>
 
-                            {/* Mobile Card View */}
-                            <div className="sm:hidden space-y-3">
-                                {securityEvents.map((event) => (
-                                    <div key={event.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-3">
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex-1">
-                                                <div className="text-sm font-semibold text-[var(--text)]">{event.name || 'System'}</div>
-                                                <div className="text-xs text-[var(--muted)] mt-0.5">{event.email || 'N/A'}</div>
-                                            </div>
-                                            <span className={`px-2 py-1 text-[10px] leading-tight font-semibold rounded-full whitespace-nowrap ${
-                                                event.severity === 'critical' ? 'bg-[var(--status-error)]/20 text-[var(--status-error)]' :
-                                                event.severity === 'high' ? 'bg-[var(--status-warning)]/20 text-[var(--status-warning)]' :
-                                                event.severity === 'medium' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' :
-                                                'bg-[var(--status-success)]/20 text-[var(--status-success)]'
-                                            }`}>
-                                                {event.severity}
-                                            </span>
-                                        </div>
-                                        <div className="space-y-2 text-sm">
-                                            <div>
-                                                <span className="text-[var(--muted)] text-xs">Event:</span>
-                                                <span className="text-[var(--text)] ml-2">{event.event_type}</span>
-                                            </div>
-                                            {event.description && (
-                                                <div>
-                                                    <span className="text-[var(--muted)] text-xs">Description:</span>
-                                                    <p className="text-[var(--text)] mt-1 text-xs leading-relaxed">{event.description}</p>
-                                                </div>
-                                            )}
-                                            <div>
-                                                <span className="text-[var(--muted)] text-xs">Time:</span>
-                                                <span className="text-[var(--text)] ml-2 text-xs">
-                                                    {new Date(event.created_at).toLocaleString(undefined, { 
-                                                        month: 'short', 
-                                                        day: 'numeric', 
-                                                        hour: '2-digit', 
-                                                        minute: '2-digit' 
-                                                    })}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Desktop Table View */}
-                            <div className="hidden sm:block overflow-x-auto rounded-xl border border-[var(--border)]">
-                                <table className="min-w-full divide-y divide-[var(--border)]">
+                            {/* Scrollable Table */}
+                            <div className="overflow-x-auto -mx-6 sm:mx-0">
+                                <div className="inline-block min-w-full align-middle">
+                                    <div className="overflow-hidden border-x border-b sm:border sm:rounded-xl border-[var(--border)]">
+                                        <table className="min-w-full divide-y divide-[var(--border)]">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr>
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase">User</th>
@@ -750,7 +614,9 @@ export default function SecurityManager() {
                                             </tr>
                                         ))}
                                     </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     )}
