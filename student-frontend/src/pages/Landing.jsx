@@ -55,17 +55,31 @@ export default function Landing() {
     return (
         <div className={`min-h-screen bg-gradient-to-br from-[var(--bg)] via-[var(--surface)] to-[var(--bg)] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             {/* Navbar */}
-            <nav className="flex items-center justify-between px-8 py-4 animate-fade-in-down">
-                <div className="flex items-center gap-2 group cursor-pointer">
-                    <GraduationCap className="w-7 h-7 text-[var(--accent-primary)] group-hover:scale-110 transition-transform duration-300" />
-                    <span className="text-xl font-bold text-[var(--text)] group-hover:text-[var(--accent-primary)]/80 transition-colors duration-300">EduVerse</span>
+            <nav className="flex items-center justify-between px-6 sm:px-8 lg:px-12 py-6 animate-fade-in-down border-b border-[var(--border)]/50 bg-[var(--surface)]/80 backdrop-blur-sm">
+                <div className="flex items-center gap-3 group cursor-pointer">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                    </div>
+                    <span className="text-xl sm:text-2xl font-bold text-[var(--text)] group-hover:text-[var(--accent-primary)] transition-colors duration-300">EduVerse</span>
                 </div>
-                <div className="flex items-center gap-4">
-                    <button onClick={toggleTheme} className="p-2 rounded-xl bg-[var(--surface-2)] text-[var(--muted)] border border-[var(--border)] hover:bg-[var(--surface)] hover:text-[var(--text)] transition" aria-label="Toggle theme">
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <button 
+                        onClick={toggleTheme} 
+                        className="p-2.5 sm:p-3 rounded-xl bg-[var(--surface-2)] text-[var(--muted)] border border-[var(--border)] hover:bg-[var(--surface)] hover:text-[var(--text)] hover:border-purple-500/50 transition-all duration-300" 
+                        aria-label="Toggle theme"
+                    >
                         {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                     </button>
-                    <Link to="/login" className="text-[var(--text)] hover:text-[var(--accent-primary)]/80 transition-all duration-300 text-sm font-medium hover:scale-105 transform">Sign In</Link>
-                    <Link to="/register" className="px-5 py-2 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-full text-[var(--text)] text-sm font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 transform">
+                    <Link 
+                        to="/login" 
+                        className="hidden sm:inline-block px-5 py-2.5 text-[var(--text)] hover:text-[var(--accent-primary)] transition-all duration-300 text-sm font-semibold hover:scale-105 transform"
+                    >
+                        Sign In
+                    </Link>
+                    <Link 
+                        to="/register" 
+                        className="px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-white text-sm font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/50 transform"
+                    >
                         Get Started
                     </Link>
                 </div>
