@@ -379,9 +379,8 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-x-auto">
+                                <table className="w-full min-w-max">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr className="border-b border-[var(--border)]">
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">User</th>
@@ -443,7 +442,6 @@ export default function SecurityManager() {
                                         ))}
                                     </tbody>
                                 </table>
-                                </div>
                             </div>
                         </div>
                     )}
@@ -478,9 +476,8 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-x-auto">
+                                <table className="w-full min-w-max">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr className="border-b border-[var(--border)]">
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase tracking-wider whitespace-nowrap">User</th>
@@ -529,7 +526,6 @@ export default function SecurityManager() {
                                         ))}
                                     </tbody>
                                 </table>
-                                </div>
                             </div>
                         </div>
                     )}
@@ -561,9 +557,8 @@ export default function SecurityManager() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-x-auto">
+                                <table className="w-full min-w-max">
                                     <thead className="bg-[var(--surface-2)]">
                                         <tr className="border-b border-[var(--border)]">
                                             <th className="px-6 py-4 text-left text-xs font-medium text-[var(--muted)] uppercase whitespace-nowrap">User</th>
@@ -610,7 +605,6 @@ export default function SecurityManager() {
                                         ))}
                                     </tbody>
                                 </table>
-                                </div>
                             </div>
                         </div>
                     )}
