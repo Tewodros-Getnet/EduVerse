@@ -441,9 +441,9 @@ export default function SecurityManager() {
                                             </tr>
                                         ))}
                                     </tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                </table>
+                            </div>
+                        </div>
                     )}
 
                     {/* Activity Logs Tab */}
@@ -525,9 +525,9 @@ export default function SecurityManager() {
                                             </tr>
                                         ))}
                                     </tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                </table>
+                            </div>
+                        </div>
                     )}
 
                     {/* Security Events Tab */}
@@ -604,9 +604,9 @@ export default function SecurityManager() {
                                             </tr>
                                         ))}
                                     </tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                </table>
+                            </div>
+                        </div>
                     )}
 
                     {/* Permissions Tab */}
