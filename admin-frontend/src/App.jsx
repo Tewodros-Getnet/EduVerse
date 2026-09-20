@@ -13,6 +13,7 @@ import AIManager from './pages/AIManager';
 import Analytics from './pages/Analytics';
 import AuditLogs from './pages/AuditLogs';
 import Settings from './pages/Settings';
+import NotificationManager from './pages/NotificationManager';
 
 function ProtectedRoute({ children }) {
     const { user, loading } = useAuth();
@@ -35,6 +36,7 @@ function AppRoutes() {
                 <Route path="security" element={<SecurityManager />} />
                 <Route path="ai" element={<AIManager />} />
                 <Route path="analytics" element={<Analytics />} />
+                <Route path="notifications" element={<NotificationManager />} />
                 <Route path="audit-logs" element={<AuditLogs />} />
                 <Route path="settings" element={<Settings />} />
             </Route>

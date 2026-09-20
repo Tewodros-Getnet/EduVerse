@@ -3,6 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { LayoutGrid, Users, BookOpen, BarChart3, Shield, Brain, ClipboardList, Settings, LogOut, Menu, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import AdminNotificationButton from './AdminNotificationButton';
 
 const navItems = [
     { path: '/', label: 'Dashboard', Icon: LayoutGrid },
@@ -112,6 +113,7 @@ export default function Layout() {
                         <span className="font-semibold text-[var(--text)] text-sm lg:text-base">Admin Panel</span>
                     </div>
                     <div className="flex items-center gap-2 lg:gap-3">
+                        <AdminNotificationButton />
                         <button 
                             onClick={toggleTheme} 
                             className="p-2 rounded-xl bg-[var(--surface-2)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--surface)] transition flex items-center gap-1.5" 

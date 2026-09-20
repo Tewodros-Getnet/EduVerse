@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Bell, BellRing, Check, Settings, X, FileText, Target, BarChart2, Megaphone, Clock, Radio, BookOpen } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 export default function NotificationButton() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { user } = useAuth();
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('all');
+    const [timeFilter, setTimeFilter] = useState('all'); // all, week, month
     const dropdownRef = useRef(null);
 
     useEffect(() => {
@@ -124,10 +128,26 @@ export default function NotificationButton() {
     };
 
     const filteredNotifications = notifications.filter(notification => {
-        if (activeTab === 'unread') return !notification.read;
-        if (activeTab === 'assignments') return notification.type === 'assignment';
-        if (activeTab === 'quizzes') return notification.type === 'quiz';
-        if (activeTab === 'grades') return notification.type === 'grade';
+        // Apply tab filter
+        let passesTabFilter = true;
+        if (activeTab === 'unread') passesTabFilter = !notification.read;
+        else if (activeTab === 'assignments') passesTabFilter = notification.type === 'assignment';
+        else if (activeTab === 'quizzes') passesTabFilter = notification.type === 'quiz';
+        else if (activeTab === 'grades') passesTabFilter = notification.type === 'grade';
+
+        if (!passesTabFilter) return false;
+
+        // Apply time filter
+        if (timeFilter === 'all') return true;
+        
+        const notificationDate = new Date(notification.created_at);
+        const now = new Date();
+        const diffTime = now - notificationDate;
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        
+        if (timeFilter === 'week') return diffDays <= 7;
+        if (timeFilter === 'month') return diffDays <= 30;
+        
         return true;
     });
 
@@ -167,6 +187,7 @@ export default function NotificationButton() {
                                     <button
                                         onClick={markAllAsRead}
                                         className="p-1 text-xs text-[var(--accent-primary)] hover:text-[var(--text)] hover:bg-[var(--accent-primary)]/20 rounded-lg transition-all"
+                                        title="Mark all as read"
                                     >
                                         <Check className="w-4 h-4" />
                                     </button>
@@ -179,14 +200,31 @@ export default function NotificationButton() {
                                 </button>
                             </div>
                         </div>
+
+                        {/* Time Filter */}
+                        <div className="flex gap-2 mb-3">
+                            {['all', 'week', 'month'].map(filter => (
+                                <button
+                                    key={filter}
+                                    onClick={() => setTimeFilter(filter)}
+                                    className={`px-3 py-1 text-xs font-medium rounded-lg transition-all capitalize ${
+                                        timeFilter === filter
+                                            ? 'bg-[var(--accent-primary)] text-white'
+                                            : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'
+                                    }`}
+                                >
+                                    {filter === 'all' ? 'All Time' : filter === 'week' ? 'This Week' : 'This Month'}
+                                </button>
+                            ))}
+                        </div>
                         
                         {/* Tabs */}
-                        <div className="flex gap-1 p-1 bg-[var(--surface)] rounded-lg">
+                        <div className="flex gap-1 p-1 bg-[var(--surface)] rounded-lg overflow-x-auto">
                             {['all', 'unread', 'assignments', 'quizzes', 'grades'].map(tab => (
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
-                                    className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all capitalize ${
+                                    className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-md transition-all capitalize whitespace-nowrap ${
                                         activeTab === tab
                                             ? 'bg-[var(--accent-primary)] text-[var(--text)] shadow-lg'
                                             : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--accent-primary)]/20'
@@ -194,7 +232,7 @@ export default function NotificationButton() {
                                 >
                                     {tab}
                                     {tab === 'unread' && unreadCount > 0 && (
-                                        <span className="ml-1 bg-red-500 text-[var(--text)] text-xs px-1.5 py-0.5 rounded-full">
+                                        <span className="ml-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
                                             {unreadCount}
                                         </span>
                                     )}
@@ -275,10 +313,11 @@ export default function NotificationButton() {
                         <button
                             onClick={() => {
                                 setIsOpen(false);
-                                // Navigate to full notifications page using React Router
-                                navigate('/notifications');
+                                // Navigate based on user role with proper path
+                                const basePath = user?.role === 'instructor' ? '/instructor' : '/student';
+                                navigate(`${basePath}/notifications`);
                             }}
-                            className="w-full py-2 text-sm text-[var(--accent-primary)] hover:text-[var(--text)] hover:bg-[var(--accent-primary)]/20 rounded-lg transition-all"
+                            className="w-full py-2 text-sm font-medium text-[var(--accent-primary)] hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 rounded-lg transition-all"
                         >
                             View All Notifications
                         </button>
