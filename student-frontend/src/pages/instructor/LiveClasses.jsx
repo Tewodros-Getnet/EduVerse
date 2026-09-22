@@ -15,6 +15,9 @@ export default function InstructorLiveClasses() {
     const [analytics, setAnalytics] = useState(null);
     const [startingSession, setStartingSession] = useState(null);
     const [endingSession, setEndingSession] = useState(null);
+    const [editingSession, setEditingSession] = useState(null); // holds the session being edited
+    const [editForm, setEditForm] = useState({});
+    const [savingEdit, setSavingEdit] = useState(false);
     const [confirmDialog, setConfirmDialog] = useState({
         open: false,
         title: '',
@@ -169,6 +172,36 @@ export default function InstructorLiveClasses() {
             setShowAnalytics(sessionId);
         } catch (error) {
             toast.error('Failed to fetch session analytics');
+        }
+    };
+
+    const openEditModal = (session) => {
+        setEditingSession(session);
+        setEditForm({
+            title: session.title,
+            description: session.description || '',
+            scheduled_at: session.scheduled_at
+                ? new Date(session.scheduled_at).toISOString().slice(0, 16)
+                : '',
+            duration_minutes: session.duration_minutes,
+            meeting_url: session.meeting_url || '',
+        });
+    };
+
+    const handleSaveEdit = async (e) => {
+        e.preventDefault();
+        setSavingEdit(true);
+        try {
+            const response = await api.put(`/live/sessions/${editingSession.id}`, editForm);
+            setSessions(prev => prev.map(s =>
+                s.id === editingSession.id ? { ...s, ...response.data.session } : s
+            ));
+            toast.success('Live session updated!');
+            setEditingSession(null);
+        } catch (error) {
+            toast.error(error.response?.data?.error || 'Failed to update session');
+        } finally {
+            setSavingEdit(false);
         }
     };
 
@@ -359,6 +392,14 @@ export default function InstructorLiveClasses() {
                                     {startingSession === session.id ? 'Starting...' : 'Start'}
                                 </button>
                             )}
+                            {session.status === 'scheduled' && (
+                                <button
+                                    onClick={() => openEditModal(session)}
+                                    className="px-3 py-2.5 bg-blue-600/20 border border-blue-500/30 rounded-xl text-blue-300 text-sm font-medium hover:bg-blue-600/30 transition"
+                                >
+                                    Edit
+                                </button>
+                            )}
                             {session.status === 'live' && (
                                 <>
                                     <Link
@@ -533,6 +574,97 @@ export default function InstructorLiveClasses() {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            )}
+            {/* Edit Session Modal */}
+            {editingSession && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-gradient-to-br from-[var(--surface-2)] to-[var(--surface)] border border-purple-900/30 rounded-2xl p-6 w-full max-w-2xl shadow-2xl">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-[var(--text)]">Edit Live Class</h3>
+                            <button
+                                onClick={() => setEditingSession(null)}
+                                className="text-[var(--muted)] hover:text-[var(--text)] transition text-2xl leading-none"
+                            >
+                                x
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSaveEdit} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Class Title *</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={editForm.title}
+                                    onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
+                                    className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Description</label>
+                                <textarea
+                                    rows={3}
+                                    value={editForm.description}
+                                    onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                                    className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition text-sm resize-none"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Date & Time *</label>
+                                    <input
+                                        type="datetime-local"
+                                        required
+                                        value={editForm.scheduled_at}
+                                        onChange={e => setEditForm(f => ({ ...f, scheduled_at: e.target.value }))}
+                                        className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition text-sm"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Duration (min) *</label>
+                                    <input
+                                        type="number"
+                                        min="15"
+                                        max="480"
+                                        required
+                                        value={editForm.duration_minutes}
+                                        onChange={e => setEditForm(f => ({ ...f, duration_minutes: parseInt(e.target.value) }))}
+                                        className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition text-sm"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Meeting URL</label>
+                                    <input
+                                        type="url"
+                                        value={editForm.meeting_url}
+                                        onChange={e => setEditForm(f => ({ ...f, meeting_url: e.target.value }))}
+                                        placeholder="https://zoom.us/j/..."
+                                        className="w-full bg-[var(--bg)] border border-[var(--border)]/40 rounded-xl px-4 py-3 text-[var(--text)] focus:outline-none focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-purple-500/20 transition text-sm"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    type="submit"
+                                    disabled={savingEdit}
+                                    className="flex-1 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-xl text-[var(--text)] font-semibold hover:opacity-90 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
+                                >
+                                    {savingEdit ? 'Saving...' : 'Save Changes'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setEditingSession(null)}
+                                    className="flex-1 py-3 bg-[var(--bg)] border border-gray-600/40 rounded-xl text-[var(--muted)] font-semibold hover:bg-gray-800/50 hover:text-[var(--text)] transition"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

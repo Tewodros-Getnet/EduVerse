@@ -526,7 +526,7 @@ export default function InstructorCourseDetail() {
                                 <div key={assignment.id} className="flex items-center justify-between p-3 bg-[var(--surface-2)] rounded-xl">
                                     <div>
                                         <p className="font-medium text-[var(--text)]">{assignment.title}</p>
-                                        <p className="text-xs text-[var(--muted)]">Due: {new Date(assignment.due_date).toLocaleDateString()} Â· {assignment.max_points} pts</p>
+                                        <p className="text-xs text-[var(--muted)]">Due: {new Date(assignment.due_date).toLocaleDateString()} &middot; {assignment.max_points} pts</p>
                                     </div>
                                     <button
                                         onClick={() => fetchSubmissions(assignment.id)}
@@ -690,7 +690,7 @@ export default function InstructorCourseDetail() {
                                             <div>
                                                 <p className="font-medium text-[var(--text)]">{assessment.title}</p>
                                                 <p className="text-xs text-[var(--muted)] capitalize">
-                                                    {assessment.type} Â· {assessment.duration_minutes} min Â· {new Date(assessment.scheduled_date).toLocaleDateString()}
+                                                    {assessment.type} &middot; {assessment.duration_minutes} min &middot; {new Date(assessment.scheduled_date).toLocaleDateString()}
                                                 </p>
                                             </div>
                                             <div className="flex gap-2">
