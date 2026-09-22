@@ -427,7 +427,7 @@ export default function StudentLiveClass() {
                                     rel="noopener noreferrer"
                                     className="block w-full px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl text-[var(--text)] font-semibold hover:opacity-90 transition text-center"
                                 >
-                                    🔗 Join via External Meeting Link
+                                     Join via External Meeting Link
                                 </a>
                             )}
                         </div>
@@ -465,7 +465,7 @@ export default function StudentLiveClass() {
                         className="px-3 py-1.5 bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]/80 border border-[var(--accent-primary)]/30 rounded-lg text-sm hover:bg-[var(--accent-primary)]/30 transition"
                         title={sidebarOpen ? 'Close panel' : 'Open panel'}
                     >
-                        {sidebarOpen ? '✕ Panel' : '☰ Panel'}
+                        {sidebarOpen ? 'x Panel' : '☰ Panel'}
                     </button>
                     <button onClick={() => navigate(homePath)}
                         className="px-3 py-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-sm hover:bg-red-500/30 transition">
@@ -626,7 +626,7 @@ export default function StudentLiveClass() {
                             onClick={() => setSidebarOpen(false)}
                             className="px-3 py-3 text-[var(--muted)] hover:text-[var(--text)] transition text-lg"
                         >
-                            ✕
+                            x
                         </button>
                     </div>
 

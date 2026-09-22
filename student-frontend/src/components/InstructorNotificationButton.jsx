@@ -92,7 +92,7 @@ export default function InstructorNotificationButton() {
             case 'announcement':
                 return '📢';
             case 'live_session':
-                return '🎥';
+                return '';
             default:
                 return '🔔';
         }

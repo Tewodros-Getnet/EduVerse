@@ -86,7 +86,7 @@ export default function ModernInstructorDashboard() {
     return (
         <div className="min-h-screen bg-[var(--bg)] p-4 md:p-6 space-y-6 overflow-x-hidden">
 
-            {/* ── Welcome Banner ─────────────────────────────────────────── */}
+            {/* -- Welcome Banner ------------------------------------------- */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 p-8 text-[var(--text)] shadow-lg shadow-purple-500/20">
                 {/* Decorative blobs */}
                 <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
@@ -111,7 +111,7 @@ export default function ModernInstructorDashboard() {
                 </div>
             </div>
 
-            {/* ── KPI Cards ──────────────────────────────────────────────── */}
+            {/* -- KPI Cards ------------------------------------------------ */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <MetricCard
                     Icon={BookOpen}
@@ -143,7 +143,7 @@ export default function ModernInstructorDashboard() {
                 />
             </div>
 
-            {/* ── Main Content ───────────────────────────────────────────── */}
+            {/* -- Main Content --------------------------------------------- */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-hidden">
 
                 {/* Left — Courses & Actions */}
@@ -298,7 +298,7 @@ export default function ModernInstructorDashboard() {
     );
 }
 
-// ── Sub-components ──────────────────────────────────────────────────────────
+// -- Sub-components ----------------------------------------------------------
 
 function MetricCard({ Icon, label, value, accent, trend }) {
     return (

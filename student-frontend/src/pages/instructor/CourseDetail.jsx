@@ -1,4 +1,4 @@
-﻿﻿﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
@@ -676,7 +676,7 @@ export default function InstructorCourseDetail() {
                                             <div className="flex gap-2">
                                                 <button onClick={() => handleSaveAssessment(assessment.id)} disabled={savingEditAssessment}
                                                     className="px-4 py-2 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm hover:opacity-90 transition disabled:opacity-50">
-                                                    {savingEditAssessment ? 'Saving...' : 'âœ“ Save'}
+                                                    {savingEditAssessment ? 'Saving...' : '✓ Save'}
                                                 </button>
                                                 <button onClick={() => setEditingAssessment(null)}
                                                     className="px-4 py-2 bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition">

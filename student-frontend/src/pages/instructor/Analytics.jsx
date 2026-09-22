@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../../api/axios';
 
@@ -80,7 +80,7 @@ export default function InstructorAnalytics() {
     };
 
     // â”€â”€ Derived computed values â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    // Overview card sub-labels –” computed from real data, not hardcoded
+    // Overview card sub-labels -” computed from real data, not hardcoded
     const engagementLabel = (pct) => {
         if (pct >= 70) return { text: 'High engagement',     color: 'text-green-400' };
         if (pct >= 40) return { text: 'Moderate engagement', color: 'text-yellow-400' };
@@ -213,7 +213,7 @@ export default function InstructorAnalytics() {
                                 {formatNumber(performanceData.revenue_analytics.total_enrollments || 0)} enrollments
                             </p>
                         </div>
-                        {/* Course Completion –” use completionData when available, otherwise avg quiz score */}
+                        {/* Course Completion -” use completionData when available, otherwise avg quiz score */}
                         <div className="bg-[var(--surface)] border border-purple-900/30 rounded-xl p-4">
                             <h3 className="text-sm text-[var(--muted)] mb-2">Course Completion</h3>
                             <p className="text-2xl font-bold text-[var(--text)]">

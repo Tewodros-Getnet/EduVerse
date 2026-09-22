@@ -21,7 +21,7 @@ export default function Assignments() {
     const [uploadingFile, setUploadingFile] = useState(false);
     const fileInputRef = useRef(null);
 
-    // ── Load data ──────────────────────────────────────────────────────────
+    // -- Load data ----------------------------------------------------------
     useEffect(() => {
         Promise.all([
             api.get(`/assignments/course/${courseId}`),
@@ -35,7 +35,7 @@ export default function Assignments() {
             .finally(() => setLoading(false));
     }, [courseId]);
 
-    // ── File upload ────────────────────────────────────────────────────────
+    // -- File upload --------------------------------------------------------
     const handleFileSelect = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -64,7 +64,7 @@ export default function Assignments() {
         }
     };
 
-    // ── Submit assignment ──────────────────────────────────────────────────
+    // -- Submit assignment --------------------------------------------------
     const handleSubmit = async () => {
         if (!submissionText.trim() && !uploadedFile) {
             toast.error('Please enter your answer or attach a file');
@@ -93,7 +93,7 @@ export default function Assignments() {
         }
     };
 
-    // ── Modal helpers ──────────────────────────────────────────────────────
+    // -- Modal helpers ------------------------------------------------------
     const openSubmissionModal = (assignment) => {
         setSelectedAssignment(assignment);
         setShowSubmissionModal(true);
@@ -108,7 +108,7 @@ export default function Assignments() {
         setUploadedFile(null);
     };
 
-    // ── Status helpers ─────────────────────────────────────────────────────
+    // -- Status helpers -----------------------------------------------------
     const getAssignmentStatus = (assignment, submission) => {
         if (!submission) return 'pending';
         if (submission.score !== null) return 'graded';
@@ -292,7 +292,7 @@ export default function Assignments() {
                                                 onClick={() => openSubmissionModal(assignment)}
                                                 className="mt-3 w-full py-2 bg-[var(--surface)] border border-[var(--border)]/40 rounded-xl text-[var(--accent-primary)] text-xs hover:bg-[var(--accent-primary)]/10 transition"
                                             >
-                                                ✏️ Edit Submission
+                                                Edit Edit Submission
                                             </button>
                                         )}
                                     </div>
@@ -314,7 +314,7 @@ export default function Assignments() {
                 </div>
             )}
 
-            {/* ── Submission Modal ──────────────────────────────────────────── */}
+            {/* -- Submission Modal -------------------------------------------- */}
             {showSubmissionModal && selectedAssignment && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -327,7 +327,7 @@ export default function Assignments() {
                                     <span>⭐ {selectedAssignment.max_points} pts</span>
                                 </div>
                             </div>
-                            <button onClick={closeSubmissionModal} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <button onClick={closeSubmissionModal} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">x</button>
                         </div>
 
                         <div className="p-5 space-y-5">
@@ -449,13 +449,13 @@ export default function Assignments() {
                 </div>
             )}
 
-            {/* ── Submission Details Modal ──────────────────────────────────── */}
+            {/* -- Submission Details Modal ------------------------------------ */}
             {viewingSubmission && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
                             <h2 className="font-semibold text-[var(--text)]">Submission Details</h2>
-                            <button onClick={() => setViewingSubmission(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <button onClick={() => setViewingSubmission(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">x</button>
                         </div>
 
                         <div className="p-5 space-y-4">

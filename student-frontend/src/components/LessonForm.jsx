@@ -107,7 +107,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
     return (
         <div className="bg-gradient-to-br from-[var(--surface-2)] to-[var(--surface)] rounded-2xl p-6 mb-4 border border-purple-900/30 shadow-xl">
             <h3 className="text-xl font-bold bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] bg-clip-text text-transparent mb-6">
-                {lesson ? '✏️ Edit Lesson' : '📚 Create New Lesson'}
+                {lesson ? 'Edit Edit Lesson' : '📚 Create New Lesson'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>

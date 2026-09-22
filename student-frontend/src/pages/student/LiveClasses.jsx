@@ -130,7 +130,7 @@ export default function StudentLiveClasses() {
                             </div>
                             {session.meeting_url && (
                                 <div className="mb-3 px-3 py-2 bg-green-500/10 border border-green-500/20 rounded-xl">
-                                    <p className="text-xs text-green-400">🔗 External meeting link available</p>
+                                    <p className="text-xs text-green-400"> External meeting link available</p>
                                 </div>
                             )}
 
@@ -172,7 +172,7 @@ export default function StudentLiveClasses() {
                                                                 rel="noreferrer"
                                                                 className="flex items-center gap-2 px-3 py-2 bg-[var(--surface-2)] rounded-xl text-sm text-[var(--accent-primary)]/80 hover:text-[var(--text)] transition"
                                                             >
-                                                                <span>🎥</span>
+                                                                <span></span>
                                                                 <span className="flex-1 truncate">{rec.title || 'Recording'}</span>
                                                                 {rec.duration_minutes && <span className="text-xs text-[var(--muted)]">{rec.duration_minutes}min</span>}
                                                             </a>

@@ -293,7 +293,7 @@ export default function Quiz() {
                                         <div className="flex items-start gap-3">
                                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 ${answer.correct ? 'bg-green-500 text-[var(--text)]' : 'bg-red-500 text-[var(--text)]'
                                                 }`}>
-                                                {answer.correct ? '✓' : '✗'}
+                                                {answer.correct ? '✓' : 'x'}
                                             </div>
                                             <div className="flex-1">
                                                 <p className="text-[var(--text)] font-medium mb-2">

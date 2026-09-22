@@ -26,7 +26,7 @@ export default function TakeExam() {
     const timerRef    = useRef(null);
     const autoSubmitRef = useRef(false);
 
-    // ── Load exam ──────────────────────────────────────────────────────────
+    // -- Load exam ----------------------------------------------------------
     useEffect(() => {
         const init = async () => {
             try {
@@ -57,7 +57,7 @@ export default function TakeExam() {
         return () => clearInterval(timerRef.current);
     }, [id]);
 
-    // ── Countdown timer ────────────────────────────────────────────────────
+    // -- Countdown timer ----------------------------------------------------
     const handleAutoSubmit = useCallback(async () => {
         if (autoSubmitRef.current || submitting) return;
         autoSubmitRef.current = true;
@@ -82,7 +82,7 @@ export default function TakeExam() {
         return () => clearInterval(timerRef.current);
     }, [timeLeft, submitted]);
 
-    // ── Submit ─────────────────────────────────────────────────────────────
+    // -- Submit -------------------------------------------------------------
     const submitExam = async (auto = false) => {
         if (submitting || submitted) return;
         clearInterval(timerRef.current);
@@ -111,7 +111,7 @@ export default function TakeExam() {
         submitExam(false);
     };
 
-    // ── Helpers ────────────────────────────────────────────────────────────
+    // -- Helpers ------------------------------------------------------------
     const formatTime = (secs) => {
         if (secs === null) return '--:--';
         const m = Math.floor(secs / 60);
@@ -123,14 +123,14 @@ export default function TakeExam() {
     const progress      = questions.length > 0 ? Math.round((answeredCount / questions.length) * 100) : 0;
     const timerColor    = timeLeft !== null && timeLeft < 120 ? 'text-[var(--status-error)]' : timeLeft < 300 ? 'text-[var(--status-warning)]' : 'text-[var(--status-success)]';
 
-    // ── Loading ────────────────────────────────────────────────────────────
+    // -- Loading ------------------------------------------------------------
     if (loading) return (
         <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
             <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
         </div>
     );
 
-    // ── Results screen ─────────────────────────────────────────────────────
+    // -- Results screen -----------------------------------------------------
     if (submitted && result) {
         const score       = result.score;
         const passed      = result.passed;
@@ -155,7 +155,7 @@ export default function TakeExam() {
                                 {score}%
                             </div>
                             <p className={`text-lg font-semibold mb-6 ${passed ? 'text-green-400' : 'text-red-400'}`}>
-                                {passed ? '✓ Passed' : '✗ Failed'} (passing score: {assessment?.passing_score || 60}%)
+                                {passed ? '✓ Passed' : 'x Failed'} (passing score: {assessment?.passing_score || 60}%)
                             </p>
                             <div className="grid grid-cols-3 gap-3 mb-6">
                                 <div className="bg-[var(--surface-2)] rounded-xl p-3">
@@ -195,7 +195,7 @@ export default function TakeExam() {
 
     const q = questions[current];
 
-    // ── Exam taking screen ─────────────────────────────────────────────────
+    // -- Exam taking screen -------------------------------------------------
     return (
         <div className="min-h-screen bg-[var(--bg)] flex flex-col">
             {/* Top bar */}
@@ -331,7 +331,7 @@ export default function TakeExam() {
                                                             : 'bg-[var(--surface-2)] border-purple-900/30 text-[var(--muted)] hover:border-purple-500/50 hover:text-[var(--text)]'
                                                     }`}
                                                 >
-                                                    {val === 'True' ? '✓ True' : '✗ False'}
+                                                    {val === 'True' ? '✓ True' : 'x False'}
                                                 </button>
                                             );
                                         })}

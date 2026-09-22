@@ -54,7 +54,7 @@ export default function AllAssignments() {
         fetchAll();
     }, []);
 
-    // ── Status helpers ─────────────────────────────────────────────────────
+    // -- Status helpers -----------------------------------------------------
     const getStatus = (assignment) => {
         const sub = submissions[assignment.id];
         if (!sub) {
@@ -79,7 +79,7 @@ export default function AllAssignments() {
         return `Due in ${diffDays} days`;
     };
 
-    // ── Filter + sort ──────────────────────────────────────────────────────
+    // -- Filter + sort ------------------------------------------------------
     const filtered = assignments
         .filter(a => filter === 'all' || getStatus(a) === filter)
         .sort((a, b) => {
@@ -95,7 +95,7 @@ export default function AllAssignments() {
         return acc;
     }, {});
 
-    // ── Render ─────────────────────────────────────────────────────────────
+    // -- Render -------------------------------------------------------------
     if (loading) return <div className="text-center py-20 text-[var(--muted)]">Loading assignments...</div>;
 
     if (assignments.length === 0) {

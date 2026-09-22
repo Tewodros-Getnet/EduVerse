@@ -247,7 +247,7 @@ export default function InstructorQuizzes() {
                             onClick={() => setShowCreateForm(false)}
                             className="text-[var(--muted)] hover:text-[var(--text)] transition text-lg leading-none"
                         >
-                            âœ•
+                            x
                         </button>
                     </div>
                     <form onSubmit={handleCreateQuiz} className="space-y-5">
@@ -404,7 +404,7 @@ export default function InstructorQuizzes() {
                                                         required
                                                     />
                                                     {question.correct_answer === option && (
-                                                        <span className="text-green-400 text-sm">âœ“</span>
+                                                        <span className="text-green-400 text-sm">✓</span>
                                                     )}
                                                 </div>
                                             ))}
@@ -562,7 +562,7 @@ export default function InstructorQuizzes() {
                     <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
                         <div className="flex items-center justify-between px-6 py-4 border-b border-purple-900/30 flex-shrink-0">
                             <h3 className="text-lg font-semibold text-[var(--text)]">Quiz Attempts</h3>
-                            <button onClick={() => setShowAttempts(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">âœ•</button>
+                            <button onClick={() => setShowAttempts(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">x</button>
                         </div>
                         <div className="overflow-y-auto flex-1 p-6 space-y-4">
                             {attempts.length === 0 ? (
@@ -609,7 +609,7 @@ export default function InstructorQuizzes() {
                                                 {gradedAnswers.map((ga, i) => (
                                                     <div key={i} className={`flex items-center justify-between text-xs px-3 py-2 rounded-lg ${ga.correct ? 'bg-green-500/10 text-green-300' : 'bg-red-500/10 text-red-300'}`}>
                                                         <span className="flex items-center gap-2">
-                                                            <span>{ga.correct ? 'âœ“' : 'âœ—'}</span>
+                                                            <span>{ga.correct ? '✓' : 'x'}</span>
                                                             <span className="text-[var(--muted)]">Q{i + 1}:</span>
                                                             <span>{ga.user_answer || 'No answer'}</span>
                                                         </span>
@@ -636,7 +636,7 @@ export default function InstructorQuizzes() {
                     <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl w-full max-w-md">
                         <div className="flex items-center justify-between p-5 border-b border-purple-900/30">
                             <h3 className="font-semibold text-[var(--text)]">Duplicate Quiz</h3>
-                            <button onClick={() => setShowDuplicateModal(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">âœ•</button>
+                            <button onClick={() => setShowDuplicateModal(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">x</button>
                         </div>
                         <div className="p-5 space-y-4">
                             <div>
@@ -679,7 +679,7 @@ export default function InstructorQuizzes() {
                                 onClick={() => setShowAnalytics(null)}
                                 className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition"
                             >
-                                âœ•
+                                x
                             </button>
                         </div>
 

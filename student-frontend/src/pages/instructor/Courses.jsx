@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -186,7 +186,7 @@ export default function InstructorCourses() {
                 {/* Form */}
                 {showForm && (
                     <div className="mb-8 bg-gradient-to-br from-purple-900/20 to-pink-900/20 border border-[var(--accent-primary)]/30 rounded-2xl p-8 backdrop-blur">
-                        <h2 className="text-2xl font-bold text-[var(--text)] mb-6">{editingId ? '✏️ Edit Course' : '➕ Create New Course'}</h2>
+                        <h2 className="text-2xl font-bold text-[var(--text)] mb-6">{editingId ? 'Edit Edit Course' : '➕ Create New Course'}</h2>
                         <form onSubmit={editingId ? updateCourse : createCourse} className="space-y-6">
                             <div>
                                 <label className="block text-sm font-medium text-[var(--muted)] mb-2">Course Title *</label>
@@ -388,7 +388,7 @@ export default function InstructorCourses() {
                                 <button
                                     onClick={() => setShowAnalytics(null)}
                                     className="text-[var(--muted)] hover:text-[var(--text)] text-2xl transition">
-                                    ✕
+                                    x
                                 </button>
                             </div>
 

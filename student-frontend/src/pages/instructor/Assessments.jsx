@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import api from '../../api/axios';
 import ConfirmModal from '../../components/ConfirmModal';
@@ -140,7 +140,7 @@ const InstructorAssessments = () => {
         const input = gradeInputs[studentId];
         if (input.score === '' || input.score === null) { toast.error('Please enter a score'); return; }
         const score = parseInt(input.score);
-        if (isNaN(score) || score < 0 || score > 100) { toast.error('Score must be 0–“100'); return; }
+        if (isNaN(score) || score < 0 || score > 100) { toast.error('Score must be 0-“100'); return; }
         setSavingGrade(studentId);
         try {
             await api.post(`/assessments/${selectedAssessment.id}/results`, {
@@ -352,7 +352,7 @@ const InstructorAssessments = () => {
                                         </span>
                                         {isExamType && (
                                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${hasQ ? 'bg-green-500/20 text-green-300' : 'bg-orange-500/20 text-orange-300'}`}>
-                                                {hasQ ? 'âœ“ Questions added' : 'âš  No questions yet'}
+                                                {hasQ ? '✓ Questions added' : 'âš  No questions yet'}
                                             </span>
                                         )}
                                     </div>
@@ -373,7 +373,7 @@ const InstructorAssessments = () => {
 
                             {/* Actions */}
                             <div className="flex gap-2 flex-wrap">
-                                {/* Questions button –” only for exam types */}
+                                {/* Questions button -” only for exam types */}
                                 {isExamType && (
                                     <button
                                         onClick={() => openQuestionsModal(assessment)}
@@ -438,7 +438,7 @@ const InstructorAssessments = () => {
                                 <h2 className="text-xl font-bold text-[var(--text)]">Exam Questions</h2>
                                 <p className="text-sm text-[var(--muted)] mt-0.5">{editingAssessment.title}</p>
                             </div>
-                            <button onClick={() => setShowQuestionsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <button onClick={() => setShowQuestionsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">x</button>
                         </div>
 
                         <div className="p-6 space-y-6">
@@ -499,7 +499,7 @@ const InstructorAssessments = () => {
                                             {/* MCQ options */}
                                             {q.question_type === 'mcq' && (
                                                 <div className="space-y-2">
-                                                    <label className="block text-xs text-[var(--muted)]">Options –” select the correct answer</label>
+                                                    <label className="block text-xs text-[var(--muted)]">Options -” select the correct answer</label>
                                                     {(q.options || ['', '', '', '']).map((opt, oi) => (
                                                         <div key={oi} className="flex items-center gap-2">
                                                             <input type="radio" name={`correct-${qi}`}
@@ -536,7 +536,7 @@ const InstructorAssessments = () => {
                                                 </div>
                                             )}
 
-                                            {/* Short answer –” no correct answer, instructor grades manually */}
+                                            {/* Short answer -” no correct answer, instructor grades manually */}
                                             {q.question_type === 'short_answer' && (
                                                 <p className="text-xs text-yellow-400 bg-yellow-500/10 rounded-lg px-3 py-2">
                                                     âš ï¸ Short answer questions require manual grading after submission.
@@ -578,7 +578,7 @@ const InstructorAssessments = () => {
                                 <h2 className="text-xl font-bold text-[var(--text)]">Assessment Results</h2>
                                 {selectedAssessment && <p className="text-sm text-[var(--muted)] mt-0.5">{selectedAssessment.title}</p>}
                             </div>
-                            <button onClick={() => setShowResultsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <button onClick={() => setShowResultsModal(false)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">x</button>
                         </div>
 
                         <div className="p-6 overflow-y-auto max-h-[60vh]">
@@ -609,7 +609,7 @@ const InstructorAssessments = () => {
                                         <div className="bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl overflow-hidden">
                                             <div className="px-4 py-3 border-b border-[var(--border)]/40 flex items-center justify-between">
                                                 <h3 className="font-semibold text-[var(--text)]">Students ({enrolledStudents.length})</h3>
-                                                <span className="text-xs text-[var(--muted)]">Enter scores 0–“100</span>
+                                                <span className="text-xs text-[var(--muted)]">Enter scores 0-“100</span>
                                             </div>
                                             <div className="divide-y divide-purple-900/20">
                                                 {enrolledStudents.map(student => {
@@ -666,7 +666,7 @@ const InstructorAssessments = () => {
                     <div className="bg-[var(--surface)] border border-purple-900/30 rounded-2xl w-full max-w-lg">
                         <div className="flex items-center justify-between p-6 border-b border-purple-900/30">
                             <h2 className="text-lg font-bold text-[var(--text)]">Edit Assessment</h2>
-                            <button onClick={() => setEditingId(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">✕</button>
+                            <button onClick={() => setEditingId(null)} className="text-[var(--muted)] hover:text-[var(--text)] text-xl transition">x</button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
@@ -706,7 +706,7 @@ const InstructorAssessments = () => {
                             <div className="flex gap-3 pt-2">
                                 <button onClick={handleSaveEdit} disabled={savingEdit}
                                     className="flex-1 py-2.5 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50">
-                                    {savingEdit ? 'â³ Saving...' : 'âœ“ Save Changes'}
+                                    {savingEdit ? 'â³ Saving...' : '✓ Save Changes'}
                                 </button>
                                 <button onClick={() => setEditingId(null)}
                                     className="px-5 py-2.5 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition">

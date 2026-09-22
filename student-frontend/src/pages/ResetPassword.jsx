@@ -135,7 +135,7 @@ export default function ResetPassword() {
                                     ? 'bg-green-500/10 text-green-400'
                                     : 'bg-red-500/10 text-red-400'
                             }`}>
-                                {password === confirmPassword ? '✓ Passwords match' : '✕ Passwords do not match'}
+                                {password === confirmPassword ? '✓ Passwords match' : 'x Passwords do not match'}
                             </div>
                         )}
 
