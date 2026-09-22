@@ -170,7 +170,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                                     disabled={uploadingVideo}
                                     className="px-5 py-2.5 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-lg text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
                                 >
-                                    {uploadingVideo ? '⏳ Uploading...' : '📤 Upload'}
+                                    {uploadingVideo ? '... Uploading...' : '📤 Upload'}
                                 </button>
                             </div>
                             <input
@@ -211,7 +211,7 @@ export default function LessonForm({ lesson, onSubmit, onCancel }) {
                                     disabled={uploadingPdf}
                                     className="px-5 py-2.5 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 rounded-lg text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50 shadow-lg shadow-purple-500/25"
                                 >
-                                    {uploadingPdf ? '⏳ Uploading...' : '📤 Upload'}
+                                    {uploadingPdf ? '... Uploading...' : '📤 Upload'}
                                 </button>
                             </div>
                             <input

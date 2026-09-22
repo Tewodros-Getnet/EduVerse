@@ -159,7 +159,7 @@ const Assessments = () => {
                                         ) : isWindow && isExamType && !assessment.has_questions ? (
                                             /* Window open but no questions added yet */
                                             <p className="text-xs text-orange-400">
-                                                ⚠️ Your instructor hasn't added questions to this exam yet.
+                                                ! Your instructor hasn't added questions to this exam yet.
                                             </p>
                                         ) : (
                                             /* Not an exam type (project) or not in window */

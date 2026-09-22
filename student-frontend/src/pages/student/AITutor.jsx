@@ -228,7 +228,7 @@ export default function AITutor() {
                                             {msg.role === 'assistant' && (
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <span className={`text-xs font-medium ${msg.isError ? 'text-red-400' : 'text-[var(--accent-primary)]'}`}>
-                                                        {msg.isError ? '⚠️ Error' : 'AI Tutor'}
+                                                        {msg.isError ? '! Error' : 'AI Tutor'}
                                                     </span>
                                                     {msg.ai_source && !msg.isError && (
                                                         <span className={`text-xs px-1.5 py-0.5 rounded-full ${msg.ai_source === 'groq' ? 'bg-[var(--status-info)]/20 text-[var(--status-info)]' : 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]'}`}>

@@ -104,7 +104,7 @@ export default function TakeExam() {
         if (unanswered.length > 0) {
             toast(`You have ${unanswered.length} unanswered question${unanswered.length > 1 ? 's' : ''}. Submit anyway?`, {
                 duration: 4000,
-                icon: '⚠️',
+                icon: '!',
             });
             // Give them 4 seconds to reconsider, then confirm with a second click
         }
@@ -385,7 +385,7 @@ export default function TakeExam() {
                                 disabled={submitting}
                                 className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-emerald-500 rounded-xl text-[var(--text)] text-sm font-semibold hover:opacity-90 transition disabled:opacity-50"
                             >
-                                {submitting ? '⏳ Submitting...' : '✓ Submit Exam'}
+                                {submitting ? '... Submitting...' : '✓ Submit Exam'}
                             </button>
                         )}
                     </div>

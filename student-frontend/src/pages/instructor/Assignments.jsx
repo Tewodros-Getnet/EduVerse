@@ -479,7 +479,7 @@ const InstructorAssignments = () => {
                                 onClick={() => openEdit(assignment)}
                                 className="px-3 py-2 bg-blue-600/20 border border-[var(--accent-tertiary)]/30 rounded-xl text-blue-300 text-sm hover:bg-blue-600/30 transition"
                             >
-                                âœï¸ Edit
+                                Edit Edit
                             </button>
                             <button
                                 onClick={() => fetchAnalytics(assignment.id)}
@@ -537,7 +537,7 @@ const InstructorAssignments = () => {
                                     {currentAssignment?.title || 'Submissions'}
                                 </h3>
                                 <p className="text-xs text-[var(--muted)] mt-0.5">
-                                    {submissions.length} submitted Â· {notSubmitted.length} not submitted Â· max {currentAssignment?.max_points || 100} pts
+                                    {submissions.length} submitted · {notSubmitted.length} not submitted · max {currentAssignment?.max_points || 100} pts
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">

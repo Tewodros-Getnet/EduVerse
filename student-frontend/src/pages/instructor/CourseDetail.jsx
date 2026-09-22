@@ -768,7 +768,7 @@ export default function InstructorCourseDetail() {
                                         <div>
                                             <h4 className="font-medium text-[var(--text)]">{note.title}</h4>
                                             <p className="text-xs text-[var(--muted)] mt-0.5">
-                                                {new Date(note.created_at).toLocaleDateString()} Â·{' '}
+                                                {new Date(note.created_at).toLocaleDateString()} ·{' '}
                                                 <span className={note.is_public ? 'text-green-400' : 'text-yellow-400'}>
                                                     {note.is_public ? 'Public' : 'Private'}
                                                 </span>

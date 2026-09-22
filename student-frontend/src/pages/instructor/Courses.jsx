@@ -255,7 +255,7 @@ export default function InstructorCourses() {
                                     type="submit"
                                     disabled={saving}
                                     className="px-6 py-3 bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 hover:from-purple-700 hover:to-pink-700 rounded-xl text-[var(--text)] font-medium transition disabled:opacity-50 shadow-lg hover:shadow-purple-500/25">
-                                    {saving ? '⏳ Saving...' : (editingId ? '✓ Update Course' : '✓ Create Course')}
+                                    {saving ? '... Saving...' : (editingId ? '✓ Update Course' : '✓ Create Course')}
                                 </button>
                                 <button
                                     type="button"

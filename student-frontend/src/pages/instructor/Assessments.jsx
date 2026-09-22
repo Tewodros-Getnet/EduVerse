@@ -352,7 +352,7 @@ const InstructorAssessments = () => {
                                         </span>
                                         {isExamType && (
                                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${hasQ ? 'bg-green-500/20 text-green-300' : 'bg-orange-500/20 text-orange-300'}`}>
-                                                {hasQ ? '✓ Questions added' : 'âš  No questions yet'}
+                                                {hasQ ? '✓ Questions added' : '! No questions yet'}
                                             </span>
                                         )}
                                     </div>
@@ -383,7 +383,7 @@ const InstructorAssessments = () => {
                                                 : 'bg-gradient-to-r from-[var(--accent-primary)]/80 to-[var(--accent-secondary)]/80 text-[var(--text)] hover:opacity-90'
                                         }`}
                                     >
-                                        {hasQ ? 'âœï¸ Edit Questions' : '+ Add Questions'}
+                                        {hasQ ? 'Edit Edit Questions' : '+ Add Questions'}
                                     </button>
                                 )}
                                 <button
@@ -391,7 +391,7 @@ const InstructorAssessments = () => {
                                     className="px-3 py-2 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition"
                                     title="Edit assessment details"
                                 >
-                                    âœï¸
+                                    Edit
                                 </button>
                                 <button
                                     onClick={() => handleViewResults(assessment)}
@@ -539,7 +539,7 @@ const InstructorAssessments = () => {
                                             {/* Short answer -” no correct answer, instructor grades manually */}
                                             {q.question_type === 'short_answer' && (
                                                 <p className="text-xs text-yellow-400 bg-yellow-500/10 rounded-lg px-3 py-2">
-                                                    âš ï¸ Short answer questions require manual grading after submission.
+                                                    ! Short answer questions require manual grading after submission.
                                                 </p>
                                             )}
                                         </div>
@@ -644,7 +644,7 @@ const InstructorAssessments = () => {
                                                                     className="w-36 bg-[var(--bg)] border border-[var(--border)]/40 rounded-lg px-2 py-1.5 text-[var(--text)] text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
                                                                 <button onClick={() => handleSaveGrade(student.id)} disabled={savingGrade === student.id}
                                                                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition disabled:opacity-50 ${isGraded ? 'bg-blue-600/20 border border-[var(--accent-tertiary)]/30 text-blue-300 hover:bg-blue-600/30' : 'bg-green-600/20 border border-green-500/30 text-green-300 hover:bg-green-600/30'}`}>
-                                                                    {savingGrade === student.id ? 'â³' : isGraded ? 'Update' : 'Save'}
+                                                                    {savingGrade === student.id ? '...' : isGraded ? 'Update' : 'Save'}
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -706,7 +706,7 @@ const InstructorAssessments = () => {
                             <div className="flex gap-3 pt-2">
                                 <button onClick={handleSaveEdit} disabled={savingEdit}
                                     className="flex-1 py-2.5 bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)] rounded-xl text-[var(--text)] text-sm font-medium hover:opacity-90 transition disabled:opacity-50">
-                                    {savingEdit ? 'â³ Saving...' : '✓ Save Changes'}
+                                    {savingEdit ? '... Saving...' : '✓ Save Changes'}
                                 </button>
                                 <button onClick={() => setEditingId(null)}
                                     className="px-5 py-2.5 bg-[var(--surface-2)] border border-[var(--border)]/40 rounded-xl text-[var(--muted)] text-sm hover:text-[var(--text)] transition">

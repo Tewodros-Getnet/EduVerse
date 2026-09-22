@@ -920,7 +920,7 @@ function StudentInsightsResults({ data }) {
 
                 {/* Common Challenges */}
                 <div className="bg-[var(--surface-2)] rounded-xl p-4">
-                    <h5 className="font-medium text-[var(--text)] mb-3">⚠️ Common Challenges</h5>
+                    <h5 className="font-medium text-[var(--text)] mb-3">! Common Challenges</h5>
                     <ul className="space-y-2">
                         {data.insights.common_challenges.map((challenge, index) => (
                             <li key={index} className="text-sm text-[var(--muted)] flex items-start gap-2">
