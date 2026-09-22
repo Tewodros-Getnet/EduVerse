@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿﻿﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
@@ -394,10 +394,10 @@ export default function InstructorCourseDetail() {
                                                 <div>
                                                     <h4 className="font-medium text-[var(--text)]">{lesson.title}</h4>
                                                     <div className="flex items-center gap-4 text-sm text-[var(--muted)] mt-1">
-                                                        <span>ðŸ“¹ {lesson.content_type || 'text'}</span>
-                                                        {lesson.duration_minutes && <span>â±ï¸ {lesson.duration_minutes}min</span>}
-                                                        {lesson.video_url && <span>ðŸŽ¥ Video</span>}
-                                                        {lesson.pdf_url && <span>ðŸ“„ PDF</span>}
+                                                        <span>{lesson.content_type || 'text'}</span>
+                                                        {lesson.duration_minutes && <span>{lesson.duration_minutes} min</span>}
+                                                        {lesson.video_url && <span>Video</span>}
+                                                        {lesson.pdf_url && <span>PDF</span>}
                                                     </div>
                                                 </div>
                                             </div>
